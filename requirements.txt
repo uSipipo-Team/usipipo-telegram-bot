@@ -26,4 +26,3 @@ ruff==0.15.7
 typing-extensions==4.15.0
 typing-inspection==0.4.2
 usipipo-commons==0.1.0
--e file:///home/mowgli/usipipo/usipipo-telegram-bot
