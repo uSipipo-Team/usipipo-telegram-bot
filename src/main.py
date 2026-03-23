@@ -3,23 +3,20 @@
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 
+from src.bot.handlers.basic import BasicHandler
+
+
+handler = BasicHandler()
+
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle /start command."""
-    await update.message.reply_text(
-        "¡Hola! 👋 Bienvenido al bot de uSipipo.\n\n"
-        "Usa /help para ver los comandos disponibles."
-    )
+    await handler.start_handler(update, context)
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle /help command."""
-    await update.message.reply_text(
-        "Comandos disponibles:\n\n"
-        "/start - Iniciar el bot\n"
-        "/help - Mostrar ayuda\n"
-        "/status - Ver estado del servicio"
-    )
+    await handler.help_handler(update, context)
 
 
 async def status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
