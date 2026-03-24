@@ -1,7 +1,7 @@
 """Tests for logger and error handler."""
 
 import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 from src.infrastructure.logger import setup_logger, get_logger
 from src.infrastructure.error_handler import BotError, APIError, ValidationError, error_handler

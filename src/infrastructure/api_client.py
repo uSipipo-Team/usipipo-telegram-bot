@@ -26,8 +26,8 @@ class APIClient:
         base_url: Optional[str] = None,
         api_prefix: Optional[str] = None,
     ):
-        self.base_url = (base_url or os.getenv("BACKEND_URL", DEFAULT_BACKEND_URL)).rstrip("/")
-        self.api_prefix = api_prefix or os.getenv("API_PREFIX", DEFAULT_API_PREFIX)
+        self.base_url = (base_url or os.getenv("BACKEND_URL") or DEFAULT_BACKEND_URL).rstrip("/")
+        self.api_prefix = api_prefix or os.getenv("API_PREFIX") or DEFAULT_API_PREFIX
         self._client: Optional[httpx.AsyncClient] = None
         logger.info(f"APIClient initialized: {self.base_url}{self.api_prefix}")
 

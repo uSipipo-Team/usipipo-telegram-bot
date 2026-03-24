@@ -1,7 +1,5 @@
 """Tests for API Client."""
 
-import pytest
-
 from src.infrastructure.api_client import APIClient
 
 

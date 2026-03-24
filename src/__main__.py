@@ -1,57 +1,42 @@
 """Entry point for running the Telegram bot."""
 
 import asyncio
-import logging
 import os
 
-from telegram.ext import Application, CommandHandler
+from telegram import Update
+from telegram.ext import Application
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-logger = logging.getLogger(__name__)
+from src.infrastructure.logger import get_logger
 
-
-async def start(update, context):
-    """Handle /start command."""
-    await update.message.reply_text(
-        "¡Hola! 👋 Bienvenido al bot de uSipipo.\n\n"
-        "Usa /help para ver los comandos disponibles."
-    )
+logger = get_logger("main")
 
 
-async def help_command(update, context):
-    """Handle /help command."""
-    await update.message.reply_text(
-        "Comandos disponibles:\n\n"
-        "/start - Iniciar el bot\n"
-        "/help - Mostrar ayuda\n"
-        "/status - Ver estado del servicio"
-    )
+async def run_bot(application: Application) -> None:
+    """Run the Telegram bot with polling."""
+    logger.info("Starting bot with polling...")
+    await application.run_polling(allowed_updates=Update.ALL_TYPES)  # type: ignore[func-returns-value]
 
 
-async def status(update, context):
-    """Handle /status command."""
-    await update.message.reply_text("✅ Todos los sistemas operativos")
-
-
-async def main():
-    """Run the Telegram bot."""
-    token = os.getenv("TELEGRAM_BOT_TOKEN")
+def main() -> None:
+    """Main entry point."""
+    token = os.getenv("TELEGRAM_TOKEN")
 
     if not token:
-        logger.error("TELEGRAM_BOT_TOKEN no configurado")
-        return
+        logger.error("TELEGRAM_TOKEN not configured. Check .env file.")
+        raise RuntimeError("TELEGRAM_TOKEN not configured")
 
-    application = Application.builder().token(token).build()
+    from src.main import create_application
 
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("help", help_command))
-    application.add_handler(CommandHandler("status", status))
+    application = create_application(token)
+    logger.info("Bot application created successfully")
 
-    logger.info("Bot iniciado...")
-    await application.run_polling(allowed_updates=Update.ALL_TYPES)
+    try:
+        asyncio.run(run_bot(application))
+    except KeyboardInterrupt:
+        logger.info("Bot stopped by user")
+    finally:
+        logger.info("Bot shutdown complete")
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
