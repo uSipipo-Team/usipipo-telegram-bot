@@ -1,7 +1,5 @@
 """Tests for ErrorTranslator."""
 
-import pytest
-
 from src.infrastructure.secondary_adapters.backend_api.error_translator import (
     ErrorTranslator,
 )

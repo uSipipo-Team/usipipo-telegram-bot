@@ -2,8 +2,6 @@
 
 import os
 
-from telegram.ext import Application
-
 from src.infrastructure.logger import get_logger
 
 logger = get_logger("main")

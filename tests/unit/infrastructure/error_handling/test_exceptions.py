@@ -1,7 +1,5 @@
 """Tests for custom exceptions."""
 
-import pytest
-
 from src.infrastructure.error_handling.exceptions import (
     BotError,
     AuthenticationError,

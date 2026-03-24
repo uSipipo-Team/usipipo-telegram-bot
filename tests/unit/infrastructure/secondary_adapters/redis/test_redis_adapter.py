@@ -3,7 +3,6 @@
 import time
 import pytest
 from unittest.mock import AsyncMock, patch
-from uuid import uuid4
 
 from src.infrastructure.secondary_adapters.redis.redis_adapter import (
     RedisAdapter,

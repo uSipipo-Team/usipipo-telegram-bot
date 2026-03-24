@@ -65,7 +65,7 @@ class RedisAdapter(TokenStoragePort):
         redis_client = await self._get_redis()
 
         async with redis_client.pipeline() as pipe:
-            await pipe.hset(key, mapping={
+            await pipe.hset(key, mapping={  # type: ignore[misc]
                 "access_token": access_token,
                 "refresh_token": refresh_token,
                 "expires_at": str(int(time.time()) + expires_in),
@@ -88,7 +88,7 @@ class RedisAdapter(TokenStoragePort):
         """
         key = f"{self.TOKEN_PREFIX}{telegram_id}"
         redis_client = await self._get_redis()
-        data = await redis_client.hgetall(key)
+        data = await redis_client.hgetall(key)  # type: ignore[misc]
 
         if not data:
             return None

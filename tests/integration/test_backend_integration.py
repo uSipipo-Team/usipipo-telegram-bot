@@ -1,8 +1,6 @@
 """Tests de integración entre Telegram Bot y Backend."""
 
 import pytest
-import os
-from unittest.mock import AsyncMock, patch, MagicMock
 
 from src.infrastructure.api_client import APIClient
 from src.infrastructure.config import settings

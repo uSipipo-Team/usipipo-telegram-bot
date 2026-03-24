@@ -1,6 +1,6 @@
 """Backend API Port - Contract for backend communication."""
 
-from typing import List, Optional, Protocol
+from typing import List, Protocol
 from uuid import UUID
 
 from usipipo_commons.domain.entities import User, VpnKey, Payment
