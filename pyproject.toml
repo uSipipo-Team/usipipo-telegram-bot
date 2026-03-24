@@ -10,6 +10,7 @@ dependencies = [
     "usipipo-commons>=0.1.0",
     "python-telegram-bot>=21.0",
     "pydantic-settings>=2.0.0",
+    "redis>=7.3.0",
 ]
 
 [project.optional-dependencies]
