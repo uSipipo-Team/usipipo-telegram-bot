@@ -491,21 +491,22 @@ wheels = [
 
 [[package]]
 name = "usipipo-commons"
-version = "0.1.0"
+version = "0.12.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f0/e0/42037e6258a0dfc7b5c7faff2167377dd87a8860159be4fe6e23c5430d8f/usipipo_commons-0.1.0.tar.gz", hash = "sha256:16a7bf1064e6e90a49ccd52adc1be08abd00805dafc11dab05a7d6242b2fa579", size = 30267, upload-time = "2026-03-19T00:06:35.282Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/8b/95/c7336f5864bfb8f86c581d5d42b6c7dbce5fc97916eb4dffd6b829c66eb2/usipipo_commons-0.12.0.tar.gz", hash = "sha256:d77f0369a2a64241b80d648cf602ee7fc2e6c895a7246991db8d39fb918883b9", size = 59525, upload-time = "2026-03-22T22:35:25.281Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/40/0a/b608ede979a3d9800b2da1d2a1c3bc8e5fb02cb6483cb94021d1e9d32473/usipipo_commons-0.1.0-py3-none-any.whl", hash = "sha256:5d90e84bebdb4a833422a0e0134a03fd25c1f4f4b786ab3269877dced856abf6", size = 11440, upload-time = "2026-03-19T00:06:36.545Z" },
+    { url = "https://files.pythonhosted.org/packages/5f/25/7bb2b6b263fa487d97ca044939c6e829d2438cfdab086e34539117bf465f/usipipo_commons-0.12.0-py3-none-any.whl", hash = "sha256:e14613fd80a0f66cf62592cade2225ee97955af2d3539567374922d16d01cb86", size = 33262, upload-time = "2026-03-22T22:35:24.192Z" },
 ]
 
 [[package]]
 name = "usipipo-telegram-bot"
-version = "0.1.0"
+version = "0.3.0"
 source = { editable = "." }
 dependencies = [
+    { name = "httpx" },
     { name = "pydantic-settings" },
     { name = "python-telegram-bot" },
     { name = "redis" },
@@ -524,6 +525,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "httpx", specifier = ">=0.27.0" },
     { name = "httpx", marker = "extra == 'dev'", specifier = ">=0.27.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.0.0" },
     { name = "pydantic-settings", specifier = ">=2.0.0" },
@@ -533,6 +535,6 @@ requires-dist = [
     { name = "python-telegram-bot", specifier = ">=21.0" },
     { name = "redis", specifier = ">=7.3.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.1.0" },
-    { name = "usipipo-commons", specifier = ">=0.1.0" },
+    { name = "usipipo-commons", specifier = ">=0.12.0" },
 ]
 provides-extras = ["dev"]
