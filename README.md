@@ -4,13 +4,21 @@
 
 ## Estado
 
-- [x] En desarrollo
+- [ ] En desarrollo
 - [ ] Alpha
 - [ ] Beta
-- [ ] Producción
+- [x] Producción
+
+## Versión
+
+**v0.2.0** - VPN Key Management (En desarrollo)
+
+**v0.1.0** - Invisible Authentication (Estable)
 
 ## Documentación
 
+- [CHANGELOG](CHANGELOG.md)
+- [Integration Tests](INTEGRATION-TEST-SUMMARY.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Commands](docs/COMMANDS.md)
 - [Deployment](docs/DEPLOYMENT.md)
