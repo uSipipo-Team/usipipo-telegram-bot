@@ -1,20 +1,10 @@
 """Entry point for running the Telegram bot."""
 
-import asyncio
 import os
-
-from telegram import Update
-from telegram.ext import Application
 
 from src.infrastructure.logger import get_logger
 
 logger = get_logger("main")
-
-
-async def run_bot(application: Application) -> None:
-    """Run the Telegram bot with polling."""
-    logger.info("Starting bot with polling...")
-    await application.run_polling(allowed_updates=Update.ALL_TYPES)  # type: ignore[func-returns-value]
 
 
 def main() -> None:
@@ -31,7 +21,8 @@ def main() -> None:
     logger.info("Bot application created successfully")
 
     try:
-        asyncio.run(run_bot(application))
+        logger.info("Starting bot with polling...")
+        application.run_polling()
     except KeyboardInterrupt:
         logger.info("Bot stopped by user")
     finally:
