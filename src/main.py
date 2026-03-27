@@ -8,6 +8,10 @@ from telegram.ext import Application, CommandHandler, ContextTypes
 from src.bot.handlers.basic import BasicHandler
 from src.bot.handlers.auth import AuthHandler
 from src.bot.handlers.keys import KeysHandler, get_keys_callback_handlers
+from src.bot.handlers.operations import (
+    OperationsHandler,
+    get_operations_callback_handlers,
+)
 from src.infrastructure.api_client import APIClient
 from src.infrastructure.config import settings
 from src.infrastructure.error_handler import error_handler
@@ -22,11 +26,12 @@ _api_client: APIClient | None = None
 _token_storage: TokenStorage | None = None
 _auth_handler: AuthHandler | None = None
 _keys_handler: KeysHandler | None = None
+_operations_handler: OperationsHandler | None = None
 
 
 async def _init_dependencies() -> None:
     """Inicializa dependencias globales del bot."""
-    global _api_client, _token_storage, _auth_handler, _keys_handler
+    global _api_client, _token_storage, _auth_handler, _keys_handler, _operations_handler
 
     # Initialize Redis pool
     await RedisPool.get_instance(settings.REDIS_URL)
@@ -51,6 +56,10 @@ async def _init_dependencies() -> None:
     _keys_handler = KeysHandler(_api_client, _token_storage)
     logger.info("Keys handler initialized")
 
+    # Initialize operations handler
+    _operations_handler = OperationsHandler(_api_client, _token_storage)
+    logger.info("Operations handler initialized")
+
 
 def _get_auth_handler() -> AuthHandler:
     """Obtiene el AuthHandler inicializado."""
@@ -64,6 +73,13 @@ def _get_keys_handler() -> KeysHandler:
     if _keys_handler is None:
         raise RuntimeError("KeysHandler not initialized. Call _init_dependencies first.")
     return _keys_handler
+
+
+def _get_operations_handler() -> OperationsHandler:
+    """Obtiene el OperationsHandler inicializado."""
+    if _operations_handler is None:
+        raise RuntimeError("OperationsHandler not initialized. Call _init_dependencies first.")
+    return _operations_handler
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -126,9 +142,14 @@ def create_application(token: str) -> Application:
     app.add_handler(CommandHandler("me", me))
     app.add_handler(CommandHandler("unlink", unlink))
     app.add_handler(CommandHandler("keys", lambda u, c: _get_keys_handler().show_keys_menu(u, c)))
+    app.add_handler(CommandHandler("operaciones", lambda u, c: _get_operations_handler().operations_menu(u, c)))
 
     # Register callback handlers for keys management
     for handler in get_keys_callback_handlers(_api_client, _token_storage):
+        app.add_handler(handler)
+
+    # Register callback handlers for operations
+    for handler in get_operations_callback_handlers(_api_client, _token_storage):
         app.add_handler(handler)
 
     app.add_error_handler(error_handler)  # type: ignore[arg-type]

@@ -7,6 +7,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.0] - 2026-03-27
+
+### 🎉 Operations + Profile Complete
+
+#### Added
+- **Operations Menu System**
+  - Main operations menu with credits display
+  - Shop menu with purchase options
+  - Transactions history with pagination
+  - Referrals program display
+
+- **New Commands**
+  - `/operaciones` - Operations menu
+
+- **New Handlers** (`src/bot/handlers/operations.py`)
+  - `OperationsHandler` class with all operations
+  - Operations menu with credits integration
+  - Credits display and redemption flow
+  - Shop menu
+  - Transactions history
+  - Referrals program
+
+- **New Keyboards** (`src/bot/keyboards/operations.py`)
+  - `OperationsKeyboard` class with inline keyboards
+  - Operations menu with credits
+  - Credits redemption options
+  - Shop categories
+  - Transactions pagination
+  - Referrals display
+
+- **New Messages** (`src/bot/keyboards/messages_operations.py`)
+  - `OperationsMessages` class with UI messages
+  - Menu messages with credits
+  - Credits display and redemption
+  - Shop welcome message
+  - Transactions history format
+  - Referrals program info
+
+- **Testing**
+  - 21 new unit tests for operations
+  - Tests for keyboards, messages, and handlers
+  - 128 tests total (128 passed)
+
+#### Changed
+- Updated `src/main.py` to register OperationsHandler and callback handlers
+- Enhanced bot structure with operations module
+
+#### Technical Details
+- **Backend Integration:**
+  - `GET /api/v1/referrals/me` - Get referral stats
+  - `GET /api/v1/transactions` - Get transactions history
+- **Quality:** ruff (passed), pytest (128/128 passed)
+- **Files Created:** 4 (handlers, keyboards, messages, tests)
+- **Files Modified:** 1 (main.py)
+
+---
+
 ## [0.3.0] - 2026-03-27
 
 ### 🎉 VPN Key Management Complete
@@ -157,6 +214,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.4.0 | 2026-03-27 | Operations + Profile Complete (21 tests, 128 total) |
 | 0.3.0 | 2026-03-27 | VPN Key Management Complete (25 tests, 107 total) |
 | 0.2.0 | 2026-03-24 | Project Structure + Metadata |
 | 0.1.0 | 2026-03-24 | Invisible Authentication + CI/CD + Integration Tests |
@@ -166,20 +224,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Upcoming Features
 
-### v0.4.0 - Operations + Profile
-- `/operaciones` - Operations menu
-- `/perfil` - User profile
-- Consumption status
-
 ### v0.5.0 - Consumption Billing
 - `/consumo` - Consumption menu
 - `/activar` - Activate consumption mode
+- `/cancelar` - Cancel consumption mode
 - `/factura` - View invoices
 
 ### v0.6.0 - Data Packages
 - `/comprar` - Buy data packages
 - `/paquetes` - View available packages
 - Payment with crypto and Telegram Stars
+
+### v0.7.0 - Payments Integration
+- Crypto payments (TronDealer)
+- Telegram Stars
+- Subscription activation
 
 ---
 
