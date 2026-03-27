@@ -46,6 +46,15 @@ class BotSettings(BaseSettings):
     # ==================================================================
     TOKEN_REFRESH_THRESHOLD_SECONDS: int = 300  # 5 minutos antes de expirar
 
+    # ==================================================================
+    # CONSUMPTION BILLING (Pay-as-you-go)
+    # ==================================================================
+    CONSUMPTION_PRICE_PER_GB_USD: float = 0.25
+    CONSUMPTION_PRICE_PER_MB_USD: float = 0.000244140625  # 0.25 / 1024
+
+    # ==================================================================
+    # HELPER PROPERTIES
+    # ==================================================================
     @property
     def backend_base_url(self) -> str:
         """Obtiene la URL base completa del backend."""
