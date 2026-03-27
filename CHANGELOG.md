@@ -7,6 +7,81 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.3.0] - 2026-03-27
+
+### 🎉 VPN Key Management Complete
+
+#### Added
+- **VPN Key Management System**
+  - Full CRUD operations for VPN keys
+  - Support for Outline and WireGuard protocols
+  - Inline keyboards for key actions
+
+- **New Commands**
+  - `/keys` - List user's VPN keys with summary
+  - `/newkey` - Create new VPN key (flow starter)
+
+- **New Handlers** (`src/bot/handlers/keys.py`)
+  - `KeysHandler` class with all VPN operations
+  - List keys by type (Outline/WireGuard)
+  - Show key details with usage statistics
+  - Create new keys
+  - Delete keys with confirmation
+  - Rename keys
+  - Download WireGuard .conf files
+  - Get Outline access links
+  - View key statistics
+
+- **New Keyboards** (`src/bot/keyboards/keys.py`)
+  - `KeysKeyboard` class with inline keyboards
+  - Main menu with key counts
+  - Key list by type
+  - Key actions (download, rename, delete)
+  - Confirmation dialogs
+
+- **New Messages** (`src/bot/keyboards/messages_keys.py`)
+  - `KeysMessages` class with UI messages
+  - Main menu, key details, statistics
+  - Action success/error messages
+  - Progress bars for data usage
+
+- **Testing**
+  - 25 new unit tests for VPN key management
+  - Tests for keyboards, messages, and handlers
+  - 107 tests total (107 passed)
+
+#### Changed
+- Updated `src/main.py` to register KeysHandler and callback handlers
+- Enhanced bot structure with VPN key management module
+
+#### Technical Details
+- **Backend Integration:**
+  - `GET /api/v1/vpn/keys` - List keys
+  - `POST /api/v1/vpn/keys` - Create key
+  - `DELETE /api/v1/vpn/keys/{id}` - Delete key
+  - `GET /api/v1/vpn/keys/{id}/config` - Get config
+- **Quality:** ruff (passed), pytest (107/107 passed)
+- **Files Created:** 4 (handlers, keyboards, messages, tests)
+- **Files Modified:** 1 (main.py)
+
+---
+
+## [0.2.0] - 2026-03-24
+
+### 📦 Project Structure + Metadata
+
+#### Added
+- **CHANGELOG.md** - Keep a Changelog format
+- **README.md** - Updated with production status + version info
+- **GitHub Topics** - 10 topics for discoverability
+- **Repository Description** - Updated
+
+#### Changed
+- Updated project metadata
+- Enhanced documentation
+
+---
+
 ## [0.1.0] - 2026-03-24
 
 ### 🎉 Initial Release - Invisible Authentication
@@ -82,6 +157,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.3.0 | 2026-03-27 | VPN Key Management Complete (25 tests, 107 total) |
+| 0.2.0 | 2026-03-24 | Project Structure + Metadata |
 | 0.1.0 | 2026-03-24 | Invisible Authentication + CI/CD + Integration Tests |
 | 0.0.1 | 2026-03-23 | Project Setup + Basic Commands |
 
@@ -89,22 +166,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Upcoming Features
 
-### v0.2.0 - VPN Key Management
-- `/keys` - List user's VPN keys
-- `/newkey` - Create new VPN key
-- `/delkey` - Delete VPN key
-- `/qr` - Show QR code for key
+### v0.4.0 - Operations + Profile
+- `/operaciones` - Operations menu
+- `/perfil` - User profile
+- Consumption status
 
-### v0.3.0 - Payments Integration
-- Crypto payments (TronDealer)
-- Telegram Stars
-- Subscription activation
+### v0.5.0 - Consumption Billing
+- `/consumo` - Consumption menu
+- `/activar` - Activate consumption mode
+- `/factura` - View invoices
 
-### v0.4.0 - Advanced Features
-- Ticket system
-- Referral system
-- Data packages
-- Consumption billing
+### v0.6.0 - Data Packages
+- `/comprar` - Buy data packages
+- `/paquetes` - View available packages
+- Payment with crypto and Telegram Stars
 
 ---
 
