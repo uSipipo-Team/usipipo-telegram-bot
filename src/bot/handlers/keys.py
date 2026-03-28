@@ -371,37 +371,90 @@ class KeysHandler:
                 )
                 return INPUT_NAME  # Stay in INPUT_NAME state
 
+            # Get auth headers
+            tokens = await self.tokens.get(telegram_id)
+            if not tokens:
+                await update.message.reply_text(
+                    text="❌ Error de autenticación. Por favor iniciá sesión con /start",
+                )
+                return ConversationHandler.END
+
+            headers = {"Authorization": f"Bearer {tokens['access_token']}"}
+
+            # Map protocol to KeyType enum
+            vpn_type = "OUTLINE" if protocol.lower() == "outline" else "WIREGUARD"
+
+            # Create key via API
+            response = await self.api.post(
+                "/vpn/keys",
+                headers=headers,
+                json={
+                    "name": key_name,
+                    "vpn_type": vpn_type,
+                    "data_limit_gb": 5.0,  # Default 5GB
+                },
+            )
+
             # Clear protocol from user_data
             del context.user_data["vpn_protocol"]
 
-            # TODO: Create key via API
-            # headers = await self._get_auth_headers(telegram_id)
-            # response = await self.api.post(
-            #     "/vpn/keys",
-            #     headers=headers,
-            #     json={"name": key_name, "protocol": protocol},
-            # )
+            logger.info(f"✅ {vpn_type} key '{key_name}' created: {response.get('id')}")
 
-            # Temporary success message until API integration
-            message = (
-                f"✅ *Clave {protocol.title()} Creada*\n\n"
-                f"🔑 Nombre: *{key_name}*\n"
-                f"📡 Protocolo: {protocol.title()}\n\n"
-                f"La clave está siendo generada. Te notificaremos cuando esté lista."
-            )
+            # Get key data from response
+            key_id = response.get("id")
+            key_config = response.get("config", "")
+            data_limit = response.get("data_limit_gb", 5.0)
 
-            await update.message.reply_text(
-                text=message,
-                reply_markup=KeysKeyboard.back_to_menu(),
-                parse_mode="Markdown",
-            )
+            # Send success message based on protocol
+            if protocol.lower() == "outline":
+                # Outline: Show access URL
+                escaped_name = key_name.replace("_", "\_").replace("*", "\*")
+                escaped_config = key_config.replace("_", "\_").replace("*", "\*")
 
-            logger.info(f"✅ {protocol.title()} key '{key_name}' created for user {telegram_id}")
+                caption = (
+                    f"✅ *Clave {vpn_type.title()} Creada*\n\n"
+                    f"🔑 Nombre: *{escaped_name}*\n"
+                    f"💾 Límite: *{data_limit}GB*\n\n"
+                    f"Copia el siguiente código en tu aplicación Outline:\n\n"
+                    f"```\n{escaped_config}\n```"
+                )
+
+                await update.message.reply_text(
+                    text=caption,
+                    parse_mode="Markdown",
+                )
+
+            elif protocol.lower() == "wireguard":
+                # WireGuard: Send .conf file
+                escaped_name = key_name.replace("_", "\_").replace("*", "\*")
+
+                caption = (
+                    f"✅ *Clave {vpn_type.title()} Creada*\n\n"
+                    f"🔑 Nombre: *{escaped_name}*\n"
+                    f"💾 Límite: *{data_limit}GB*\n\n"
+                    f"Descargá el archivo .conf adjunto e importalo en WireGuard."
+                )
+
+                # Create .conf file
+                conf_filename = f"{key_name}.conf"
+                conf_content = key_config  # Backend returns full WireGuard config
+
+                await update.message.reply_document(
+                    document=io.BytesIO(conf_content.encode("utf-8")),
+                    filename=conf_filename,
+                    caption=caption,
+                    parse_mode="Markdown",
+                )
+
+            logger.info(f"✅ Key delivered to user {telegram_id}")
 
         except Exception as e:
             logger.error(f"Error creating key: {e}")
             if update.message:
-                await update.message.reply_text(text=KeysMessages.Error.SYSTEM_ERROR)
+                await update.message.reply_text(
+                    text=f"❌ Error al crear la clave: {str(e)}",
+                    reply_markup=KeysKeyboard.back_to_menu(),
+                )
 
         return ConversationHandler.END
 
