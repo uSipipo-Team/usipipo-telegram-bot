@@ -236,6 +236,61 @@ class TicketsHandler:
                 parse_mode="Markdown",
             )
 
+    async def view_ticket_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle view ticket callback."""
+        if update.effective_user is None or update.callback_query is None:
+            return
+
+        telegram_id = update.effective_user.id
+        query = update.callback_query
+        logger.info(f"🎫 User {telegram_id} viewing ticket")
+
+        try:
+            # Check authentication
+            if not await self.tokens.is_authenticated(telegram_id):
+                await self._safe_answer_query(query)
+                await query.edit_message_text(
+                    text=TicketsMessages.Error.NOT_AUTHORIZED,
+                    parse_mode="Markdown",
+                )
+                return
+
+            # Parse ticket_id from callback_data
+            # Format: "ticket_view:uuid-123"
+            ticket_id = query.data.split(":")[1]
+
+            # Get ticket details
+            headers = await self._get_auth_headers(telegram_id)
+            response = await self.api.api_client.get(
+                f"/tickets/{ticket_id}",
+                headers=headers,
+            )
+
+            # Format message
+            message = TicketsMessages.Menu.TICKET_DETAIL.format(
+                ticket_number=response["ticket_number"],
+                status=response["status"],
+                subject=response["subject"],
+                category=response["category"],
+                created_at=response["created_at"][:10] if response.get("created_at") else "N/A",
+                last_message="Sin mensajes aún",
+            )
+
+            await self._safe_edit_message(
+                query=query,
+                context=context,
+                text=message,
+                reply_markup=TicketsKeyboard.ticket_detail(ticket_id),
+            )
+
+        except Exception as e:
+            logger.error(f"Error viewing ticket: {e}")
+            await self._safe_answer_query(query)
+            await query.edit_message_text(
+                text=TicketsMessages.Error.SYSTEM_ERROR,
+                parse_mode="Markdown",
+            )
+
 
 def get_tickets_handlers(api_client: APIClient, token_storage: TokenStorage):
     """Get tickets command handlers."""
@@ -255,5 +310,9 @@ def get_tickets_callback_handlers(api_client: APIClient, token_storage: TokenSto
         CallbackQueryHandler(
             handler.select_category_callback,
             pattern=r"^ticket_cat:(technical|billing|services|general)$",
+        ),
+        CallbackQueryHandler(
+            handler.view_ticket_callback,
+            pattern=r"^ticket_view:.+$",
         ),
     ]
