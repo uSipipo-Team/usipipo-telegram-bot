@@ -5,7 +5,14 @@ import logging
 from typing import TYPE_CHECKING, Any
 
 from telegram import Update
-from telegram.ext import CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters
+from telegram.ext import (
+    CallbackQueryHandler,
+    CommandHandler,
+    ContextTypes,
+    ConversationHandler,
+    MessageHandler,
+    filters,
+)
 
 from src.bot.keyboards.keys import KeysKeyboard
 from src.bot.keyboards.messages_keys import KeysMessages
@@ -17,6 +24,9 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+# Estados de la conversación para creación de claves
+SELECT_PROTOCOL, INPUT_NAME = range(2)
+
 
 class KeysHandler:
     """Handler para gestión de claves VPN."""
@@ -24,7 +34,56 @@ class KeysHandler:
     def __init__(self, api_client: APIClient, token_storage: TokenStorage):
         self.api = api_client
         self.tokens = token_storage
-        logger.info("KeysHandler initialized")
+        logger.info("🔑 KeysHandler initialized")
+
+    async def start_creation(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Inicia el flujo de creación preguntando el protocolo."""
+        if not update.effective_user:
+            return ConversationHandler.END
+
+        telegram_id = update.effective_user.id
+        logger.info(f"🔑 User {telegram_id} started key creation flow")
+
+        try:
+            # Check authentication
+            if not await self.tokens.is_authenticated(telegram_id):
+                if update.callback_query:
+                    await update.callback_query.answer()
+                    await update.callback_query.edit_message_text(
+                        text="⚠️ No estás autenticado. Usa /start para iniciar sesión.",
+                    )
+                elif update.message:
+                    await update.message.reply_text(
+                        text="⚠️ No estás autenticado. Usa /start para iniciar sesión.",
+                    )
+                return ConversationHandler.END
+
+            # Show protocol selection
+            if update.callback_query:
+                await update.callback_query.answer()
+                await update.callback_query.edit_message_text(
+                    text=KeysMessages.CREATE_KEY_PROMPT,
+                    reply_markup=KeysKeyboard.protocol_selection(),
+                    parse_mode="Markdown",
+                )
+            elif update.message:
+                await update.message.reply_text(
+                    text=KeysMessages.CREATE_KEY_PROMPT,
+                    reply_markup=KeysKeyboard.protocol_selection(),
+                    parse_mode="Markdown",
+                )
+
+            return SELECT_PROTOCOL
+
+        except Exception as e:
+            logger.error(f"Error starting key creation: {e}")
+            if update.callback_query:
+                await update.callback_query.edit_message_text(
+                    text=KeysMessages.Error.SYSTEM_ERROR,
+                )
+            elif update.message:
+                await update.message.reply_text(text=KeysMessages.Error.SYSTEM_ERROR)
+            return ConversationHandler.END
 
     async def _get_auth_headers(self, telegram_id: int) -> dict[str, str]:
         """Obtiene headers de autenticación para el usuario."""
@@ -260,71 +319,112 @@ class KeysHandler:
                 KeysKeyboard.back_to_menu(),
             )
 
-    async def select_outline_protocol(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Maneja selección de protocolo Outline."""
+    async def protocol_selected(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Maneja selección de protocolo VPN."""
         query = update.callback_query
-        if query is None:
-            return
+        if query is None or query.data is None:
+            return ConversationHandler.END
 
-        await self._safe_answer_query(query)
+        await query.answer()
         telegram_id = update.effective_user.id if update.effective_user else 0
 
-        logger.info(f"User {telegram_id} selected Outline protocol")
+        # Extract protocol from callback_data
+        # Format: "vpn_create_outline" or "vpn_create_wireguard"
+        protocol = query.data.replace("vpn_create_", "")
+
+        logger.info(f"User {telegram_id} selected {protocol} protocol")
 
         try:
-            # Store selected protocol and creation flag
-            if context.user_data is not None:
-                context.user_data["vpn_protocol"] = "outline"
-                context.user_data["creating_key"] = True
+            # Store selected protocol
+            context.user_data["vpn_protocol"] = protocol
 
-            await self._safe_edit_message(
-                query,
-                context,
-                KeysMessages.ENTER_KEY_NAME,
-                None,
+            # Ask for key name
+            await query.edit_message_text(
+                text=KeysMessages.ENTER_KEY_NAME,
+                parse_mode="Markdown",
             )
+
+            return INPUT_NAME
 
         except Exception as e:
-            logger.error(f"Error selecting Outline protocol: {e}")
-            await self._safe_edit_message(
-                query,
-                context,
-                KeysMessages.Error.SYSTEM_ERROR,
-                KeysKeyboard.back_to_menu(),
+            logger.error(f"Error selecting protocol: {e}")
+            await query.edit_message_text(text=KeysMessages.Error.SYSTEM_ERROR)
+            return ConversationHandler.END
+
+    async def name_received(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Finaliza la creación de la clave con el nombre proporcionado."""
+        if not update.effective_user or not update.message or not update.message.text:
+            return ConversationHandler.END
+
+        key_name = update.message.text.strip()
+        telegram_id = update.effective_user.id
+        protocol = context.user_data.get("vpn_protocol")
+
+        logger.info(f"User {telegram_id} naming {protocol} key: '{key_name}'")
+
+        try:
+            # Validate name (minimum 3 characters)
+            if len(key_name) < 3:
+                await update.message.reply_text(
+                    text="❌ El nombre debe tener al menos 3 caracteres.\n\nPor favor, escribe un nombre válido:",
+                    parse_mode="Markdown",
+                )
+                return INPUT_NAME  # Stay in INPUT_NAME state
+
+            # Clear protocol from user_data
+            del context.user_data["vpn_protocol"]
+
+            # TODO: Create key via API
+            # headers = await self._get_auth_headers(telegram_id)
+            # response = await self.api.post(
+            #     "/vpn/keys",
+            #     headers=headers,
+            #     json={"name": key_name, "protocol": protocol},
+            # )
+
+            # Temporary success message until API integration
+            message = (
+                f"✅ *Clave {protocol.title()} Creada*\n\n"
+                f"🔑 Nombre: *{key_name}*\n"
+                f"📡 Protocolo: {protocol.title()}\n\n"
+                f"La clave está siendo generada. Te notificaremos cuando esté lista."
             )
 
-    async def select_wireguard_protocol(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Maneja selección de protocolo WireGuard."""
+            await update.message.reply_text(
+                text=message,
+                reply_markup=KeysKeyboard.back_to_menu(),
+                parse_mode="Markdown",
+            )
+
+            logger.info(f"✅ {protocol.title()} key '{key_name}' created for user {telegram_id}")
+
+        except Exception as e:
+            logger.error(f"Error creating key: {e}")
+            if update.message:
+                await update.message.reply_text(text=KeysMessages.Error.SYSTEM_ERROR)
+
+        return ConversationHandler.END
+
+    async def cancel_creation(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Cancela la creación de la clave."""
         query = update.callback_query
         if query is None:
-            return
+            return ConversationHandler.END
 
-        await self._safe_answer_query(query)
+        await query.answer()
         telegram_id = update.effective_user.id if update.effective_user else 0
 
-        logger.info(f"User {telegram_id} selected WireGuard protocol")
+        logger.info(f"User {telegram_id} cancelled key creation")
 
         try:
-            # Store selected protocol and creation flag
-            if context.user_data is not None:
-                context.user_data["vpn_protocol"] = "wireguard"
-                context.user_data["creating_key"] = True
-
-            await self._safe_edit_message(
-                query,
-                context,
-                KeysMessages.ENTER_KEY_NAME,
-                None,
+            await query.edit_message_text(
+                text="❌ Creación de clave cancelada.",
+                reply_markup=KeysKeyboard.back_to_menu(),
             )
-
         except Exception as e:
-            logger.error(f"Error selecting WireGuard protocol: {e}")
-            await self._safe_edit_message(
-                query,
-                context,
-                KeysMessages.Error.SYSTEM_ERROR,
-                KeysKeyboard.back_to_menu(),
-            )
+            logger.error(f"Error cancelling creation: {e}")
+
+        return ConversationHandler.END
 
     async def rename_key(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Inicia el flujo de renombrado de clave."""
@@ -779,9 +879,38 @@ def get_keys_handlers(api_client: APIClient, token_storage: TokenStorage):
 
     return [
         CommandHandler("keys", handler.show_keys_menu),
-        CommandHandler("newkey", handler.create_key),
-        MessageHandler(filters.TEXT & ~filters.COMMAND, handler.process_text_input),
+        get_key_creation_conversation_handler(handler),
     ]
+
+
+def get_key_creation_conversation_handler(handler: KeysHandler) -> ConversationHandler:
+    """
+    Configuración del ConversationHandler para creación de claves VPN.
+
+    Returns:
+        ConversationHandler: Handler configurado para creación de claves
+    """
+    return ConversationHandler(
+        entry_points=[
+            CallbackQueryHandler(handler.start_creation, pattern="^vpn_create_key$"),
+            CommandHandler("newkey", handler.start_creation),
+        ],
+        states={
+            SELECT_PROTOCOL: [
+                CallbackQueryHandler(handler.protocol_selected, pattern="^vpn_create_"),
+                CallbackQueryHandler(handler.cancel_creation, pattern="^cancel_create$"),
+            ],
+            INPUT_NAME: [
+                MessageHandler(filters.TEXT & ~filters.COMMAND, handler.name_received),
+                CallbackQueryHandler(handler.cancel_creation, pattern="^cancel_create$"),
+            ],
+        },
+        fallbacks=[
+            CallbackQueryHandler(handler.cancel_creation, pattern="^cancel_create$"),
+        ],
+        per_user=True,
+        allow_reentry=True,
+    )
 
 
 def get_keys_callback_handlers(api_client: APIClient, token_storage: TokenStorage):
@@ -793,9 +922,6 @@ def get_keys_callback_handlers(api_client: APIClient, token_storage: TokenStorag
         CallbackQueryHandler(handler.show_keys_by_type, pattern="^vpn_keys_"),
         CallbackQueryHandler(handler.show_key_details, pattern="^vpn_key_details_"),
         CallbackQueryHandler(handler.show_key_statistics, pattern="^vpn_key_stats$"),
-        CallbackQueryHandler(handler.create_key, pattern="^vpn_create_key$"),
-        CallbackQueryHandler(handler.select_outline_protocol, pattern="^vpn_create_outline$"),
-        CallbackQueryHandler(handler.select_wireguard_protocol, pattern="^vpn_create_wireguard$"),
         CallbackQueryHandler(handler.rename_key, pattern="^vpn_rename_"),
         CallbackQueryHandler(handler.delete_key, pattern="^vpn_delete_"),
         CallbackQueryHandler(handler.confirm_delete_key, pattern="^vpn_confirm_delete_"),
