@@ -14,25 +14,25 @@ from src.bot.handlers.operations import (
 )
 from src.bot.handlers.consumption import (
     ConsumptionHandler,
-    get_consumption_handlers,
     get_consumption_callback_handlers,
 )
 from src.bot.handlers.packages import (
     PackagesHandler,
-    get_packages_handlers,
     get_packages_callback_handlers,
     get_packages_payment_handlers,
 )
 from src.bot.handlers.payments import (
     PaymentsHandler,
-    get_payments_handlers,
     get_payments_callback_handlers,
     get_payments_payment_handlers,
 )
 from src.bot.handlers.subscriptions import (
     SubscriptionsHandler,
-    get_subscriptions_handlers,
     get_subscriptions_callback_handlers,
+)
+from src.bot.handlers.referrals import (
+    get_referrals_handlers,
+    get_referrals_callback_handlers,
 )
 from src.infrastructure.api_client import APIClient
 from src.infrastructure.config import settings
@@ -265,6 +265,14 @@ def create_application(token: str) -> Application:
 
     # Register payment handlers for payments (Stars payments)
     for handler in get_payments_payment_handlers(_api_client, _token_storage):
+        app.add_handler(handler)
+
+    # Register command handlers for referrals
+    for handler in get_referrals_handlers(_api_client, _token_storage):
+        app.add_handler(handler)
+
+    # Register callback handlers for referrals
+    for handler in get_referrals_callback_handlers(_api_client, _token_storage):
         app.add_handler(handler)
 
     app.add_error_handler(error_handler)  # type: ignore[arg-type]
