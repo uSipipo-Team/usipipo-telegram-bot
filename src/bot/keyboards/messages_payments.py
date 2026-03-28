@@ -1,6 +1,30 @@
 """Mensajes para gestión de pagos y suscripciones (Payments & Subscriptions)."""
 
 
+class PaymentMenu:
+    """Mensajes del menú de pagos."""
+
+    MAIN_MENU = """
+💳 **Menú de Pagos**
+
+Selecciona el monto que deseas pagar:
+
+**Paquetes de Datos (Data Packages):**
+• Básico (10 GB) - 250 Stars ⭐ | $2.08 USDT 💰
+• Estándar (30 GB) - 600 Stars ⭐ | $5.00 USDT 💰
+• Avanzado (60 GB) - 960 Stars ⭐ | $8.00 USDT 💰
+• Premium (120 GB) - 1440 Stars ⭐ | $12.00 USDT 💰
+• Ilimitado (200 GB) - 1800 Stars ⭐ | $15.00 USDT 💰
+
+**Slots (Claves Extra):**
+• +1 Clave - 300 Stars ⭐ | $2.50 USDT 💰
+• +3 Claves - 700 Stars ⭐ | $5.83 USDT 💰
+• +5 Claves - 1000 Stars ⭐ | $8.33 USDT 💰
+
+_Pagos procesados vía TronDealer (TRC20) y Telegram Stars_
+"""
+
+
 class PaymentsMessages:
     """Mensajes para gestión de pagos y suscripciones."""
 

@@ -154,28 +154,35 @@ class SubscriptionsHandler:
                 plans = plans_response if isinstance(plans_response, list) else []
             except Exception as e:
                 logger.error(f"Error fetching plans: {e}")
-                # Fallback to default plans if endpoint fails
+                # Fallback to default plans if endpoint fails (legacy pricing: 1 USDT = 120 Stars)
                 plans = [
                     {
-                        "id": "basic",
-                        "name": "Plan Básico",
-                        "price": 9.99,
+                        "id": "one_month",
+                        "name": "1 Month",
+                        "price": 2.99,
                         "duration_days": 30,
                         "features": ["1 dispositivo", "Velocidad estándar", "Soporte básico"],
                     },
                     {
-                        "id": "standard",
-                        "name": "Plan Estándar",
-                        "price": 19.99,
-                        "duration_days": 30,
-                        "features": ["3 dispositivos", "Alta velocidad", "Soporte prioritario"],
+                        "id": "three_months",
+                        "name": "3 Months",
+                        "price": 7.49,
+                        "duration_days": 90,
+                        "features": ["1 dispositivo", "Velocidad estándar", "Soporte básico"],
                     },
                     {
-                        "id": "premium",
-                        "name": "Plan Premium",
-                        "price": 29.99,
-                        "duration_days": 30,
-                        "features": ["5 dispositivos", "Velocidad máxima", "Soporte 24/7"],
+                        "id": "six_months",
+                        "name": "6 Months",
+                        "price": 13.99,
+                        "duration_days": 180,
+                        "features": ["1 dispositivo", "Velocidad estándar", "Soporte básico"],
+                    },
+                    {
+                        "id": "twelve_months",
+                        "name": "12 Months",
+                        "price": 24.99,
+                        "duration_days": 365,
+                        "features": ["1 dispositivo", "Velocidad estándar", "Soporte básico"],
                     },
                 ]
 
@@ -230,28 +237,35 @@ class SubscriptionsHandler:
                 plans = plans_response if isinstance(plans_response, list) else []
                 plan = next((p for p in plans if p.get("id") == plan_id), None)
             except Exception:
-                # Fallback to default plans
+                # Fallback to default plans (legacy pricing: 1 USDT = 120 Stars)
                 default_plans = {
-                    "basic": {
-                        "id": "basic",
-                        "name": "Plan Básico",
-                        "price": 9.99,
+                    "one_month": {
+                        "id": "one_month",
+                        "name": "1 Month",
+                        "price": 2.99,
                         "duration_days": 30,
                         "features": ["1 dispositivo", "Velocidad estándar", "Soporte básico"],
                     },
-                    "standard": {
-                        "id": "standard",
-                        "name": "Plan Estándar",
-                        "price": 19.99,
-                        "duration_days": 30,
-                        "features": ["3 dispositivos", "Alta velocidad", "Soporte prioritario"],
+                    "three_months": {
+                        "id": "three_months",
+                        "name": "3 Months",
+                        "price": 7.49,
+                        "duration_days": 90,
+                        "features": ["1 dispositivo", "Velocidad estándar", "Soporte básico"],
                     },
-                    "premium": {
-                        "id": "premium",
-                        "name": "Plan Premium",
-                        "price": 29.99,
-                        "duration_days": 30,
-                        "features": ["5 dispositivos", "Velocidad máxima", "Soporte 24/7"],
+                    "six_months": {
+                        "id": "six_months",
+                        "name": "6 Months",
+                        "price": 13.99,
+                        "duration_days": 180,
+                        "features": ["1 dispositivo", "Velocidad estándar", "Soporte básico"],
+                    },
+                    "twelve_months": {
+                        "id": "twelve_months",
+                        "name": "12 Months",
+                        "price": 24.99,
+                        "duration_days": 365,
+                        "features": ["1 dispositivo", "Velocidad estándar", "Soporte básico"],
                     },
                 }
                 plan = default_plans.get(plan_id)
