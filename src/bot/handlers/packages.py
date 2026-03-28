@@ -813,11 +813,14 @@ class PackagesHandler:
 
         await self._safe_answer_query(query)
 
-        # Show simple back message
-        message = "🔙 *Volviendo al menú principal*..."
-        keyboard = PackagesKeyboard.back_to_main_menu()
+        from src.bot.keyboards.main_menu import MainMenuKeyboard
+        from src.bot.keyboards.main import BasicMessages
 
-        await self._safe_edit_message(query, context, message, keyboard)
+        # Show main menu with buttons
+        message = BasicMessages.BACK_TO_MAIN
+        keyboard = MainMenuKeyboard.main_menu()
+
+        await self._safe_edit_message(query, context, message, keyboard, parse_mode="Markdown")
 
 
 def get_packages_handlers(api_client: APIClient, token_storage: TokenStorage):

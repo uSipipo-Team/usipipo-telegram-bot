@@ -275,6 +275,11 @@ def create_application(token: str) -> Application:
     for handler in get_referrals_callback_handlers(_api_client, _token_storage):
         app.add_handler(handler)
 
+    # Register main menu handler
+    from src.bot.handlers.main_menu import show_main_menu
+    from telegram.ext import CallbackQueryHandler
+    app.add_handler(CallbackQueryHandler(show_main_menu, pattern="^main_menu$"))
+
     app.add_error_handler(error_handler)  # type: ignore[arg-type]
 
     logger.info("Bot handlers registered successfully")

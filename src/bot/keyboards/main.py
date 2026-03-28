@@ -17,3 +17,6 @@ class BasicMessages:
         "/operaciones - Menu de operaciones\n"
         "/info - Ver mi perfil y consumo\n"
     )
+
+    # NAVEGACIÓN
+    BACK_TO_MAIN = "🔙 *Volviendo al menú principal...*\n\n💡 Usa los botones para navegar."
