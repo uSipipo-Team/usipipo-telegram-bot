@@ -7,7 +7,11 @@ from telegram.ext import Application, CommandHandler, ContextTypes
 
 from src.bot.handlers.basic import BasicHandler
 from src.bot.handlers.auth import AuthHandler
-from src.bot.handlers.keys import KeysHandler, get_keys_callback_handlers
+from src.bot.handlers.keys import (
+    KeysHandler,
+    get_keys_callback_handlers,
+    get_keys_handlers,
+)
 from src.bot.handlers.operations import (
     OperationsHandler,
     get_operations_callback_handlers,
@@ -234,6 +238,10 @@ def create_application(token: str) -> Application:
     app.add_handler(CommandHandler("suscripcion", lambda u, c: _get_subscriptions_handler().show_subscription_menu(u, c)))
     app.add_handler(CommandHandler("planes", lambda u, c: _get_subscriptions_handler().view_plans(u, c)))
     app.add_handler(CommandHandler("renovar", lambda u, c: _get_subscriptions_handler().renew_subscription(u, c)))
+
+    # Register handlers for keys management (includes ConversationHandler for creation)
+    for handler in get_keys_handlers(_api_client, _token_storage):
+        app.add_handler(handler)
 
     # Register callback handlers for keys management
     for handler in get_keys_callback_handlers(_api_client, _token_storage):
