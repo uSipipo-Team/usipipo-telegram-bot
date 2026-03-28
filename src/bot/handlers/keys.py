@@ -596,8 +596,7 @@ class KeysHandler:
                     outline_count=str(len(outline_keys)),
                     wireguard_count=str(len(wireguard_keys)),
                     outline_usage=f"{sum(k.get('data_used_gb', 0) for k in outline_keys):.1f}",
-                    wireguard_usage=f"{
-                        sum(k.get('data_used_gb', 0) for k in wireguard_keys):.1f}",
+                    wireguard_usage=f"{sum(k.get('data_used_gb', 0) for k in wireguard_keys):.1f}",
                 )
 
                 keyboard = KeysKeyboard.back_to_menu()
