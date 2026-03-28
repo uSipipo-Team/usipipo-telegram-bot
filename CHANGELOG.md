@@ -7,6 +7,84 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.6.0] - 2026-03-28
+
+### 🎉 Data Packages Complete
+
+#### Added
+- **Data Packages System** - Buy GB data packages with flexible payment options
+- **Telegram Stars Integration** - In-app purchases via Telegram
+- **Crypto Payments** - USDT payments via TronDealer
+- **Data Slots Management** - Manage multiple data packages
+- **Data Usage Summary** - View consumption statistics
+
+- **New Commands**
+  - `/comprar` - Buy data packages
+  - `/paquetes` - View available packages (alias)
+  - `/packages` - View available packages (English alias)
+
+- **New Handlers** (`src/bot/handlers/packages.py`)
+  - `PackagesHandler` class with all package flows
+  - Package selection and display
+  - Stars payment flow with Telegram invoices
+  - Crypto payment flow with TronDealer integration
+  - Data slots management
+  - Data usage summary display
+
+- **New Keyboards** (`src/bot/keyboards/packages.py`)
+  - `PackagesKeyboard` class with inline keyboards
+  - Package selection menu
+  - Payment method selection (Stars/Crypto)
+  - Data summary display
+  - Slots management menu
+  - Payment success/failure keyboards
+
+- **New Messages** (`src/bot/keyboards/messages_packages.py`)
+  - `PackagesMessages` class with UI messages
+  - Package menu and details
+  - Payment instructions (Stars & Crypto)
+  - Data summary format
+  - Slots management messages
+  - Error and success messages
+
+- **Testing**
+  - 55 new unit tests for data packages
+  - Tests for all message templates and placeholders
+  - Tests for all keyboard layouts
+  - Tests for payment flows (Stars & Crypto)
+  - 160 tests total (160 passed)
+
+#### Changed
+- Updated `src/main.py` to register PackagesHandler and all handlers
+- Enhanced bot structure with data packages module
+
+#### Technical Details
+- **Backend Integration:**
+  - `GET /api/v1/data-packages` - List available packages
+  - `POST /api/v1/payments/stars` - Create Stars payment
+  - `POST /api/v1/payments/stars/activate` - Activate package after payment
+  - `POST /api/v1/payments/crypto` - Create crypto payment
+  - `GET /api/v1/payments/crypto/{id}/status` - Check payment status
+  - `GET /api/v1/users/me/data-summary` - Get user data usage
+  - `GET /api/v1/users/me/slots` - Get user's data slots
+  - `POST /api/v1/users/me/slots` - Buy extra slot
+- **Quality:** ruff (passed), pytest (160/160 passed), mypy (clean for new code)
+- **Files Created:** 4 (handlers, keyboards, messages, tests)
+- **Files Modified:** 1 (main.py)
+- **Lines Added:** 2,067
+
+#### Package Options
+```python
+[
+    {"id": "small", "name": "Pequeño", "data_gb": 5, "price_usd": 5.00, "price_stars": 600},
+    {"id": "medium", "name": "Mediano", "data_gb": 10, "price_usd": 10.00, "price_stars": 1200},
+    {"id": "large", "name": "Grande", "data_gb": 25, "price_usd": 25.00, "price_stars": 3000},
+    {"id": "xl", "name": "XL", "data_gb": 50, "price_usd": 50.00, "price_stars": 6000},
+]
+```
+
+---
+
 ## [0.5.0] - 2026-03-27
 
 ### 🎉 Consumption Billing Complete
