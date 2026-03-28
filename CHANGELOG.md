@@ -7,6 +7,100 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.0] - 2026-03-28
+
+### 🎉 Payments + Subscriptions Complete
+
+#### Added
+- **Payments System** - Crypto (TronDealer) + Telegram Stars payments
+- **Subscriptions System** - Plan management, activation, and renewal
+- **Payment History** - View user payment history with pagination
+
+- **New Commands**
+  - `/pago` - Payment menu
+  - `/pagar` - Payment menu (alias)
+  - `/historial` - View payment history
+  - `/suscripcion` - View subscription status
+  - `/planes` - View available plans
+  - `/renovar` - Renew subscription
+
+- **New Handlers** (`src/bot/handlers/payments.py`)
+  - `PaymentsHandler` class with all payment flows
+  - Crypto payment via TronDealer
+  - Stars payment via Telegram invoices
+  - Payment history display
+
+- **New Handlers** (`src/bot/handlers/subscriptions.py`)
+  - `SubscriptionsHandler` class with all subscription flows
+  - Plan selection and display
+  - Subscription activation
+  - Subscription renewal
+  - Status display
+
+- **New Keyboards** (`src/bot/keyboards/payments.py`, `subscriptions.py`)
+  - Payment method selection (Crypto/Stars)
+  - Crypto amount selection ($10, $25, $50, $100)
+  - Stars amount selection
+  - Payment history pagination
+  - Plans list and selection
+  - Subscription status menu
+
+- **New Messages** (`src/bot/keyboards/messages_payments.py`, `messages_subscriptions.py`)
+  - Payment instructions (Crypto & Stars)
+  - Payment success/failure messages
+  - Plan details and features
+  - Subscription status messages
+  - Activation/renewal confirmations
+
+- **Testing**
+  - 103 new unit tests (45 payments + 58 subscriptions)
+  - Tests for all message templates and placeholders
+  - Tests for all keyboard layouts
+  - Tests for payment flows (Crypto & Stars)
+  - 263 tests total (263 passed)
+
+#### Changed
+- Updated `src/main.py` to register PaymentsHandler and SubscriptionsHandler
+- Enhanced bot structure with payments and subscriptions modules
+
+#### Technical Details
+- **Backend Integration:**
+  - `POST /api/v1/payments/crypto` - Create crypto payment
+  - `POST /api/v1/payments/stars` - Create Stars payment
+  - `GET /api/v1/payments/history` - Get payment history
+  - `GET /api/v1/subscriptions/me` - Get user subscription
+  - `GET /api/v1/subscriptions/plans` - List available plans
+  - `POST /api/v1/subscriptions/activate` - Activate subscription
+  - `POST /api/v1/subscriptions/renew` - Renew subscription
+- **Quality:** ruff (passed), pytest (263/263 passed), mypy (clean for new code)
+- **Files Created:** 8 (handlers, keyboards, messages, tests)
+- **Files Modified:** 1 (main.py)
+- **Lines Added:** 3,726
+
+#### Payment Methods
+```python
+# Crypto (USDT via TronDealer)
+- $10, $25, $50, $100 amounts
+- TronDealer webhook integration
+- Automatic payment confirmation
+
+# Telegram Stars
+- 600, 1200, 3000, 6000 Stars
+- Telegram invoice integration
+- Pre-checkout validation
+```
+
+#### Subscription Plans
+```python
+[
+    {"id": "basic", "name": "Basic", "price_usd": 9.99, "duration_days": 30},
+    {"id": "standard", "name": "Standard", "price_usd": 19.99, "duration_days": 30},
+    {"id": "premium", "name": "Premium", "price_usd": 29.99, "duration_days": 30},
+]
+```
+
+---
+
 ## [0.6.0] - 2026-03-28
 
 ### 🎉 Data Packages Complete
