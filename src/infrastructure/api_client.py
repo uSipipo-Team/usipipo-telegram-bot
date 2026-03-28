@@ -41,19 +41,19 @@ class APIClient:
             )
         return self._client
 
-    async def get(self, endpoint: str, params: Optional[dict] = None) -> dict[str, Any]:
+    async def get(self, endpoint: str, params: Optional[dict] = None, headers: Optional[dict] = None) -> dict[str, Any]:
         """Realiza una petición GET al backend."""
         client = await self._get_client()
         logger.debug(f"GET {endpoint}")
-        response = await client.get(endpoint, params=params)
+        response = await client.get(endpoint, params=params, headers=headers)
         response.raise_for_status()
         return response.json()
 
-    async def post(self, endpoint: str, data: Optional[dict] = None) -> dict[str, Any]:
+    async def post(self, endpoint: str, data: Optional[dict] = None, headers: Optional[dict] = None) -> dict[str, Any]:
         """Realiza una petición POST al backend."""
         client = await self._get_client()
         logger.debug(f"POST {endpoint}")
-        response = await client.post(endpoint, json=data)
+        response = await client.post(endpoint, json=data, headers=headers)
         response.raise_for_status()
         return response.json()
 

@@ -7,6 +7,82 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.5.0] - 2026-03-27
+
+### 🎉 Consumption Billing Complete
+
+#### Added
+- **Consumption Billing System**
+  - Pay-as-you-go consumption mode
+  - 30-day billing cycles
+  - Dynamic pricing ($0.25/GB)
+  - Invoice generation with payment methods
+
+- **New Commands**
+  - `/consumo` - Show consumption menu (inactive/active/debt states)
+  - `/activar` - Activate consumption mode (2-step confirmation flow)
+  - `/cancelar` - Cancel consumption mode (with/without debt summary)
+  - `/factura` - View invoices with pagination
+
+- **New Handlers** (`src/bot/handlers/consumption.py`)
+  - `ConsumptionHandler` class with all consumption flows
+  - Menu with state-aware UI (inactive/active/debt)
+  - Activation flow with terms acceptance
+  - Cancellation flow with debt summary
+  - Status view with consumption stats (GB, cost, days)
+  - Invoice listing with pagination
+
+- **New Keyboards** (`src/bot/keyboards/consumption.py`)
+  - `ConsumptionKeyboard` class with 12 inline keyboard layouts
+  - State-aware main menu (inactive/active/debt)
+  - Activation confirmation and success keyboards
+  - Cancellation confirmation (with/without debt)
+  - Invoice list with pagination controls
+  - Back navigation keyboards
+
+- **New Messages** (`src/bot/keyboards/messages_consumption.py`)
+  - `ConsumptionMessages` class with 7 nested message categories
+  - Menu messages (INACTIVE_STATE, ACTIVE_STATE, DEBT_STATE)
+  - Activation terms and conditions with pricing
+  - Cancellation summary messages
+  - Status display with consumption stats
+  - Invoice list and payment messages
+  - Comprehensive error messages
+
+- **Testing**
+  - 45 new unit tests for consumption billing
+  - Tests for all message templates and placeholders
+  - Tests for all keyboard layouts
+  - Tests for handler initialization and authentication
+  - 150 tests total (150 passed)
+
+#### Changed
+- Updated `src/main.py` to register ConsumptionHandler and callback handlers
+- Enhanced `src/infrastructure/api_client.py` with headers support for GET/POST
+- Updated `src/infrastructure/config.py` with consumption pricing constants
+
+#### Technical Details
+- **Backend Integration:**
+  - `GET /api/v1/consumption/status` - Get consumption status
+  - `GET /api/v1/consumption/status/can_activate` - Check activation eligibility
+  - `POST /api/v1/consumption/activate` - Activate consumption mode
+  - `GET /api/v1/consumption/status/can_cancel` - Check cancellation eligibility
+  - `POST /api/v1/consumption/cancel` - Cancel consumption mode
+  - `GET /api/v1/consumption/invoices/user/me` - Get user invoices with pagination
+- **Quality:** ruff (passed), pytest (150/150 passed), mypy (clean for new code)
+- **Files Created:** 4 (handlers, keyboards, messages, tests)
+- **Files Modified:** 3 (main.py, api_client.py, config.py)
+- **Lines Added:** 1,874
+
+#### Configuration
+```python
+# Consumption Pricing
+CONSUMPTION_PRICE_PER_GB_USD = 0.25
+CONSUMPTION_PRICE_PER_MB_USD = 0.000244140625  # 0.25 / 1024
+```
+
+---
+
 ## [0.4.0] - 2026-03-27
 
 ### 🎉 Operations + Profile Complete
