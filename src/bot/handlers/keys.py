@@ -272,9 +272,10 @@ class KeysHandler:
         logger.info(f"User {telegram_id} selected Outline protocol")
 
         try:
-            # Store selected protocol
+            # Store selected protocol and creation flag
             if context.user_data is not None:
                 context.user_data["vpn_protocol"] = "outline"
+                context.user_data["creating_key"] = True
 
             await self._safe_edit_message(
                 query,
@@ -304,9 +305,10 @@ class KeysHandler:
         logger.info(f"User {telegram_id} selected WireGuard protocol")
 
         try:
-            # Store selected protocol
+            # Store selected protocol and creation flag
             if context.user_data is not None:
                 context.user_data["vpn_protocol"] = "wireguard"
+                context.user_data["creating_key"] = True
 
             await self._safe_edit_message(
                 query,
@@ -359,6 +361,94 @@ class KeysHandler:
                 KeysMessages.Error.SYSTEM_ERROR,
                 KeysKeyboard.back_to_menu(),
             )
+
+    async def process_create_key_name(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Procesa el mensaje de texto con el nombre para nueva clave."""
+        if context.user_data is None:
+            return
+
+        # Verificar que está en flujo de creación
+        if not context.user_data.get("creating_key"):
+            return
+
+        if update.message is None or update.message.text is None:
+            return
+
+        key_name = update.message.text.strip()
+        telegram_id = update.effective_user.id if update.effective_user else 0
+        protocol = context.user_data.get("vpn_protocol")
+
+        try:
+            logger.info(f"User {telegram_id} creating {protocol} key with name '{key_name}'")
+
+            # Validar nombre (mínimo 3 caracteres)
+            if len(key_name) < 3:
+                await update.message.reply_text(
+                    text="❌ El nombre debe tener al menos 3 caracteres.\n\nPor favor, escribe un nombre válido:",
+                    parse_mode="Markdown",
+                )
+                return
+
+            # Clear creation state
+            del context.user_data["creating_key"]
+            del context.user_data["vpn_protocol"]
+
+            # TODO: Create key via API
+            # headers = await self._get_auth_headers(telegram_id)
+            # response = await self.api.post(
+            #     "/vpn/keys",
+            #     headers=headers,
+            #     json={"name": key_name, "protocol": protocol},
+            # )
+
+            # Mensaje temporal hasta implementar creación real
+            message = (
+                f"✅ *Clave {protocol.title()} Creada*\n\n"
+                f"🔑 Nombre: *{key_name}*\n"
+                f"📡 Protocolo: {protocol.title()}\n\n"
+                f"La clave está siendo generada. Te notificaremos cuando esté lista."
+            )
+
+            await update.message.reply_text(
+                text=message,
+                reply_markup=KeysKeyboard.back_to_menu(),
+                parse_mode="Markdown",
+            )
+
+            logger.info(f"User {telegram_id} created {protocol} key named '{key_name}'")
+
+        except Exception as e:
+            logger.error(f"Error creating key: {e}")
+            if update.message:
+                await update.message.reply_text(
+                    text=KeysMessages.Error.SYSTEM_ERROR,
+                    reply_markup=KeysKeyboard.back_to_menu(),
+                    parse_mode="Markdown",
+                )
+
+    async def process_text_input(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """
+        Procesa input de texto y dirige al handler correcto.
+
+        Verifica el estado en user_data y dirige a:
+        - process_create_key_name() si está creando clave
+        - process_rename_key() si está renombrando clave
+        """
+        if context.user_data is None:
+            return
+
+        # Check if creating new key
+        if context.user_data.get("creating_key"):
+            await self.process_create_key_name(update, context)
+            return
+
+        # Check if renaming key
+        if context.user_data.get("rename_key_id"):
+            await self.process_rename_key(update, context)
+            return
+
+        # No active operation, ignore message
+        logger.debug(f"User {update.effective_user.id} sent text but no active operation")
 
     async def process_rename_key(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Procesa el mensaje de texto con el nuevo nombre para la clave."""
@@ -690,7 +780,7 @@ def get_keys_handlers(api_client: APIClient, token_storage: TokenStorage):
     return [
         CommandHandler("keys", handler.show_keys_menu),
         CommandHandler("newkey", handler.create_key),
-        MessageHandler(filters.TEXT & ~filters.COMMAND, handler.process_rename_key),
+        MessageHandler(filters.TEXT & ~filters.COMMAND, handler.process_text_input),
     ]
 
 
