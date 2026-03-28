@@ -208,3 +208,20 @@ class KeysKeyboard:
             [InlineKeyboardButton("🔙 Volver al Menú Principal", callback_data="main_menu")]
         ]
         return InlineKeyboardMarkup(keyboard)
+
+    @staticmethod
+    def protocol_selection() -> InlineKeyboardMarkup:
+        """
+        Teclado para selección de protocolo VPN.
+
+        Returns:
+            InlineKeyboardMarkup: Teclado con botones Outline y WireGuard
+        """
+        keyboard = [
+            [
+                InlineKeyboardButton("🌐 Outline", callback_data="vpn_create_outline"),
+                InlineKeyboardButton("🔒 WireGuard", callback_data="vpn_create_wireguard"),
+            ],
+            [InlineKeyboardButton("🔙 Cancelar", callback_data="vpn_keys_menu")],
+        ]
+        return InlineKeyboardMarkup(keyboard)

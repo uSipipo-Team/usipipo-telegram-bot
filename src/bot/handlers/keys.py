@@ -241,22 +241,82 @@ class KeysHandler:
         await self._safe_answer_query(query)
         telegram_id = update.effective_user.id if update.effective_user else 0
 
-        logger.info(f"User {telegram_id} creating new key")
+        logger.info(f"User {telegram_id} starting key creation flow")
 
         try:
             await self._safe_edit_message(
                 query,
                 context,
                 KeysMessages.CREATE_KEY_PROMPT,
-                None,
+                KeysKeyboard.protocol_selection(),
             )
-
-            # Store state for next step
-            if context.user_data is not None:
-                context.user_data["creating_key"] = True
 
         except Exception as e:
             logger.error(f"Error starting key creation: {e}")
+            await self._safe_edit_message(
+                query,
+                context,
+                KeysMessages.Error.SYSTEM_ERROR,
+                KeysKeyboard.back_to_menu(),
+            )
+
+    async def select_outline_protocol(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Maneja selección de protocolo Outline."""
+        query = update.callback_query
+        if query is None:
+            return
+
+        await self._safe_answer_query(query)
+        telegram_id = update.effective_user.id if update.effective_user else 0
+
+        logger.info(f"User {telegram_id} selected Outline protocol")
+
+        try:
+            # Store selected protocol
+            if context.user_data is not None:
+                context.user_data["vpn_protocol"] = "outline"
+
+            await self._safe_edit_message(
+                query,
+                context,
+                KeysMessages.ENTER_KEY_NAME,
+                None,
+            )
+
+        except Exception as e:
+            logger.error(f"Error selecting Outline protocol: {e}")
+            await self._safe_edit_message(
+                query,
+                context,
+                KeysMessages.Error.SYSTEM_ERROR,
+                KeysKeyboard.back_to_menu(),
+            )
+
+    async def select_wireguard_protocol(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Maneja selección de protocolo WireGuard."""
+        query = update.callback_query
+        if query is None:
+            return
+
+        await self._safe_answer_query(query)
+        telegram_id = update.effective_user.id if update.effective_user else 0
+
+        logger.info(f"User {telegram_id} selected WireGuard protocol")
+
+        try:
+            # Store selected protocol
+            if context.user_data is not None:
+                context.user_data["vpn_protocol"] = "wireguard"
+
+            await self._safe_edit_message(
+                query,
+                context,
+                KeysMessages.ENTER_KEY_NAME,
+                None,
+            )
+
+        except Exception as e:
+            logger.error(f"Error selecting WireGuard protocol: {e}")
             await self._safe_edit_message(
                 query,
                 context,
@@ -644,6 +704,8 @@ def get_keys_callback_handlers(api_client: APIClient, token_storage: TokenStorag
         CallbackQueryHandler(handler.show_key_details, pattern="^vpn_key_details_"),
         CallbackQueryHandler(handler.show_key_statistics, pattern="^vpn_key_stats$"),
         CallbackQueryHandler(handler.create_key, pattern="^vpn_create_key$"),
+        CallbackQueryHandler(handler.select_outline_protocol, pattern="^vpn_create_outline$"),
+        CallbackQueryHandler(handler.select_wireguard_protocol, pattern="^vpn_create_wireguard$"),
         CallbackQueryHandler(handler.rename_key, pattern="^vpn_rename_"),
         CallbackQueryHandler(handler.delete_key, pattern="^vpn_delete_"),
         CallbackQueryHandler(handler.confirm_delete_key, pattern="^vpn_confirm_delete_"),

@@ -144,9 +144,10 @@ class KeysMessages:
 
     CREATE_KEY_PROMPT = (
         "➕ *Nueva Clave VPN*\n\n"
-        "Elige el tipo de conexión que deseas crear:\n\n"
+        "Elige el protocolo que deseas crear:\n\n"
         "🌐 *Outline* - Ideal para móviles, fácil configuración\n"
-        "🔒 *WireGuard* - Máxima velocidad, soporte nativo"
+        "🔒 *WireGuard* - Máxima velocidad, soporte nativo\n\n"
+        "Selecciona una opción:"
     )
 
     ENTER_KEY_NAME = (
