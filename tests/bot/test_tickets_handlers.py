@@ -478,3 +478,58 @@ class TestViewTicketCallback:
         assert "📂 *Categoría:* technical" in message_text
         assert "📅 *Creado:* 2026-03-28" in message_text
         assert "💬 *Último mensaje:* Sin mensajes aún" in message_text
+
+
+class TestCloseTicketCallback:
+    """Tests for the close ticket callback."""
+
+    @pytest.mark.asyncio
+    async def test_close_ticket_callback(self):
+        """close_ticket_callback calls PATCH /tickets/{id}/close."""
+        from src.bot.handlers.tickets import TicketsHandler
+
+        mock_api = AsyncMock()
+        mock_storage = AsyncMock()
+        mock_storage.is_authenticated = AsyncMock(return_value=True)
+        mock_storage.get = AsyncMock(return_value={'access_token': 'test_token'})
+
+        # Mock API response
+        mock_response = {
+            "id": "uuid-123",
+            "ticket_number": "TKT-001",
+            "status": "CLOSED"
+        }
+        mock_api.api_client.patch = AsyncMock(return_value=mock_response)
+
+        handler = TicketsHandler(mock_api, mock_storage)
+
+        # Mock update with callback query
+        mock_update = MagicMock()
+        mock_update.effective_user = MagicMock()
+        mock_update.effective_user.id = 12345
+        mock_update.callback_query = AsyncMock()
+        mock_update.callback_query.data = "ticket_close:uuid-123"
+        mock_update.callback_query.answer = AsyncMock()
+        mock_update.callback_query.edit_message_text = AsyncMock()
+
+        mock_context = MagicMock()
+
+        await handler.close_ticket_callback(mock_update, mock_context)
+
+        # Should check authentication
+        mock_storage.is_authenticated.assert_called_once_with(12345)
+        # Should call API to close ticket
+        mock_api.api_client.patch.assert_called_once_with(
+            "/tickets/uuid-123/close",
+            headers={"Authorization": "Bearer test_token"},
+            json={},
+        )
+        # Should edit message with ticket closed confirmation
+        mock_update.callback_query.edit_message_text.assert_called_once()
+        call_args = mock_update.callback_query.edit_message_text.call_args
+        message_text = call_args.kwargs.get('text') or call_args[0][0]
+
+        # Verify message contains ticket closed info
+        assert "✅ *Ticket Cerrado*" in message_text
+        assert "TKT-001" in message_text
+        assert "ha sido cerrado" in message_text
