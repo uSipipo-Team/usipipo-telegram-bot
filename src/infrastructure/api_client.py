@@ -57,6 +57,23 @@ class APIClient:
         response.raise_for_status()
         return response.json()
 
+    async def delete(self, endpoint: str, headers: Optional[dict] = None) -> dict[str, Any]:
+        """
+        Realiza una petición DELETE al backend.
+
+        Args:
+            endpoint: Endpoint de la API (sin base_url)
+            headers: Headers opcionales (ej: Authorization)
+
+        Returns:
+            dict: {"success": True} si la operación fue exitosa
+        """
+        client = await self._get_client()
+        logger.debug(f"DELETE {endpoint}")
+        response = await client.delete(endpoint, headers=headers)
+        response.raise_for_status()
+        return {"success": True}
+
     async def close(self) -> None:
         """Cierra el cliente HTTP."""
         if self._client and not self._client.is_closed:
