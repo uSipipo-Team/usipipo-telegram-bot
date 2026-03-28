@@ -7,6 +7,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.1] - 2026-03-28
+
+### 🔧 Pricing Corrections (Legacy Alignment)
+
+#### Fixed
+- **Data Packages Pricing** - Corrected to match legacy bot values
+  - Básico: 10GB - 250 Stars ($2.08 USDT) ← was 5GB/600 Stars
+  - Estándar: 30GB - 600 Stars ($5.00 USDT) ← was 10GB/1200 Stars
+  - Avanzado: 60GB - 960 Stars ($8.00 USDT) ← was 25GB/3000 Stars
+  - Premium: 120GB - 1440 Stars ($12.00 USDT) ← was 50GB/6000 Stars
+  - Ilimitado: 200GB - 1800 Stars ($15.00 USDT) ← NEW
+
+- **Subscriptions Pricing** - Corrected to match legacy bot values
+  - 1 Month: 360 Stars ($2.99 USDT)
+  - 3 Months: 900 Stars ($7.49 USDT)
+  - 6 Months: 1680 Stars ($13.99 USDT)
+  - 12 Months: 3000 Stars ($24.99 USDT)
+
+#### Added
+- **STARS_PER_USDT Constant** - Exchange rate configuration
+  - `STARS_PER_USDT = 120` (1 USDT = 120 Telegram Stars)
+  - Added in `src/infrastructure/config.py`
+
+- **Pricing Documentation** - Comprehensive pricing reference
+  - Created `/home/mowgli/usipipo/usipipo-docs/apis/pricing-structure.md`
+  - 530 lines of pricing tables, formulas, and comparisons
+
+#### Changed
+- **Payment Keyboards** - Updated with correct USDT amounts
+- **Payment Messages** - Updated menu with both Stars and USDT prices
+- **packages.py** - Updated fallback packages with legacy pricing
+- **subscriptions.py** - Updated fallback plans with legacy pricing
+
+#### Technical Details
+- **Exchange Rate:** 1 USDT = 120 Telegram Stars
+- **Formula:** USDT = Stars / 120
+- **Files Modified:** 5 (packages.py, subscriptions.py, payments.py, messages_payments.py, config.py)
+- **Documentation:** 1 new file (530 lines)
+- **Lines Changed:** 108 insertions, 65 deletions
+
+---
+
 ## [0.7.0] - 2026-03-28
 
 ### 🎉 Payments + Subscriptions Complete
