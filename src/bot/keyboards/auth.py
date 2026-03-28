@@ -37,10 +37,8 @@ class AuthMessages:
     # /me command
     ME_AUTHENTICATED = (
         "👤 <b>Tu Perfil</b>\n\n"
-        "ID: {user_id}\n"
-        "Telegram: @{username}\n"
-        "Plan: {plan_name}\n"
-        "Keys activas: {keys_count}/{max_keys}"
+        "ID: <code>{user_id}</code>\n"
+        "Telegram: @{username}"
     )
     
     ME_NOT_AUTHENTICATED = (
