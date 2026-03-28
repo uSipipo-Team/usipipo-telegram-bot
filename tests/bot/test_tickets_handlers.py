@@ -156,3 +156,137 @@ class TestTicketsHandlerHelpers:
             reply_markup=test_markup,
             parse_mode="Markdown",
         )
+
+
+class TestListTicketsCommand:
+    """Tests for the /tickets command (list_tickets method)."""
+
+    @pytest.mark.asyncio
+    async def test_list_tickets_not_authenticated(self):
+        """list_tickets shows error when user not authenticated."""
+        from src.bot.handlers.tickets import TicketsHandler
+
+        mock_api = AsyncMock()
+        mock_storage = AsyncMock()
+        mock_storage.is_authenticated = AsyncMock(return_value=False)
+
+        handler = TicketsHandler(mock_api, mock_storage)
+
+        mock_update = MagicMock()
+        mock_update.effective_user = MagicMock()
+        mock_update.effective_user.id = 12345
+        mock_update.message = AsyncMock()
+        mock_update.message.reply_text = AsyncMock()
+
+        mock_context = MagicMock()
+
+        await handler.list_tickets(mock_update, mock_context)
+
+        # Should check authentication
+        mock_storage.is_authenticated.assert_called_once_with(12345)
+        # Should show error message
+        mock_update.message.reply_text.assert_called_once()
+        # Verify it's the NOT_AUTHORIZED message
+        call_args = mock_update.message.reply_text.call_args
+        assert "❌ No tenés permiso" in call_args[0][0]
+
+    @pytest.mark.asyncio
+    async def test_list_tickets_empty(self):
+        """list_tickets shows NO_TICKETS message when no tickets."""
+        from src.bot.handlers.tickets import TicketsHandler
+
+        mock_api = AsyncMock()
+        mock_storage = AsyncMock()
+        mock_storage.is_authenticated = AsyncMock(return_value=True)
+        mock_storage.get = AsyncMock(return_value={'access_token': 'test_token'})
+
+        # Mock API to return empty list
+        mock_api.api_client.get = AsyncMock(return_value=[])
+
+        handler = TicketsHandler(mock_api, mock_storage)
+
+        mock_update = MagicMock()
+        mock_update.effective_user = MagicMock()
+        mock_update.effective_user.id = 12345
+        mock_update.message = AsyncMock()
+        mock_update.message.reply_text = AsyncMock()
+
+        mock_context = MagicMock()
+
+        await handler.list_tickets(mock_update, mock_context)
+
+        # Should check authentication
+        mock_storage.is_authenticated.assert_called_once_with(12345)
+        # Should call API
+        mock_api.api_client.get.assert_called_once_with(
+            "/tickets",
+            headers={"Authorization": "Bearer test_token"}
+        )
+        # Should show NO_TICKETS message
+        mock_update.message.reply_text.assert_called_once()
+        call_args = mock_update.message.reply_text.call_args
+        assert "📭 *No Tenés Tickets*" in call_args[0][0]
+
+    @pytest.mark.asyncio
+    async def test_list_tickets_with_data(self):
+        """list_tickets displays tickets list with keyboard when authenticated."""
+        from src.bot.handlers.tickets import TicketsHandler
+
+        mock_api = AsyncMock()
+        mock_storage = AsyncMock()
+        mock_storage.is_authenticated = AsyncMock(return_value=True)
+        mock_storage.get = AsyncMock(return_value={'access_token': 'test_token'})
+
+        # Mock API to return tickets list
+        mock_tickets = [
+            {
+                "id": "uuid-1",
+                "ticket_number": "TKT-001",
+                "status": "OPEN",
+                "subject": "VPN connection issue",
+                "category": "technical",
+                "created_at": "2026-03-28T10:00:00Z"
+            },
+            {
+                "id": "uuid-2",
+                "ticket_number": "TKT-002",
+                "status": "RESPONDED",
+                "subject": "Payment problem",
+                "category": "billing",
+                "created_at": "2026-03-27T15:30:00Z"
+            }
+        ]
+        mock_api.api_client.get = AsyncMock(return_value=mock_tickets)
+
+        handler = TicketsHandler(mock_api, mock_storage)
+
+        mock_update = MagicMock()
+        mock_update.effective_user = MagicMock()
+        mock_update.effective_user.id = 12345
+        mock_update.message = AsyncMock()
+        mock_update.message.reply_text = AsyncMock()
+
+        mock_context = MagicMock()
+
+        await handler.list_tickets(mock_update, mock_context)
+
+        # Should check authentication
+        mock_storage.is_authenticated.assert_called_once_with(12345)
+        # Should call API
+        mock_api.api_client.get.assert_called_once_with(
+            "/tickets",
+            headers={"Authorization": "Bearer test_token"}
+        )
+        # Should send message with tickets list
+        mock_update.message.reply_text.assert_called_once()
+        call_args = mock_update.message.reply_text.call_args
+        message_text = call_args.kwargs.get('text') or call_args[0][0] if call_args[0] else call_args.kwargs['text']
+        
+        # Verify message contains ticket info
+        assert "🎫 *Tus Tickets*" in message_text
+        assert "TKT-001" in message_text
+        assert "TKT-002" in message_text
+        assert "VPN connection issue" in message_text
+        assert "Payment problem" in message_text
+        # Verify keyboard was included
+        assert 'reply_markup' in call_args.kwargs or len(call_args) > 1
