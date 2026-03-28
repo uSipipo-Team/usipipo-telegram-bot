@@ -25,10 +25,21 @@ class BasicHandler:
         await update.message.reply_text(text=BasicMessages.START_TEXT)
 
     async def help_handler(self, update: Update, _context: ContextTypes.DEFAULT_TYPE):
-        """Muestra la lista de comandos disponibles."""
+        """Muestra la lista de comandos disponibles y opción de soporte."""
         if update.message is None:
             logger.warning("help_handler called with no message")
             return
         user = update.effective_user
         logger.info(f"User {user.id if user else 'unknown'} requested help")
-        await update.message.reply_text(text=BasicMessages.HELP_TEXT, parse_mode="Markdown")
+        
+        # Send help message with support info
+        await update.message.reply_text(
+            text=BasicMessages.HELP_TEXT,
+            parse_mode="Markdown",
+        )
+        
+        # Send support help message
+        await update.message.reply_text(
+            text=BasicMessages.SUPPORT_HELP,
+            parse_mode="Markdown",
+        )

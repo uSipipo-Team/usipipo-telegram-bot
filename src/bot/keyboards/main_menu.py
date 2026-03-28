@@ -12,7 +12,7 @@ class MainMenuKeyboard:
         Retorna teclado principal con botones de navegación.
 
         Returns:
-            InlineKeyboardMarkup: Teclado con botones VPN, Operaciones, Datos, Ayuda
+            InlineKeyboardMarkup: Teclado con botones VPN, Operaciones, Datos, Ayuda, Soporte
         """
         keyboard = [
             # Fila 1: Claves VPN
@@ -25,8 +25,11 @@ class MainMenuKeyboard:
                 InlineKeyboardButton("⚙️ Operaciones", callback_data="operations_menu"),
                 InlineKeyboardButton("💾 Mis Datos", callback_data="show_usage"),
             ],
-            # Fila 3: Ayuda
-            [InlineKeyboardButton("❓ Ayuda", callback_data="help")],
+            # Fila 3: Ayuda y Soporte
+            [
+                InlineKeyboardButton("❓ Ayuda", callback_data="help"),
+                InlineKeyboardButton("💬 Soporte Técnico", url="https://t.me/usipipo-support-bot?start=help_from_main"),
+            ],
         ]
         return InlineKeyboardMarkup(keyboard)
 
@@ -56,9 +59,12 @@ class MainMenuKeyboard:
                     InlineKeyboardButton("⚙️ Operaciones", callback_data="operations_menu"),
                     InlineKeyboardButton("💾 Mis Datos", callback_data="show_usage"),
                 ],
-                # Fila 3: Ayuda
-                [InlineKeyboardButton("❓ Ayuda", callback_data="help")],
+                # Fila 3: Ayuda y Soporte
+                [
+                    InlineKeyboardButton("❓ Ayuda", callback_data="help"),
+                    InlineKeyboardButton("💬 Soporte Técnico", url="https://t.me/usipipo-support-bot?start=help_from_main"),
+                ],
             ]
             return InlineKeyboardMarkup(keyboard)
-        
+
         return MainMenuKeyboard.main_menu()

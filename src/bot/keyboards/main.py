@@ -20,3 +20,18 @@ class BasicMessages:
 
     # NAVEGACIÓN
     BACK_TO_MAIN = "🔙 *Volviendo al menú principal...*\n\n💡 Usa los botones para navegar."
+
+    # SOPORTE TÉCNICO
+    SUPPORT_HELP = (
+        "👋 *¡Hola! Bienvenido al Soporte Técnico de uSipipo* ✨\n\n"
+        "Para brindarte la mejor atención, por favor proporciona:\n\n"
+        "📸 *Captura de pantalla* del error o problema\n"
+        "🔑 *Tu clave VPN* (entregada en @usipipobot)\n"
+        "📱 *Dispositivo* donde ocurre el problema\n"
+        "🌐 *Aplicación VPN* que utilizas (Outline/WireGuard)\n"
+        "📝 *Descripción detallada* del problema\n\n"
+        "💡 *Tip:* Puedes verificar el estado de tu conexión en:\n"
+        "• speedtest.net\n"
+        "• check-host.net\n\n"
+        "🔹 *Nuestro equipo te responderá lo antes posible*"
+    )
