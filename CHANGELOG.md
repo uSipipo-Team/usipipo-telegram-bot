@@ -7,6 +7,70 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.8.0] - 2026-03-28
+
+### Added
+- **Referrals System** - Invite friends, earn credits
+  - Commands: `/referidos`, `/invitar`
+  - Referral stats display with credits
+  - Referral link generation (t.me/usipipobot?start={code})
+  - Credit redemption (10 credits = 1 GB)
+  
+- **Tickets System** - Support ticket management
+  - Commands: `/tickets`, `/nuevoticket`, `/mistickets`
+  - Ticket creation with category selection (technical, billing, services, general)
+  - Ticket list with status indicators (🟢 OPEN, 🟡 RESPONDED, 🔵 RESOLVED, 🔴 CLOSED)
+  - Ticket detail view
+  - Ticket closure
+
+- **Referrals Components**
+  - `ReferralsHandler` - Main handler with show_referrals, get_referral_link, redeem_credits_callback, apply_code_callback
+  - `ReferralsKeyboard` - Inline keyboards: menu(), redeem_confirmation(), apply_code(), back_to_menu()
+  - `ReferralsMessages` - UI messages: REFERRAL_STATS, INVITE_LINK, REDEEM_CONFIRMATION, APPLY_SUCCESS
+
+- **Tickets Components**
+  - `TicketsHandler` - Main handler with list_tickets, create_ticket, view_ticket_callback, close_ticket_callback, select_category_callback
+  - `TicketsKeyboard` - Inline keyboards: tickets_list(), ticket_detail(), categories(), ticket_actions(), back_to_tickets()
+  - `TicketsMessages` - UI messages: TICKETS_LIST, TICKET_DETAIL, CREATE_TICKET, TICKET_CREATED, TICKET_CLOSED
+
+- **Tests**
+  - 32 new unit tests (15 tickets, 13 referrals, 4 keyboards/messages each)
+  - 4 integration tests (2 referrals, 2 tickets)
+  - Total: 323 tests (319 passed, 1 skipped, 3 pre-existing failures)
+
+- **Documentation**
+  - Design doc: `usipipo-docs/plans/telegram-bot/2026-03-28-phase-7-referrals-tickets-design.md`
+  - Flow docs: `usipipo-docs/flows/telegram-bot/referrals-flow.md`, `tickets-flow.md`
+  - Migration progress updated to 75% (68/92 files)
+
+### Backend Integration
+- GET /api/v1/referrals/me - Referral statistics
+- POST /api/v1/referrals/apply - Apply referral code
+- POST /api/v1/referrals/redeem - Redeem credits for data
+- POST /api/v1/tickets - Create support ticket
+- GET /api/v1/tickets - List user tickets
+- GET /api/v1/tickets/{id} - Get ticket with messages
+- PATCH /api/v1/tickets/{id}/close - Close ticket
+
+### Quality
+- 32 new tests (323 total)
+- Ruff clean
+- Mypy clean
+- Code review approved
+- Branch protection enabled
+
+### Files Created
+- `src/bot/handlers/referrals.py` (~400 lines)
+- `src/bot/handlers/tickets.py` (~500 lines)
+- `src/bot/keyboards/referrals.py` (~120 lines)
+- `src/bot/keyboards/messages_referrals.py` (~180 lines)
+- `src/bot/keyboards/tickets.py` (~150 lines)
+- `src/bot/keyboards/messages_tickets.py` (~220 lines)
+- `tests/bot/test_referrals_handlers.py` (13 tests)
+- `tests/bot/test_tickets_handlers.py` (15 tests)
+- `tests/integration/test_referrals_integration.py` (2 tests)
+- `tests/integration/test_tickets_integration.py` (2 tests)
+
 ## [0.7.1] - 2026-03-28
 
 ### 🔧 Pricing Corrections (Legacy Alignment)
