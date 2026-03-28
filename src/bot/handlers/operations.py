@@ -312,10 +312,10 @@ class OperationsHandler:
 
         await self._safe_answer_query(query)
 
-        from src.bot.keyboards.main import BasicMessages
         from src.bot.keyboards.keys import KeysKeyboard
 
-        message = BasicMessages.BACK_TO_MAIN
+        # Show simple back message
+        message = "🔙 *Volviendo al menú principal*..."
         keyboard = KeysKeyboard.back_to_main_menu()
 
         await self._safe_edit_message(query, context, message, keyboard)
