@@ -127,3 +127,37 @@ class TicketsHandler:
                     TicketsMessages.Error.SYSTEM_ERROR,
                     parse_mode="Markdown",
                 )
+
+    async def create_ticket(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Start ticket creation flow."""
+        if update.effective_user is None:
+            return
+
+        telegram_id = update.effective_user.id
+        logger.info(f"🎫 User {telegram_id} creating ticket")
+
+        try:
+            # Check authentication
+            if not await self.tokens.is_authenticated(telegram_id):
+                if update.message:
+                    await update.message.reply_text(
+                        TicketsMessages.Error.NOT_AUTHORIZED,
+                        parse_mode="Markdown",
+                    )
+                return
+
+            # Show category selection
+            if update.message:
+                await update.message.reply_text(
+                    text=TicketsMessages.Menu.CREATE_TICKET,
+                    reply_markup=TicketsKeyboard.categories(),
+                    parse_mode="Markdown",
+                )
+
+        except Exception as e:
+            logger.error(f"Error creating ticket: {e}")
+            if update.message:
+                await update.message.reply_text(
+                    TicketsMessages.Error.SYSTEM_ERROR,
+                    parse_mode="Markdown",
+                )

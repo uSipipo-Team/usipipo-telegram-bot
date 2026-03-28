@@ -290,3 +290,70 @@ class TestListTicketsCommand:
         assert "Payment problem" in message_text
         # Verify keyboard was included
         assert 'reply_markup' in call_args.kwargs or len(call_args) > 1
+
+
+class TestCreateTicketCommand:
+    """Tests for the /nuevoticket command (create_ticket method)."""
+
+    @pytest.mark.asyncio
+    async def test_create_ticket_shows_categories(self):
+        """create_ticket shows category selection keyboard when authenticated."""
+        from src.bot.handlers.tickets import TicketsHandler
+
+        mock_api = AsyncMock()
+        mock_storage = AsyncMock()
+        mock_storage.is_authenticated = AsyncMock(return_value=True)
+
+        handler = TicketsHandler(mock_api, mock_storage)
+
+        mock_update = MagicMock()
+        mock_update.effective_user = MagicMock()
+        mock_update.effective_user.id = 12345
+        mock_update.message = AsyncMock()
+        mock_update.message.reply_text = AsyncMock()
+
+        mock_context = MagicMock()
+
+        await handler.create_ticket(mock_update, mock_context)
+
+        # Should check authentication
+        mock_storage.is_authenticated.assert_called_once_with(12345)
+        # Should send message with category keyboard
+        mock_update.message.reply_text.assert_called_once()
+        call_args = mock_update.message.reply_text.call_args
+        
+        # Verify message contains CREATE_TICKET text
+        message_text = call_args.kwargs.get('text') or call_args[0][0] if call_args[0] else call_args.kwargs['text']
+        assert "🎫 *Crear Nuevo Ticket*" in message_text
+        assert "Por favor, seleccioná una categoría:" in message_text
+        # Verify keyboard was included
+        assert 'reply_markup' in call_args.kwargs or len(call_args) > 1
+
+    @pytest.mark.asyncio
+    async def test_create_ticket_not_authenticated(self):
+        """create_ticket shows error when user not authenticated."""
+        from src.bot.handlers.tickets import TicketsHandler
+
+        mock_api = AsyncMock()
+        mock_storage = AsyncMock()
+        mock_storage.is_authenticated = AsyncMock(return_value=False)
+
+        handler = TicketsHandler(mock_api, mock_storage)
+
+        mock_update = MagicMock()
+        mock_update.effective_user = MagicMock()
+        mock_update.effective_user.id = 12345
+        mock_update.message = AsyncMock()
+        mock_update.message.reply_text = AsyncMock()
+
+        mock_context = MagicMock()
+
+        await handler.create_ticket(mock_update, mock_context)
+
+        # Should check authentication
+        mock_storage.is_authenticated.assert_called_once_with(12345)
+        # Should show error message
+        mock_update.message.reply_text.assert_called_once()
+        # Verify it's the NOT_AUTHORIZED message
+        call_args = mock_update.message.reply_text.call_args
+        assert "❌ No tenés permiso" in call_args[0][0]
