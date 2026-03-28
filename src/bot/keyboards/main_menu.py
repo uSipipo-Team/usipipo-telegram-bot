@@ -17,8 +17,8 @@ class MainMenuKeyboard:
         keyboard = [
             # Fila 1: Claves VPN
             [
-                InlineKeyboardButton("🔑 Mis Claves VPN", callback_data="show_keys"),
-                InlineKeyboardButton("➕ Nueva Clave", callback_data="create_key"),
+                InlineKeyboardButton("🔑 Mis Claves VPN", callback_data="vpn_keys_menu"),
+                InlineKeyboardButton("➕ Nueva Clave", callback_data="vpn_create_key"),
             ],
             # Fila 2: Operaciones y Datos
             [
@@ -48,8 +48,8 @@ class MainMenuKeyboard:
                 [InlineKeyboardButton("🔧 Admin", callback_data="admin_panel")],
                 # Fila 1: Claves VPN
                 [
-                    InlineKeyboardButton("🔑 Mis Claves VPN", callback_data="show_keys"),
-                    InlineKeyboardButton("➕ Nueva Clave", callback_data="create_key"),
+                    InlineKeyboardButton("🔑 Mis Claves VPN", callback_data="vpn_keys_menu"),
+                    InlineKeyboardButton("➕ Nueva Clave", callback_data="vpn_create_key"),
                 ],
                 # Fila 2: Operaciones y Datos
                 [
