@@ -115,32 +115,33 @@ class AuthHandler:
         # Auto-refresh si es necesario
         if await self.tokens.needs_refresh(telegram_id):
             await self._refresh_tokens(telegram_id)
-        
+
         try:
             tokens = await self.tokens.get(telegram_id)
             if tokens is None:
                 if update.message:
-                    await update.message.reply_text(AuthMessages.ME_ERROR)
+                    await update.message.reply_text(AuthMessages.ME_NOT_AUTHENTICATED)
                 return
-                
-            response = await self.api.get("/users/me")
-            
+
+            # Get profile with auth headers
+            headers = {"Authorization": f"Bearer {tokens['access_token']}"}
+            response = await self.api.get("/users/me", headers=headers)
+
             username = update.effective_user.username or "N/A"
             message = AuthMessages.ME_AUTHENTICATED.format(
                 user_id=response.get("id", "N/A")[:8],
                 username=username,
-                plan_name=response.get("plan", "Free"),
-                keys_count=response.get("active_keys", 0),
-                max_keys=response.get("max_keys", 2),
             )
-            
+
             if update.message:
                 await update.message.reply_text(message, parse_mode="HTML")
-            
+
         except Exception as e:
             logger.error(f"Error al obtener perfil: {e}")
             if update.message:
-                await update.message.reply_text(AuthMessages.ME_ERROR)
+                await update.message.reply_text(
+                    text=f"{AuthMessages.ME_ERROR}\n\nDetalle: {str(e)[:100]}",
+                )
     
     async def unlink_handler(
         self,
