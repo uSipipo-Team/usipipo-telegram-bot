@@ -30,7 +30,6 @@ from src.bot.handlers.subscriptions import (
     SubscriptionsHandler,
     get_subscriptions_callback_handlers,
 )
-from src.bot.handlers.tickets import get_tickets_handlers
 from src.bot.handlers.referrals import (
     get_referrals_handlers,
     get_referrals_callback_handlers,
@@ -274,10 +273,6 @@ def create_application(token: str) -> Application:
 
     # Register callback handlers for referrals
     for handler in get_referrals_callback_handlers(_api_client, _token_storage):
-        app.add_handler(handler)
-
-    # Register command handlers for tickets
-    for handler in get_tickets_handlers(_api_client, _token_storage):
         app.add_handler(handler)
 
     app.add_error_handler(error_handler)  # type: ignore[arg-type]

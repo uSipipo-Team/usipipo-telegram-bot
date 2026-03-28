@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.0] - 2026-03-28
+
+### Removed
+- **Tickets System Migration** - Support tickets moved to dedicated @uSipipoSupport_Bot
+  - Removed commands: `/tickets`, `/nuevoticket`, `/mistickets`
+  - Users should now use @uSipipoSupport_Bot for all support ticket operations
+  - Support bot provides dedicated ticket management with same features
+
+- **Deleted Files**
+  - `src/bot/handlers/tickets.py` - Migrated to usipipo-support-bot
+  - `src/bot/keyboards/tickets.py` - Migrated to usipipo-support-bot
+  - `src/bot/keyboards/messages_tickets.py` - Migrated to usipipo-support-bot
+  - `tests/bot/test_tickets_handlers.py` - Migrated to usipipo-support-bot
+  - `tests/bot/test_tickets_keyboards.py` - Migrated to usipipo-support-bot
+  - `tests/bot/test_tickets_messages.py` - Migrated to usipipo-support-bot
+  - `tests/integration/test_tickets_integration.py` - Migrated to usipipo-support-bot
+
+### Changed
+- **Main Bot Focus** - Now focused on core VPN and payment features
+- **Support Separation** - Support tickets handled by dedicated bot for better organization
+- **Test Suite** - Reduced from 323 to ~290 tests (ticket tests migrated)
+
+### Migration Guide
+Users should:
+1. Use @usipipobot for VPN, payments, subscriptions, referrals
+2. Use @uSipipoSupport_Bot for support tickets and technical assistance
+
+### Technical Details
+- **Files Removed:** 7
+- **Lines Removed:** ~800
+- **Tests Migrated:** 58 tests to usipipo-support-bot
+- **Breaking Change:** Yes - ticket commands no longer available
+
 ## [0.8.0] - 2026-03-28
 
 ### Added
