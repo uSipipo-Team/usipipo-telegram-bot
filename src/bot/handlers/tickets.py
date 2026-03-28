@@ -161,3 +161,15 @@ class TicketsHandler:
                     TicketsMessages.Error.SYSTEM_ERROR,
                     parse_mode="Markdown",
                 )
+
+
+def get_tickets_handlers(api_client: APIClient, token_storage: TokenStorage):
+    """Get tickets command handlers."""
+    from telegram.ext import CommandHandler
+
+    handler = TicketsHandler(api_client, token_storage)
+
+    return [
+        CommandHandler("nuevoticket", handler.create_ticket),
+        CommandHandler("tickets", handler.list_tickets),
+    ]
