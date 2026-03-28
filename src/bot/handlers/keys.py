@@ -387,12 +387,12 @@ class KeysHandler:
             # Create key via API
             response = await self.api.post(
                 "/vpn/keys",
-                headers=headers,
-                json={
+                data={
                     "name": key_name,
                     "vpn_type": vpn_type,
                     "data_limit_gb": 5.0,  # Default 5GB
                 },
+                headers=headers,
             )
 
             # Clear protocol from user_data
@@ -408,8 +408,8 @@ class KeysHandler:
             # Send success message based on protocol
             if protocol.lower() == "outline":
                 # Outline: Show access URL
-                escaped_name = key_name.replace("_", "\_").replace("*", "\*")
-                escaped_config = key_config.replace("_", "\_").replace("*", "\*")
+                escaped_name = key_name.replace("_", r"\_").replace("*", r"\*")
+                escaped_config = key_config.replace("_", r"\_").replace("*", r"\*")
 
                 caption = (
                     f"✅ *Clave {vpn_type.title()} Creada*\n\n"
@@ -426,7 +426,7 @@ class KeysHandler:
 
             elif protocol.lower() == "wireguard":
                 # WireGuard: Send .conf file
-                escaped_name = key_name.replace("_", "\_").replace("*", "\*")
+                escaped_name = key_name.replace("_", r"\_").replace("*", r"\*")
 
                 caption = (
                     f"✅ *Clave {vpn_type.title()} Creada*\n\n"
