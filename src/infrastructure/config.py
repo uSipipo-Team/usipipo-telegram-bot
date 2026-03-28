@@ -53,6 +53,11 @@ class BotSettings(BaseSettings):
     CONSUMPTION_PRICE_PER_MB_USD: float = 0.000244140625  # 0.25 / 1024
 
     # ==================================================================
+    # PAYMENT CONVERSION RATE (from legacy bot)
+    # ==================================================================
+    STARS_PER_USDT: int = 120  # 1 USDT = 120 Telegram Stars
+
+    # ==================================================================
     # HELPER PROPERTIES
     # ==================================================================
     @property

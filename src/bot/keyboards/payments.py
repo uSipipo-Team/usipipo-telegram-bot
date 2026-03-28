@@ -59,17 +59,16 @@ class PaymentsKeyboard:
             InlineKeyboardMarkup: Teclado de montos
         """
         keyboard = [
-            [
-                InlineKeyboardButton("$5 USDT", callback_data="pay_crypto_5"),
-                InlineKeyboardButton("$10 USDT", callback_data="pay_crypto_10"),
-            ],
-            [
-                InlineKeyboardButton("$25 USDT", callback_data="pay_crypto_25"),
-                InlineKeyboardButton("$50 USDT", callback_data="pay_crypto_50"),
-            ],
-            [
-                InlineKeyboardButton("$100 USDT", callback_data="pay_crypto_100"),
-            ],
+            [InlineKeyboardButton("⭐ 300 Stars", callback_data="pay_stars_300")],
+            [InlineKeyboardButton("⭐ 600 Stars", callback_data="pay_stars_600")],
+            [InlineKeyboardButton("⭐ 960 Stars", callback_data="pay_stars_960")],
+            [InlineKeyboardButton("⭐ 1440 Stars", callback_data="pay_stars_1440")],
+            [InlineKeyboardButton("⭐ 1800 Stars", callback_data="pay_stars_1800")],
+            [InlineKeyboardButton("💰 $2.08 USDT", callback_data="pay_crypto_2_08")],
+            [InlineKeyboardButton("💰 $5.00 USDT", callback_data="pay_crypto_5_00")],
+            [InlineKeyboardButton("💰 $8.00 USDT", callback_data="pay_crypto_8_00")],
+            [InlineKeyboardButton("💰 $12.00 USDT", callback_data="pay_crypto_12_00")],
+            [InlineKeyboardButton("💰 $15.00 USDT", callback_data="pay_crypto_15_00")],
             [
                 InlineKeyboardButton("🔙 Volver", callback_data="payment_menu"),
             ],
@@ -85,17 +84,16 @@ class PaymentsKeyboard:
             InlineKeyboardMarkup: Teclado de montos
         """
         keyboard = [
-            [
-                InlineKeyboardButton("⭐ 300 Stars", callback_data="pay_stars_300"),
-                InlineKeyboardButton("⭐ 600 Stars", callback_data="pay_stars_600"),
-            ],
-            [
-                InlineKeyboardButton("⭐ 1500 Stars", callback_data="pay_stars_1500"),
-                InlineKeyboardButton("⭐ 3000 Stars", callback_data="pay_stars_3000"),
-            ],
-            [
-                InlineKeyboardButton("⭐ 6000 Stars", callback_data="pay_stars_6000"),
-            ],
+            [InlineKeyboardButton("⭐ 300 Stars", callback_data="pay_stars_300")],
+            [InlineKeyboardButton("⭐ 600 Stars", callback_data="pay_stars_600")],
+            [InlineKeyboardButton("⭐ 960 Stars", callback_data="pay_stars_960")],
+            [InlineKeyboardButton("⭐ 1440 Stars", callback_data="pay_stars_1440")],
+            [InlineKeyboardButton("⭐ 1800 Stars", callback_data="pay_stars_1800")],
+            [InlineKeyboardButton("💰 $2.08 USDT", callback_data="pay_crypto_2_08")],
+            [InlineKeyboardButton("💰 $5.00 USDT", callback_data="pay_crypto_5_00")],
+            [InlineKeyboardButton("💰 $8.00 USDT", callback_data="pay_crypto_8_00")],
+            [InlineKeyboardButton("💰 $12.00 USDT", callback_data="pay_crypto_12_00")],
+            [InlineKeyboardButton("💰 $15.00 USDT", callback_data="pay_crypto_15_00")],
             [
                 InlineKeyboardButton("🔙 Volver", callback_data="payment_menu"),
             ],

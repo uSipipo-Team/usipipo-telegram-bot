@@ -83,10 +83,11 @@ class PackagesHandler:
             except Exception:
                 # Fallback to default packages if endpoint not available
                 packages = [
-                    {"id": "small", "name": "Pequeño", "data_gb": 5, "price_usd": 5.00, "price_stars": 600},
-                    {"id": "medium", "name": "Mediano", "data_gb": 10, "price_usd": 10.00, "price_stars": 1200},
-                    {"id": "large", "name": "Grande", "data_gb": 25, "price_usd": 25.00, "price_stars": 3000},
-                    {"id": "xl", "name": "XL", "data_gb": 50, "price_usd": 50.00, "price_stars": 6000},
+                    {"id": "basic", "name": "Básico", "data_gb": 10, "price_usd": 2.08, "price_stars": 250},
+                    {"id": "standard", "name": "Estándar", "data_gb": 30, "price_usd": 5.00, "price_stars": 600},
+                    {"id": "advanced", "name": "Avanzado", "data_gb": 60, "price_usd": 8.00, "price_stars": 960},
+                    {"id": "premium", "name": "Premium", "data_gb": 120, "price_usd": 12.00, "price_stars": 1440},
+                    {"id": "unlimited", "name": "Ilimitado", "data_gb": 200, "price_usd": 15.00, "price_stars": 1800},
                 ]
 
             if not packages:
@@ -159,10 +160,11 @@ class PackagesHandler:
             if not package:
                 # Fallback to default packages
                 default_packages = {
-                    "small": {"name": "Pequeño", "data_gb": 5, "price_usd": 5.00, "price_stars": 600},
-                    "medium": {"name": "Mediano", "data_gb": 10, "price_usd": 10.00, "price_stars": 1200},
-                    "large": {"name": "Grande", "data_gb": 25, "price_usd": 25.00, "price_stars": 3000},
-                    "xl": {"name": "XL", "data_gb": 50, "price_usd": 50.00, "price_stars": 6000},
+                    "basic": {"name": "Básico", "data_gb": 10, "price_usd": 2.08, "price_stars": 250},
+                    "standard": {"name": "Estándar", "data_gb": 30, "price_usd": 5.00, "price_stars": 600},
+                    "advanced": {"name": "Avanzado", "data_gb": 60, "price_usd": 8.00, "price_stars": 960},
+                    "premium": {"name": "Premium", "data_gb": 120, "price_usd": 12.00, "price_stars": 1440},
+                    "unlimited": {"name": "Ilimitado", "data_gb": 200, "price_usd": 15.00, "price_stars": 1800},
                 }
                 package = default_packages.get(package_id)
 
@@ -203,7 +205,7 @@ class PackagesHandler:
 
         # Extract package_id from callback_data
         parts = query.data.split("_")
-        package_id = parts[-1] if len(parts) > 1 else "small"
+        package_id = parts[-1] if len(parts) > 1 else "basic"
         telegram_id = update.effective_user.id if update.effective_user else 0
 
         logger.info(f"User {telegram_id} selecting payment method for package: {package_id}")
@@ -256,7 +258,7 @@ class PackagesHandler:
 
         # Extract package_id from callback_data
         parts = query.data.split("_")
-        package_id = parts[-1] if len(parts) > 1 else "small"
+        package_id = parts[-1] if len(parts) > 1 else "basic"
         telegram_id = update.effective_user.id if update.effective_user else 0
 
         logger.info(f"User {telegram_id} paying with stars for package: {package_id}")
@@ -381,7 +383,7 @@ class PackagesHandler:
             # Extract package info from payload
             # Payload format: stars_{package_id}_{telegram_id}
             parts = payment_payload.split("_")
-            package_id = parts[1] if len(parts) > 2 else "small"
+            package_id = parts[1] if len(parts) > 2 else "basic"
 
             # Get package details
             package = None
@@ -460,7 +462,7 @@ class PackagesHandler:
 
         # Extract package_id from callback_data
         parts = query.data.split("_")
-        package_id = parts[-1] if len(parts) > 1 else "small"
+        package_id = parts[-1] if len(parts) > 1 else "basic"
         telegram_id = update.effective_user.id if update.effective_user else 0
 
         logger.info(f"User {telegram_id} paying with crypto for package: {package_id}")
