@@ -7,6 +7,7 @@ from telegram.ext import ContextTypes
 from src.infrastructure.api_client import APIClient
 from src.infrastructure.token_storage import TokenStorage
 from src.bot.keyboards.auth import AuthMessages
+from src.bot.keyboards.main_menu import MainMenuKeyboard
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +44,11 @@ class AuthHandler:
         # Check if already authenticated
         if await self.tokens.is_authenticated(telegram_id):
             if update.message:
-                await update.message.reply_text(AuthMessages.WELCOME_RETURNING_USER)
+                await update.message.reply_text(
+                    text=AuthMessages.WELCOME_RETURNING_USER,
+                    reply_markup=MainMenuKeyboard.main_menu(),
+                    parse_mode="Markdown",
+                )
             return
         
         # Register and auto-authenticate new user
@@ -71,7 +76,11 @@ class AuthHandler:
             if "access_token" in response:
                 await self.tokens.store(telegram_id, response)
                 if update.message:
-                    await update.message.reply_text(AuthMessages.WELCOME_NEW_USER)
+                    await update.message.reply_text(
+                        text=AuthMessages.WELCOME_NEW_USER,
+                        reply_markup=MainMenuKeyboard.main_menu(),
+                        parse_mode="Markdown",
+                    )
             else:
                 if update.message:
                     await update.message.reply_text(AuthMessages.AUTH_ERROR)

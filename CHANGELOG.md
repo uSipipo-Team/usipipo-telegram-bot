@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.0] - 2026-03-28
+
+### Added
+- **MainMenuKeyboard** - Menú principal de botones inline para navegación visual
+  - Botones: 🔑 Mis Claves VPN, ➕ Nueva Clave, ⚙️ Operaciones, 💾 Mis Datos, ❓ Ayuda
+  - Consistente con el bot legacy (@usipipobot)
+  - Navegación visual sin necesidad de memorizar comandos
+
+- **Global main_menu Handler** - Handler para callback `main_menu`
+  - Muestra menú principal con botones al hacer click en "🔙 Volver al Menú Principal"
+  - Registrado en `src/main.py`
+
+- **BACK_TO_MAIN Message** - Mensaje de navegación en `BasicMessages`
+  - Mensaje consistente para retorno al menú principal
+
+### Changed
+- **AuthHandler** - `/start` ahora muestra menú con botones
+  - Usuarios nuevos ven botones inmediatamente después de autenticarse
+  - Usuarios existentes ven botones en bienvenida
+
+- **operations.py** - `back_to_main_menu` usa MainMenuKeyboard
+- **packages.py** - `back_to_main_menu` usa MainMenuKeyboard
+- **consumption.py** - `back_to_main_menu` usa MainMenuKeyboard
+
+### Technical Details
+- **Files Created:** 2 files (`src/bot/keyboards/main_menu.py`, `src/bot/handlers/main_menu.py`)
+- **Files Modified:** 6 files (auth.py, operations.py, packages.py, consumption.py, main.py, keyboards/main.py)
+- **Lines Added:** ~150 lines
+- **Tests:** Testing manual en Telegram
+
+### UX Improvements
+- ✅ Navegación visual con botones inline
+- ✅ Consistente con bot legacy
+- ✅ Menos dependencia de comandos de texto
+- ✅ Mejor experiencia para usuarios nuevos
+
 ## [0.9.0] - 2026-03-28
 
 ### Removed

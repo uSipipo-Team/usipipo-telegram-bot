@@ -312,13 +312,14 @@ class OperationsHandler:
 
         await self._safe_answer_query(query)
 
-        from src.bot.keyboards.keys import KeysKeyboard
+        from src.bot.keyboards.main_menu import MainMenuKeyboard
+        from src.bot.keyboards.main import BasicMessages
 
-        # Show simple back message
-        message = "🔙 *Volviendo al menú principal*..."
-        keyboard = KeysKeyboard.back_to_main_menu()
+        # Show main menu with buttons
+        message = BasicMessages.BACK_TO_MAIN
+        keyboard = MainMenuKeyboard.main_menu()
 
-        await self._safe_edit_message(query, context, message, keyboard)
+        await self._safe_edit_message(query, context, message, keyboard, parse_mode="Markdown")
 
 
 def get_operations_handlers(api_client: APIClient, token_storage: TokenStorage):
