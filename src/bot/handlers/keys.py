@@ -381,8 +381,8 @@ class KeysHandler:
 
             headers = {"Authorization": f"Bearer {tokens['access_token']}"}
 
-            # Map protocol to KeyType enum
-            vpn_type = "OUTLINE" if protocol.lower() == "outline" else "WIREGUARD"
+            # Map protocol to KeyType enum value (lowercase)
+            vpn_type = "outline" if protocol.lower() == "outline" else "wireguard"
 
             # Create key via API
             response = await self.api.post(
