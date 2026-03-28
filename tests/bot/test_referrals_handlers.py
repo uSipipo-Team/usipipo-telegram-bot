@@ -234,3 +234,81 @@ class TestShowReferralsCommand:
         assert call_args[1]["parse_mode"] == "Markdown"
         # Verify keyboard was included
         assert call_args[1]["reply_markup"] is not None
+
+
+class TestGetReferralLinkCommand:
+    """Tests for get_referral_link command."""
+
+    @pytest.mark.asyncio
+    async def test_get_referral_link_success(self):
+        """Returns referral link with correct format."""
+        from src.bot.handlers.referrals import ReferralsHandler
+
+        mock_api = AsyncMock()
+        mock_storage = AsyncMock()
+        handler = ReferralsHandler(mock_api, mock_storage)
+
+        # Mock user and message
+        mock_user = MagicMock()
+        mock_user.id = 12345
+        mock_update = MagicMock()
+        mock_update.effective_user = mock_user
+        mock_update.message = AsyncMock()
+        mock_context = MagicMock()
+
+        # Mock is_authenticated to return True
+        mock_storage.is_authenticated = AsyncMock(return_value=True)
+
+        # Mock _get_auth_headers
+        handler._get_auth_headers = AsyncMock(return_value={"Authorization": "Bearer test_token"})
+
+        # Mock API response
+        mock_api.api_client.get = AsyncMock(return_value={
+            "referral_code": "ABC123",
+            "total_referrals": 5,
+            "referral_credits": 10,
+        })
+
+        await handler.get_referral_link(mock_update, mock_context)
+
+        # Should call API
+        mock_api.api_client.get.assert_called_once_with(
+            "/referrals/me",
+            headers={"Authorization": "Bearer test_token"},
+        )
+
+        # Should send message with referral link
+        mock_update.message.reply_text.assert_called_once()
+        call_args = mock_update.message.reply_text.call_args
+        assert "🔗 *Tu Link de Invitación*" in call_args[1]["text"]
+        assert "https://t.me/usipipobot?start=ABC123" in call_args[1]["text"]
+        assert call_args[1]["parse_mode"] == "Markdown"
+        # No reply_markup for this command
+        assert "reply_markup" not in call_args[1]
+
+    @pytest.mark.asyncio
+    async def test_get_referral_link_not_authenticated(self):
+        """Shows error when user not authenticated."""
+        from src.bot.handlers.referrals import ReferralsHandler
+
+        mock_api = AsyncMock()
+        mock_storage = AsyncMock()
+        handler = ReferralsHandler(mock_api, mock_storage)
+
+        # Mock user and message
+        mock_user = MagicMock()
+        mock_user.id = 12345
+        mock_update = MagicMock()
+        mock_update.effective_user = mock_user
+        mock_update.message = AsyncMock()
+        mock_context = MagicMock()
+
+        # Mock is_authenticated to return False
+        mock_storage.is_authenticated = AsyncMock(return_value=False)
+
+        await handler.get_referral_link(mock_update, mock_context)
+
+        # Should show NOT_AUTHENTICATED error
+        mock_update.message.reply_text.assert_called_once()
+        call_args = mock_update.message.reply_text.call_args
+        assert "❌ Debes estar autenticado" in call_args[0][0]

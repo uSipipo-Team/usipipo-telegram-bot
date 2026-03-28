@@ -107,3 +107,52 @@ class ReferralsHandler:
                     ReferralsMessages.Error.SYSTEM_ERROR,
                     parse_mode="Markdown",
                 )
+
+    async def get_referral_link(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Get user's referral link."""
+        if update.effective_user is None:
+            return
+
+        telegram_id = update.effective_user.id
+        logger.info(f"🎯 User {telegram_id} getting referral link")
+
+        try:
+            # Check authentication
+            if not await self.tokens.is_authenticated(telegram_id):
+                if update.message:
+                    await update.message.reply_text(
+                        ReferralsMessages.Error.NOT_AUTHENTICATED,
+                        parse_mode="Markdown",
+                    )
+                return
+
+            # Get referral stats
+            headers = await self._get_auth_headers(telegram_id)
+            response = await self.api.api_client.get(
+                "/referrals/me",
+                headers=headers,
+            )
+
+            # Build referral link
+            referral_code = response["referral_code"]
+            referral_link = f"https://t.me/usipipobot?start={referral_code}"
+
+            # Format message
+            message = ReferralsMessages.Menu.INVITE_LINK.format(
+                referral_link=referral_link,
+            )
+
+            # Send message
+            if update.message:
+                await update.message.reply_text(
+                    text=message,
+                    parse_mode="Markdown",
+                )
+
+        except Exception as e:
+            logger.error(f"Error getting referral link: {e}")
+            if update.message:
+                await update.message.reply_text(
+                    ReferralsMessages.Error.SYSTEM_ERROR,
+                    parse_mode="Markdown",
+                )
