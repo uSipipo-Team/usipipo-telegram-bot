@@ -78,7 +78,7 @@ class KeysHandler:
 
             # Get user keys
             headers = await self._get_auth_headers(telegram_id)
-            response = await self.api.api_client.get("/vpn/keys", headers=headers)
+            response = await self.api.get("/vpn/keys", headers=headers)
 
             keys = response if isinstance(response, list) else []
 
@@ -139,7 +139,7 @@ class KeysHandler:
 
         try:
             headers = await self._get_auth_headers(telegram_id)
-            response = await self.api.api_client.get("/vpn/keys", headers=headers)
+            response = await self.api.get("/vpn/keys", headers=headers)
 
             keys = response if isinstance(response, list) else []
             filtered_keys = [k for k in keys if k.get("key_type", "").lower() == key_type.lower()]
@@ -187,7 +187,7 @@ class KeysHandler:
 
         try:
             headers = await self._get_auth_headers(telegram_id)
-            response = await self.api.api_client.get(f"/vpn/keys/{key_id}", headers=headers)
+            response = await self.api.get(f"/vpn/keys/{key_id}", headers=headers)
 
             key = response
             status = "Activa" if key.get("status", "active") == "active" else "Inactiva"
@@ -323,7 +323,7 @@ class KeysHandler:
 
             # Update key
             headers = await self._get_auth_headers(telegram_id)
-            await self.api.api_client.put(
+            await self.api.put(
                 f"/vpn/keys/{key_id}",
                 headers=headers,
                 json={"name": new_name},
@@ -409,7 +409,7 @@ class KeysHandler:
         try:
             # Delete key
             headers = await self._get_auth_headers(telegram_id)
-            await self.api.api_client.delete(f"/vpn/keys/{key_id}", headers=headers)
+            await self.api.delete(f"/vpn/keys/{key_id}", headers=headers)
 
             message = KeysMessages.Actions.KEY_DELETED
 
@@ -455,7 +455,7 @@ class KeysHandler:
 
         try:
             headers = await self._get_auth_headers(telegram_id)
-            response = await self.api.api_client.get(
+            response = await self.api.get(
                 f"/vpn/keys/{key_id}/config", headers=headers
             )
 
@@ -512,7 +512,7 @@ class KeysHandler:
 
         try:
             headers = await self._get_auth_headers(telegram_id)
-            response = await self.api.api_client.get(
+            response = await self.api.get(
                 f"/vpn/keys/{key_id}/config", headers=headers
             )
 
@@ -565,7 +565,7 @@ class KeysHandler:
 
         try:
             headers = await self._get_auth_headers(telegram_id)
-            response = await self.api.api_client.get("/vpn/keys", headers=headers)
+            response = await self.api.get("/vpn/keys", headers=headers)
 
             keys = response if isinstance(response, list) else []
 

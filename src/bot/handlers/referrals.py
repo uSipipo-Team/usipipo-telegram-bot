@@ -80,7 +80,7 @@ class ReferralsHandler:
 
             # Get referral stats
             headers = await self._get_auth_headers(telegram_id)
-            response = await self.api.api_client.get(
+            response = await self.api.get(
                 "/referrals/me",
                 headers=headers,
             )
@@ -128,7 +128,7 @@ class ReferralsHandler:
 
             # Get referral stats
             headers = await self._get_auth_headers(telegram_id)
-            response = await self.api.api_client.get(
+            response = await self.api.get(
                 "/referrals/me",
                 headers=headers,
             )
@@ -182,7 +182,7 @@ class ReferralsHandler:
 
             # Redeem credits
             headers = await self._get_auth_headers(telegram_id)
-            response = await self.api.api_client.post(
+            response = await self.api.post(
                 "/referrals/redeem",
                 headers=headers,
                 json={"credits": credits},

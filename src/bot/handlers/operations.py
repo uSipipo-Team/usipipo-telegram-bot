@@ -76,7 +76,7 @@ class OperationsHandler:
             credits = 0
             try:
                 headers = await self._get_auth_headers(telegram_id)
-                response = await self.api.api_client.get(
+                response = await self.api.get(
                     "/referrals/me",
                     headers=headers
                 )
@@ -138,7 +138,7 @@ class OperationsHandler:
             credits = 0
             try:
                 headers = await self._get_auth_headers(telegram_id)
-                response = await self.api.api_client.get(
+                response = await self.api.get(
                     "/referrals/me",
                     headers=headers
                 )
@@ -215,7 +215,7 @@ class OperationsHandler:
                     except ValueError:
                         page = 0
 
-                response = await self.api.api_client.get(
+                response = await self.api.get(
                     f"/transactions?limit=10&offset={page * 10}",
                     headers=headers
                 )
@@ -272,7 +272,7 @@ class OperationsHandler:
 
             try:
                 headers = await self._get_auth_headers(telegram_id)
-                response = await self.api.api_client.get(
+                response = await self.api.get(
                     "/referrals/me",
                     headers=headers
                 )
