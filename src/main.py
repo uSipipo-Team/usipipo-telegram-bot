@@ -17,6 +17,12 @@ from src.bot.handlers.consumption import (
     get_consumption_handlers,
     get_consumption_callback_handlers,
 )
+from src.bot.handlers.packages import (
+    PackagesHandler,
+    get_packages_handlers,
+    get_packages_callback_handlers,
+    get_packages_payment_handlers,
+)
 from src.infrastructure.api_client import APIClient
 from src.infrastructure.config import settings
 from src.infrastructure.error_handler import error_handler
@@ -33,11 +39,12 @@ _auth_handler: AuthHandler | None = None
 _keys_handler: KeysHandler | None = None
 _operations_handler: OperationsHandler | None = None
 _consumption_handler: ConsumptionHandler | None = None
+_packages_handler: PackagesHandler | None = None
 
 
 async def _init_dependencies() -> None:
     """Inicializa dependencias globales del bot."""
-    global _api_client, _token_storage, _auth_handler, _keys_handler, _operations_handler, _consumption_handler
+    global _api_client, _token_storage, _auth_handler, _keys_handler, _operations_handler, _consumption_handler, _packages_handler
 
     # Initialize Redis pool
     await RedisPool.get_instance(settings.REDIS_URL)
@@ -70,6 +77,10 @@ async def _init_dependencies() -> None:
     _consumption_handler = ConsumptionHandler(_api_client, _token_storage)
     logger.info("Consumption handler initialized")
 
+    # Initialize packages handler
+    _packages_handler = PackagesHandler(_api_client, _token_storage)
+    logger.info("📦 Packages handler initialized")
+
 
 def _get_auth_handler() -> AuthHandler:
     """Obtiene el AuthHandler inicializado."""
@@ -97,6 +108,13 @@ def _get_consumption_handler() -> ConsumptionHandler:
     if _consumption_handler is None:
         raise RuntimeError("ConsumptionHandler not initialized. Call _init_dependencies first.")
     return _consumption_handler
+
+
+def _get_packages_handler() -> PackagesHandler:
+    """Obtiene el PackagesHandler inicializado."""
+    if _packages_handler is None:
+        raise RuntimeError("PackagesHandler not initialized. Call _init_dependencies first.")
+    return _packages_handler
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -167,6 +185,11 @@ def create_application(token: str) -> Application:
     app.add_handler(CommandHandler("cancelar", lambda u, c: _get_consumption_handler().start_cancellation(u, c)))
     app.add_handler(CommandHandler("factura", lambda u, c: _get_consumption_handler().view_invoices(u, c)))
 
+    # Data packages commands
+    app.add_handler(CommandHandler("comprar", lambda u, c: _get_packages_handler().show_packages(u, c)))
+    app.add_handler(CommandHandler("paquetes", lambda u, c: _get_packages_handler().show_packages(u, c)))
+    app.add_handler(CommandHandler("packages", lambda u, c: _get_packages_handler().show_packages(u, c)))
+
     # Register callback handlers for keys management
     for handler in get_keys_callback_handlers(_api_client, _token_storage):
         app.add_handler(handler)
@@ -177,6 +200,14 @@ def create_application(token: str) -> Application:
 
     # Register callback handlers for consumption billing
     for handler in get_consumption_callback_handlers(_api_client, _token_storage):
+        app.add_handler(handler)
+
+    # Register callback handlers for data packages
+    for handler in get_packages_callback_handlers(_api_client, _token_storage):
+        app.add_handler(handler)
+
+    # Register payment handlers for data packages (Stars payments)
+    for handler in get_packages_payment_handlers(_api_client, _token_storage):
         app.add_handler(handler)
 
     app.add_error_handler(error_handler)  # type: ignore[arg-type]
