@@ -29,7 +29,7 @@ class TestReferralsHandlerInitialization:
 
         mock_api = AsyncMock()
         mock_storage = AsyncMock()
-        
+
         # Mock token storage to return a valid token
         expected_token = "test_access_token_123"
         mock_storage.get.return_value = {
@@ -38,7 +38,7 @@ class TestReferralsHandlerInitialization:
         }
 
         handler = ReferralsHandler(mock_api, mock_storage)
-        
+
         headers = await handler._get_auth_headers(telegram_id=12345)
 
         assert headers == {"Authorization": f"Bearer {expected_token}"}
@@ -51,12 +51,12 @@ class TestReferralsHandlerInitialization:
 
         mock_api = AsyncMock()
         mock_storage = AsyncMock()
-        
+
         # Mock token storage to return None (not authenticated)
         mock_storage.get.return_value = None
 
         handler = ReferralsHandler(mock_api, mock_storage)
-        
+
         with pytest.raises(PermissionError, match="User not authenticated"):
             await handler._get_auth_headers(telegram_id=99999)
 
@@ -156,3 +156,81 @@ class TestReferralsHandlerHelpers:
             reply_markup=test_markup,
             parse_mode="Markdown",
         )
+
+
+class TestShowReferralsCommand:
+    """Tests for show_referrals command."""
+
+    @pytest.mark.asyncio
+    async def test_show_referrals_not_authenticated(self):
+        """Shows error when user not authenticated."""
+        from src.bot.handlers.referrals import ReferralsHandler
+
+        mock_api = AsyncMock()
+        mock_storage = AsyncMock()
+        handler = ReferralsHandler(mock_api, mock_storage)
+
+        # Mock user and message
+        mock_user = MagicMock()
+        mock_user.id = 12345
+        mock_update = MagicMock()
+        mock_update.effective_user = mock_user
+        mock_update.message = AsyncMock()
+        mock_context = MagicMock()
+
+        # Mock is_authenticated to return False
+        mock_storage.is_authenticated = AsyncMock(return_value=False)
+
+        await handler.show_referrals(mock_update, mock_context)
+
+        # Should show NOT_AUTHENTICATED error
+        mock_update.message.reply_text.assert_called_once()
+        call_args = mock_update.message.reply_text.call_args
+        assert "❌ Debes estar autenticado" in call_args[0][0]
+
+    @pytest.mark.asyncio
+    async def test_show_referrals_success(self):
+        """Displays stats with keyboard when authenticated."""
+        from src.bot.handlers.referrals import ReferralsHandler
+
+        mock_api = AsyncMock()
+        mock_storage = AsyncMock()
+        handler = ReferralsHandler(mock_api, mock_storage)
+
+        # Mock user and message
+        mock_user = MagicMock()
+        mock_user.id = 12345
+        mock_update = MagicMock()
+        mock_update.effective_user = mock_user
+        mock_update.message = AsyncMock()
+        mock_context = MagicMock()
+
+        # Mock is_authenticated to return True
+        mock_storage.is_authenticated = AsyncMock(return_value=True)
+
+        # Mock _get_auth_headers
+        handler._get_auth_headers = AsyncMock(return_value={"Authorization": "Bearer test_token"})
+
+        # Mock API response
+        mock_api.api_client.get = AsyncMock(return_value={
+            "referral_code": "ABC123",
+            "total_referrals": 5,
+            "referral_credits": 10,
+        })
+
+        await handler.show_referrals(mock_update, mock_context)
+
+        # Should call API
+        mock_api.api_client.get.assert_called_once_with(
+            "/referrals/me",
+            headers={"Authorization": "Bearer test_token"},
+        )
+
+        # Should send message with keyboard
+        mock_update.message.reply_text.assert_called_once()
+        call_args = mock_update.message.reply_text.call_args
+        assert "🎯 *Tu Programa de Referidos*" in call_args[1]["text"]
+        assert "ABC123" in call_args[1]["text"]
+        assert call_args[1]["parse_mode"] == "Markdown"
+        # Verify keyboard was included
+        assert call_args[1]["reply_markup"] is not None
