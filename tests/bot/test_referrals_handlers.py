@@ -312,3 +312,86 @@ class TestGetReferralLinkCommand:
         mock_update.message.reply_text.assert_called_once()
         call_args = mock_update.message.reply_text.call_args
         assert "❌ Debes estar autenticado" in call_args[0][0]
+
+
+class TestReferralCallbacks:
+    """Tests for referral callback handlers."""
+
+    @pytest.mark.asyncio
+    async def test_redeem_credits_callback(self):
+        """redeem_credits_callback calls POST /referrals/redeem."""
+        from src.bot.handlers.referrals import ReferralsHandler
+
+        mock_api = AsyncMock()
+        mock_storage = AsyncMock()
+        handler = ReferralsHandler(mock_api, mock_storage)
+
+        # Mock user and callback query
+        mock_user = MagicMock()
+        mock_user.id = 12345
+        mock_update = MagicMock()
+        mock_update.effective_user = mock_user
+        mock_query = AsyncMock()
+        mock_query.data = "referral_redeem_confirm:10"
+        mock_update.callback_query = mock_query
+        mock_context = MagicMock()
+
+        # Mock authentication
+        mock_storage.is_authenticated = AsyncMock(return_value=True)
+
+        # Mock _get_auth_headers
+        handler._get_auth_headers = AsyncMock(return_value={"Authorization": "Bearer test_token"})
+
+        # Mock API response
+        mock_api.api_client.post = AsyncMock(return_value={
+            "gb_added": 1,
+            "data": {
+                "remaining_credits": 5,
+            },
+        })
+
+        await handler.redeem_credits_callback(mock_update, mock_context)
+
+        # Should call POST /referrals/redeem
+        mock_api.api_client.post.assert_called_once_with(
+            "/referrals/redeem",
+            headers={"Authorization": "Bearer test_token"},
+            json={"credits": 10},
+        )
+
+        # Should edit message with confirmation
+        mock_query.edit_message_text.assert_called()
+        call_args = mock_query.edit_message_text.call_args
+        assert "✅ *Canje Exitoso!*" in call_args[1]["text"]
+        assert "10" in call_args[1]["text"]  # credits
+        assert "1" in call_args[1]["text"]  # GB added
+
+    @pytest.mark.asyncio
+    async def test_apply_code_callback(self):
+        """apply_code_callback prompts for code input."""
+        from src.bot.handlers.referrals import ReferralsHandler
+
+        mock_api = AsyncMock()
+        mock_storage = AsyncMock()
+        handler = ReferralsHandler(mock_api, mock_storage)
+
+        # Mock user and callback query
+        mock_user = MagicMock()
+        mock_user.id = 12345
+        mock_update = MagicMock()
+        mock_update.effective_user = mock_user
+        mock_query = AsyncMock()
+        mock_query.data = "referral_apply"
+        mock_update.callback_query = mock_query
+        mock_context = MagicMock()
+
+        # Mock authentication
+        mock_storage.is_authenticated = AsyncMock(return_value=True)
+
+        await handler.apply_code_callback(mock_update, mock_context)
+
+        # Should prompt for code input
+        mock_query.edit_message_text.assert_called_once()
+        call_args = mock_query.edit_message_text.call_args
+        assert "📝 Envía tu código de referido como mensaje de texto:" in call_args[1]["text"]
+        assert call_args[1]["parse_mode"] == "Markdown"
