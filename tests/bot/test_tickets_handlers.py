@@ -357,3 +357,64 @@ class TestCreateTicketCommand:
         # Verify it's the NOT_AUTHORIZED message
         call_args = mock_update.message.reply_text.call_args
         assert "❌ No tenés permiso" in call_args[0][0]
+
+
+class TestTicketCategoryCallback:
+    """Tests for the ticket category selection callback."""
+
+    @pytest.mark.asyncio
+    async def test_select_category_callback(self):
+        """select_category_callback creates ticket with correct payload."""
+        from src.bot.handlers.tickets import TicketsHandler
+
+        mock_api = AsyncMock()
+        mock_storage = AsyncMock()
+        mock_storage.is_authenticated = AsyncMock(return_value=True)
+        mock_storage.get = AsyncMock(return_value={'access_token': 'test_token'})
+
+        # Mock API response
+        mock_response = {
+            "id": "uuid-123",
+            "ticket_number": "TKT-001",
+            "status": "OPEN",
+            "subject": "Consulta de technical"
+        }
+        mock_api.api_client.post = AsyncMock(return_value=mock_response)
+
+        handler = TicketsHandler(mock_api, mock_storage)
+
+        # Mock update with callback query
+        mock_update = MagicMock()
+        mock_update.effective_user = MagicMock()
+        mock_update.effective_user.id = 12345
+        mock_update.callback_query = AsyncMock()
+        mock_update.callback_query.data = "ticket_cat:technical"
+        mock_update.callback_query.answer = AsyncMock()
+        mock_update.callback_query.edit_message_text = AsyncMock()
+
+        mock_context = MagicMock()
+        mock_context.user_data = {}
+
+        await handler.select_category_callback(mock_update, mock_context)
+
+        # Should check authentication
+        mock_storage.is_authenticated.assert_called_once_with(12345)
+        # Should call API to create ticket
+        mock_api.api_client.post.assert_called_once_with(
+            "/tickets",
+            headers={"Authorization": "Bearer test_token"},
+            json={
+                "category": "technical",
+                "subject": "Consulta de technical",
+                "message": "Necesito ayuda con...",
+            },
+        )
+        # Should store category in user_data
+        assert mock_context.user_data["ticket_category"] == "technical"
+        assert mock_context.user_data["ticket_subject"] == "Consulta de technical"
+        # Should edit message with success
+        mock_update.callback_query.edit_message_text.assert_called_once()
+        call_args = mock_update.callback_query.edit_message_text.call_args
+        message_text = call_args.kwargs.get('text') or call_args[0][0]
+        assert "✅ *Ticket Creado Exitosamente!*" in message_text
+        assert "TKT-001" in message_text

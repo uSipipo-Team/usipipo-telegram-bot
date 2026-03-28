@@ -4,7 +4,7 @@ import logging
 from typing import Any
 
 from telegram import Update
-from telegram.ext import ContextTypes
+from telegram.ext import CallbackQueryHandler, CommandHandler, ContextTypes
 
 from src.bot.keyboards.messages_tickets import TicketsMessages
 from src.bot.keyboards.tickets import TicketsKeyboard
@@ -162,14 +162,98 @@ class TicketsHandler:
                     parse_mode="Markdown",
                 )
 
+    async def select_category_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle category selection for ticket creation."""
+        if update.effective_user is None or update.callback_query is None:
+            return
+
+        telegram_id = update.effective_user.id
+        query = update.callback_query
+        logger.info(f"🎫 User {telegram_id} selecting category")
+
+        try:
+            # Check authentication
+            if not await self.tokens.is_authenticated(telegram_id):
+                await self._safe_answer_query(query)
+                await query.edit_message_text(
+                    text=TicketsMessages.Error.NOT_AUTHORIZED,
+                    parse_mode="Markdown",
+                )
+                return
+
+            # Parse category from callback_data
+            # Format: "ticket_cat:technical"
+            category = query.data.split(":")[1]
+
+            # Validate category
+            valid_categories = ["technical", "billing", "services", "general"]
+            if category not in valid_categories:
+                await self._safe_answer_query(query)
+                await query.edit_message_text(
+                    text=TicketsMessages.Error.INVALID_CATEGORY,
+                    parse_mode="Markdown",
+                )
+                return
+
+            # Store category in user_data
+            context.user_data["ticket_category"] = category
+
+            # Prompt for subject (simplified: use default)
+            # In full implementation: ConversationHandler for user input
+            subject = f"Consulta de {category}"
+            context.user_data["ticket_subject"] = subject
+
+            # Create ticket
+            headers = await self._get_auth_headers(telegram_id)
+            response = await self.api.api_client.post(
+                "/tickets",
+                headers=headers,
+                json={
+                    "category": category,
+                    "subject": subject,
+                    "message": "Necesito ayuda con...",
+                },
+            )
+
+            # Format success message
+            message = TicketsMessages.Menu.TICKET_CREATED.format(
+                ticket_number=response["ticket_number"],
+                subject=subject,
+            )
+
+            await self._safe_edit_message(
+                query=query,
+                context=context,
+                text=message,
+                reply_markup=TicketsKeyboard.back_to_tickets(),
+            )
+
+        except Exception as e:
+            logger.error(f"Error creating ticket: {e}")
+            await self._safe_answer_query(query)
+            await query.edit_message_text(
+                text=TicketsMessages.Error.SYSTEM_ERROR,
+                parse_mode="Markdown",
+            )
+
 
 def get_tickets_handlers(api_client: APIClient, token_storage: TokenStorage):
     """Get tickets command handlers."""
-    from telegram.ext import CommandHandler
-
     handler = TicketsHandler(api_client, token_storage)
 
     return [
         CommandHandler("nuevoticket", handler.create_ticket),
         CommandHandler("tickets", handler.list_tickets),
+    ]
+
+
+def get_tickets_callback_handlers(api_client: APIClient, token_storage: TokenStorage):
+    """Get all tickets callback handlers."""
+    handler = TicketsHandler(api_client, token_storage)
+
+    return [
+        CallbackQueryHandler(
+            handler.select_category_callback,
+            pattern=r"^ticket_cat:(technical|billing|services|general)$",
+        ),
     ]
