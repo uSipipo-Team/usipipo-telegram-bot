@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.3.0] - 2026-03-31
+
+### Added
+- **User Profile "Mis Datos" Feature** - Complete user profile display with rich information
+  - New "💾 Mis Datos" button now functional in main menu
+  - Professional profile message with 5 sections:
+    - Personal Info (username, name, Telegram ID)
+    - Balance & Data (current balance, total purchased, VPN keys count)
+    - Referral Program (code, referrals count, credits earned)
+    - Loyalty Program (tier level, bonus percent, purchase count, welcome bonus status)
+    - Account Info (creation date, last update)
+  - Automatic loyalty tier calculation (Standard, Bronze, Silver, Gold, Platinum)
+  - Error handling for unauthenticated users and API failures
+  - Back navigation to main menu
+
+### Changed
+- **Version bump** - Updated from v0.2.0 to v0.3.0 in README.md
+- **Main handler registration** - Added user profile handler to main.py
+
+### Technical Details
+- **Files Created:** 6 files
+  - `src/bot/keyboards/messages_user_profile.py` - Message templates
+  - `src/bot/keyboards/user_profile.py` - Inline keyboard
+  - `src/bot/handlers/user_profile.py` - Handler logic
+  - `tests/unit/bot/keyboards/test_messages_user_profile.py` - 5 unit tests
+  - `tests/unit/bot/keyboards/test_user_profile_keyboard.py` - 1 unit test
+  - `tests/bot/test_user_profile_handlers.py` - 2 integration tests
+- **Files Modified:** 2 files
+  - `src/main.py` - Handler registration
+  - `README.md` - Feature documentation
+- **Tests:** 8 new tests, all 375 tests passing
+
+### Quality Gates
+- ✅ All tests passing (375 passed, 1 skipped)
+- ✅ Ruff linting clean
+- ✅ TDD followed (tests written before implementation)
+- ✅ Clean Architecture patterns maintained
+
+---
+
 ## [1.3.0] - 2026-03-30
 
 ### Fixed
