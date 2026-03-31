@@ -181,7 +181,8 @@ async def test_get_key_config_success(adapter: BackendApiAdapter):
 @pytest.mark.asyncio
 async def test_get_referral_code_success(adapter: BackendApiAdapter):
     """Test de obtención de código de referido."""
-    mock_response = MockResponse({"code": "REFER123"})
+    # Backend returns {"referral_code": "...", "total_referrals": N, ...}
+    mock_response = MockResponse({"referral_code": "REFER123", "total_referrals": 5})
 
     mock_client = AsyncMock()
     mock_client.get = AsyncMock(return_value=mock_response)

@@ -208,9 +208,10 @@ class TestPaymentsHandler:
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("pay_crypto_5" in btn.callback_data
+        # Check for crypto payment buttons (format: pay_crypto_X_XX)
+        assert any("pay_crypto_5_00" in btn.callback_data
                    for row in buttons for btn in row)
-        assert any("pay_crypto_10" in btn.callback_data
+        assert any("pay_crypto_15_00" in btn.callback_data
                    for row in buttons for btn in row)
 
     @pytest.mark.asyncio
@@ -565,8 +566,9 @@ class TestPaymentsHandler:
         keyboard = PaymentsKeyboard.crypto_amounts()
 
         buttons = keyboard.inline_keyboard
-        crypto_amounts = ["pay_crypto_5", "pay_crypto_10", "pay_crypto_25",
-                          "pay_crypto_50", "pay_crypto_100"]
+        # Actual crypto amounts in the keyboard
+        crypto_amounts = ["pay_crypto_2_08", "pay_crypto_5_00", "pay_crypto_8_00",
+                          "pay_crypto_12_00", "pay_crypto_15_00"]
 
         for amount in crypto_amounts:
             assert any(amount in btn.callback_data
@@ -580,8 +582,9 @@ class TestPaymentsHandler:
         keyboard = PaymentsKeyboard.stars_amounts()
 
         buttons = keyboard.inline_keyboard
-        stars_amounts = ["pay_stars_300", "pay_stars_600", "pay_stars_1500",
-                         "pay_stars_3000", "pay_stars_6000"]
+        # Actual stars amounts in the keyboard
+        stars_amounts = ["pay_stars_300", "pay_stars_600", "pay_stars_960",
+                         "pay_stars_1440", "pay_stars_1800"]
 
         for amount in stars_amounts:
             assert any(amount in btn.callback_data

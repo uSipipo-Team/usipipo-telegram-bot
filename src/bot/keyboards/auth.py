@@ -38,7 +38,8 @@ class AuthMessages:
     ME_AUTHENTICATED = (
         "👤 <b>Tu Perfil</b>\n\n"
         "ID: <code>{user_id}</code>\n"
-        "Telegram: @{username}"
+        "Telegram: @{username}\n"
+        "Plan: {plan_name}"
     )
     
     ME_NOT_AUTHENTICATED = (
