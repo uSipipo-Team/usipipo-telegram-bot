@@ -7,6 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.0] - 2026-03-30
+
+### Fixed
+- **Bot-Backend Integration** - Complete API endpoint alignment with backend v0.13.0
+  - Fixed 8 endpoint mismatches between bot adapter and backend routes
+  - Auto-register: `/api/v1/auth/telegram/auto-register` (was `/api/v1/auth/auto-register`)
+  - User Profile: `/api/v1/users/me` (was `/api/v1/users/profile`)
+  - VPN Keys: `/api/v1/vpn/keys` (was `/api/v1/vpn-keys`)
+  - Referrals: `/api/v1/referrals/me` (was `/api/v1/referrals/code` and `/api/v1/referrals/stats`)
+
+- **Backend User Profile** - Added missing fields in backend `/users/me` endpoint
+  - Added `updated_at` field (required by User entity)
+  - Added `referred_by` field (required by User entity)
+
+- **Test Suite** - Fixed 11 failing tests (367 tests now passing)
+  - AuthMessages: Added `{plan_name}` placeholder to `ME_AUTHENTICATED`
+  - Help handler test: Updated to expect 2 messages (HELP + SUPPORT)
+  - Payments tests: Updated button values to match actual keyboard
+  - Referrals tests: Fixed mock configuration (handler.api vs mock_api.api_client)
+  - Backend adapter tests: Updated referral code response structure
+
+### Changed
+- **BackendApiAdapter** - Complete endpoint refactoring for backend API alignment
+  - `auto_register()` - Updated to `/api/v1/auth/telegram/auto-register`
+  - `get_user_profile()` - Updated to `/api/v1/users/me`
+  - `list_vpn_keys()` - Updated to `/api/v1/vpn/keys`
+  - `create_vpn_key()` - Updated to `/api/v1/vpn/keys`
+  - `delete_vpn_key()` - Updated to `/api/v1/vpn/keys/{id}`
+  - `get_key_config()` - Updated to `/api/v1/vpn/keys/{id}/config`
+  - `get_referral_code()` - Updated to `/api/v1/referrals/me`
+  - `get_referral_stats()` - Updated to `/api/v1/referrals/me`
+
+### Technical Details
+- **Files Modified:** 8 files
+  - Bot: `src/bot/keyboards/auth.py`, `src/infrastructure/secondary_adapters/backend_api/backend_api_adapter.py`
+  - Backend: `src/infrastructure/api/v1/routes/users.py`
+  - Tests: 5 test files updated
+- **Tests:** 367 tests passing (was 356 passing, 11 failing)
+- **Test Coverage:** 100% of integration tests passing
+
+### Quality Gates
+- ✅ 367/367 tests passing (100%)
+- ✅ Ruff clean
+- ✅ Mypy clean
+- ✅ Integration tests verified with production backend
+
+### Documentation
+- Created `BOT-BACKEND-INTEGRATION-DEBUG.md` - Systematic debugging report
+- Created `BOT-BACKEND-INTEGRATION-FIX.md` - Fix summary and verification
+- Created `TEST-FIXES-SUMMARY.md` - Complete test fixes documentation
+
 ## [1.2.0] - 2026-03-28
 
 ### Added
