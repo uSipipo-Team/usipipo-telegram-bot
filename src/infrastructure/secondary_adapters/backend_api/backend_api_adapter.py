@@ -54,7 +54,7 @@ class BackendApiAdapter(BackendApiPort):
         try:
             client = await self.http_client.get_client()
             response = await client.post(
-                "/api/v1/auth/auto-register",
+                "/api/v1/auth/telegram/auto-register",
                 json={"telegram_id": telegram_id},
             )
             response.raise_for_status()
@@ -125,7 +125,7 @@ class BackendApiAdapter(BackendApiPort):
         try:
             client = await self.http_client.get_client()
             response = await client.get(
-                "/api/v1/users/profile",
+                "/api/v1/users/me",
                 headers={"Authorization": f"Bearer {access_token}"},
             )
             response.raise_for_status()
@@ -158,7 +158,7 @@ class BackendApiAdapter(BackendApiPort):
         try:
             client = await self.http_client.get_client()
             response = await client.get(
-                "/api/v1/vpn-keys",
+                "/api/v1/vpn/keys",
                 headers={"Authorization": f"Bearer {access_token}"},
             )
             response.raise_for_status()
@@ -198,7 +198,7 @@ class BackendApiAdapter(BackendApiPort):
         try:
             client = await self.http_client.get_client()
             response = await client.post(
-                "/api/v1/vpn-keys",
+                "/api/v1/vpn/keys",
                 json={
                     "name": name,
                     "key_type": key_type,
@@ -239,7 +239,7 @@ class BackendApiAdapter(BackendApiPort):
         try:
             client = await self.http_client.get_client()
             response = await client.delete(
-                f"/api/v1/vpn-keys/{key_id}",
+                f"/api/v1/vpn/keys/{key_id}",
                 headers={"Authorization": f"Bearer {access_token}"},
             )
             response.raise_for_status()
@@ -274,7 +274,7 @@ class BackendApiAdapter(BackendApiPort):
         try:
             client = await self.http_client.get_client()
             response = await client.get(
-                f"/api/v1/vpn-keys/{key_id}/config",
+                f"/api/v1/vpn/keys/{key_id}/config",
                 headers={"Authorization": f"Bearer {access_token}"},
             )
             response.raise_for_status()
@@ -393,12 +393,12 @@ class BackendApiAdapter(BackendApiPort):
         try:
             client = await self.http_client.get_client()
             response = await client.get(
-                "/api/v1/referrals/code",
+                "/api/v1/referrals/me",
                 headers={"Authorization": f"Bearer {access_token}"},
             )
             response.raise_for_status()
             data = response.json()
-            return data["code"]
+            return data["referral_code"]
         except httpx.HTTPStatusError as e:
             raise ErrorTranslator.translate(
                 e.response.status_code,
@@ -424,7 +424,7 @@ class BackendApiAdapter(BackendApiPort):
         try:
             client = await self.http_client.get_client()
             response = await client.get(
-                "/api/v1/referrals/stats",
+                "/api/v1/referrals/me",
                 headers={"Authorization": f"Bearer {access_token}"},
             )
             response.raise_for_status()

@@ -211,8 +211,8 @@ class TestShowReferralsCommand:
         # Mock _get_auth_headers
         handler._get_auth_headers = AsyncMock(return_value={"Authorization": "Bearer test_token"})
 
-        # Mock API response
-        mock_api.api_client.get = AsyncMock(return_value={
+        # Mock API response - handler uses self.api.get()
+        handler.api.get = AsyncMock(return_value={
             "referral_code": "ABC123",
             "total_referrals": 5,
             "referral_credits": 10,
@@ -221,7 +221,7 @@ class TestShowReferralsCommand:
         await handler.show_referrals(mock_update, mock_context)
 
         # Should call API
-        mock_api.api_client.get.assert_called_once_with(
+        handler.api.get.assert_called_once_with(
             "/referrals/me",
             headers={"Authorization": "Bearer test_token"},
         )
@@ -262,8 +262,8 @@ class TestGetReferralLinkCommand:
         # Mock _get_auth_headers
         handler._get_auth_headers = AsyncMock(return_value={"Authorization": "Bearer test_token"})
 
-        # Mock API response
-        mock_api.api_client.get = AsyncMock(return_value={
+        # Mock API response - handler uses self.api.get()
+        handler.api.get = AsyncMock(return_value={
             "referral_code": "ABC123",
             "total_referrals": 5,
             "referral_credits": 10,
@@ -272,7 +272,7 @@ class TestGetReferralLinkCommand:
         await handler.get_referral_link(mock_update, mock_context)
 
         # Should call API
-        mock_api.api_client.get.assert_called_once_with(
+        handler.api.get.assert_called_once_with(
             "/referrals/me",
             headers={"Authorization": "Bearer test_token"},
         )
@@ -342,8 +342,8 @@ class TestReferralCallbacks:
         # Mock _get_auth_headers
         handler._get_auth_headers = AsyncMock(return_value={"Authorization": "Bearer test_token"})
 
-        # Mock API response
-        mock_api.api_client.post = AsyncMock(return_value={
+        # Mock API response - handler uses self.api.post()
+        handler.api.post = AsyncMock(return_value={
             "gb_added": 1,
             "data": {
                 "remaining_credits": 5,
@@ -353,7 +353,7 @@ class TestReferralCallbacks:
         await handler.redeem_credits_callback(mock_update, mock_context)
 
         # Should call POST /referrals/redeem
-        mock_api.api_client.post.assert_called_once_with(
+        handler.api.post.assert_called_once_with(
             "/referrals/redeem",
             headers={"Authorization": "Bearer test_token"},
             json={"credits": 10},
