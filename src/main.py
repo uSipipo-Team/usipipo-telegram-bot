@@ -283,6 +283,11 @@ def create_application(token: str) -> Application:
     for handler in get_referrals_callback_handlers(_api_client, _token_storage):
         app.add_handler(handler)
 
+    # Register callback handler for user profile
+    from src.bot.handlers.user_profile import get_user_profile_handlers
+    for handler in get_user_profile_handlers(_api_client, _token_storage):
+        app.add_handler(handler)
+
     # Register main menu handler
     from src.bot.handlers.main_menu import show_main_menu
     from telegram.ext import CallbackQueryHandler

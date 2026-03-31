@@ -11,9 +11,23 @@
 
 ## Versión
 
+**v0.3.0** - User Profile "Mis Datos" Feature
+
 **v0.2.0** - VPN Key Management (En desarrollo)
 
 **v0.1.0** - Invisible Authentication (Estable)
+
+## Características
+
+- 🔐 **Autenticación Invisible**: Auto-registro vía Telegram
+- 👤 **Perfil de Usuario**: Ver información detallada del usuario, balance, referidos y lealtad
+- 🔑 **Gestión de Claves VPN**: Crear, ver, renombrar y eliminar claves WireGuard/Outline
+- 💰 **Sistema de Pagos**: Crypto (USDT-BSC) y Telegram Stars
+- 📊 **Programa de Referidos**: Código único y estadísticas
+- ⭐ **Programa de Lealtad**: Bonus por compras recurrentes
+- 🎯 **Paquetes de Datos**: Compra de GB adicionales
+- 🔄 **Suscripciones**: Planes mensuales renovables
+- 💬 **Soporte Técnico**: Integración con bot de soporte
 
 ## Documentación
 
