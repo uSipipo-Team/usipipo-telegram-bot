@@ -78,6 +78,16 @@ class APIClient:
         response.raise_for_status()
         return {"success": True}
 
+    async def put(
+        self, endpoint: str, data: Optional[dict] = None, headers: Optional[dict] = None
+    ) -> dict[str, Any]:
+        """Realiza una petición PUT al backend."""
+        client = await self._get_client()
+        logger.debug(f"PUT {endpoint}")
+        response = await client.put(endpoint, json=data, headers=headers)
+        response.raise_for_status()
+        return response.json()
+
     async def close(self) -> None:
         """Cierra el cliente HTTP."""
         if self._client and not self._client.is_closed:

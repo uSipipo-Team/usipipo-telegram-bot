@@ -179,7 +179,7 @@ class PackagesHandler:
             headers = await self._get_auth_headers(telegram_id)
             try:
                 response = await self.api.get("/data-packages", headers=headers)
-                packages = response if isinstance(response, list) else []
+                packages: list = response if isinstance(response, list) else []
                 package = next((p for p in packages if p.get("id") == package_id), None)
             except Exception:
                 # Fallback
@@ -273,7 +273,7 @@ class PackagesHandler:
                 headers = await self._get_auth_headers(telegram_id)
                 try:
                     response = await self.api.get("/data-packages", headers=headers)
-                    packages = response if isinstance(response, list) else []
+                    packages: list = response if isinstance(response, list) else []
                     package = next((p for p in packages if p.get("id") == package_id), None)
                 except Exception:
                     package = None
@@ -326,7 +326,7 @@ class PackagesHandler:
                 headers = await self._get_auth_headers(telegram_id)
                 try:
                     response = await self.api.get("/data-packages", headers=headers)
-                    packages = response if isinstance(response, list) else []
+                    packages: list = response if isinstance(response, list) else []
                     package = next((p for p in packages if p.get("id") == package_id), None)
                 except Exception:
                     package = None
@@ -369,7 +369,9 @@ class PackagesHandler:
                 description = f"{package.get('data_gb', 0):.0f} GB de datos VPN"
 
             # Send invoice via Telegram Bot API
-            if update.effective_chat:
+            if update.effective_chat and payment_id and stars_amount:
+                from telegram import LabeledPrice
+
                 await context.bot.send_invoice(
                     chat_id=update.effective_chat.id,
                     title=title,
@@ -377,7 +379,7 @@ class PackagesHandler:
                     payload=payment_id,
                     provider_token="",  # Empty for Telegram Stars
                     currency="XTR",  # Telegram Stars currency
-                    prices=[{"label": title, "amount": stars_amount}],
+                    prices=[LabeledPrice(label=title, amount=stars_amount)],
                     start_parameter=f"stars_{package_id}",
                     need_name=False,
                     need_email=False,
@@ -447,7 +449,7 @@ class PackagesHandler:
                 headers = await self._get_auth_headers(telegram_id)
                 try:
                     response = await self.api.get("/data-packages", headers=headers)
-                    packages = response if isinstance(response, list) else []
+                    packages: list = response if isinstance(response, list) else []
                     package = next((p for p in packages if p.get("id") == package_id), None)
                 except Exception:
                     package = None
@@ -461,7 +463,7 @@ class PackagesHandler:
                     data={
                         "payment_id": payment_payload,
                         "package_id": package_id,
-                        "telegram_payment_id": successful_payment.telegram_payment_id,
+                        "telegram_payment_id": successful_payment.telegram_payment_charge_id,
                     },
                 )
                 success = activation_response.get("success", False)
@@ -530,7 +532,7 @@ class PackagesHandler:
                 headers = await self._get_auth_headers(telegram_id)
                 try:
                     response = await self.api.get("/data-packages", headers=headers)
-                    packages = response if isinstance(response, list) else []
+                    packages: list = response if isinstance(response, list) else []
                     package = next((p for p in packages if p.get("id") == package_id), None)
                 except Exception:
                     package = None
@@ -564,6 +566,13 @@ class PackagesHandler:
 
             except Exception as e:
                 logger.error(f"Error creating crypto payment: {e}")
+                message = PackagesMessages.Error.CRYPTO_PAYMENT_FAILED
+                keyboard = PackagesKeyboard.back_to_menu()
+                await self._safe_edit_message(query, context, message, keyboard)
+                return
+
+            if not payment_id:
+                logger.error("No payment_id in response")
                 message = PackagesMessages.Error.CRYPTO_PAYMENT_FAILED
                 keyboard = PackagesKeyboard.back_to_menu()
                 await self._safe_edit_message(query, context, message, keyboard)
@@ -714,7 +723,7 @@ class PackagesHandler:
             headers = await self._get_auth_headers(telegram_id)
             try:
                 response = await self.api.get("/users/me/slots", headers=headers)
-                slots = response if isinstance(response, list) else []
+                slots: list = response if isinstance(response, list) else []
                 max_slots = response.get("max_slots", 5) if isinstance(response, dict) else 5
                 used_slots = (
                     len([s for s in slots if s.get("status") == "active"])

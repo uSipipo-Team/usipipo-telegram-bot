@@ -83,7 +83,7 @@ class PaymentsHandler:
 
             # Get payment methods from backend (optional)
             headers = await self._get_auth_headers(telegram_id)
-            payment_methods = []
+            payment_methods: list = []
             try:
                 # Try to get available payment methods
                 response = await self.api.get("/payments/methods", headers=headers)
@@ -168,6 +168,13 @@ class PaymentsHandler:
                 await self._safe_edit_message(query, context, message, keyboard)
                 return
 
+            if not payment_id:
+                logger.error("No payment_id in response")
+                message = PaymentsMessages.Error.CRYPTO_PAYMENT_FAILED
+                keyboard = PaymentsKeyboard.back_to_menu()
+                await self._safe_edit_message(query, context, message, keyboard)
+                return
+
             # Show payment instructions
             message = PaymentsMessages.Payment.CRYPTO_PAYMENT.format(
                 amount=f"{amount_usd:.2f}",
@@ -232,7 +239,9 @@ class PaymentsHandler:
                 description = f"Recarga de {stars_amount} Stars para servicios VPN"
 
             # Send invoice via Telegram Bot API
-            if update.effective_chat:
+            if update.effective_chat and payment_id and stars_amount:
+                from telegram import LabeledPrice
+
                 await context.bot.send_invoice(
                     chat_id=update.effective_chat.id,
                     title=title,
@@ -240,7 +249,7 @@ class PaymentsHandler:
                     payload=payment_id,
                     provider_token="",  # Empty for Telegram Stars
                     currency="XTR",  # Telegram Stars currency
-                    prices=[{"label": title, "amount": stars_amount}],
+                    prices=[LabeledPrice(label=title, amount=stars_amount)],
                     start_parameter=f"stars_{amount}",
                     need_name=False,
                     need_email=False,
@@ -418,7 +427,7 @@ class PaymentsHandler:
                     headers=headers,
                     data={
                         "payment_id": payment_payload,
-                        "telegram_payment_id": successful_payment.telegram_payment_id,
+                        "telegram_payment_id": successful_payment.telegram_payment_charge_id,
                         "stars_amount": int(amount) if amount.isdigit() else 0,
                     },
                 )

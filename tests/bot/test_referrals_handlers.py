@@ -364,7 +364,7 @@ class TestReferralCallbacks:
         handler.api.post.assert_called_once_with(
             "/referrals/redeem",
             headers={"Authorization": "Bearer test_token"},
-            json={"credits": 10},
+            data={"credits": 10},
         )
 
         # Should edit message with confirmation

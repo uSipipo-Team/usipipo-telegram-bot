@@ -232,7 +232,7 @@ class SubscriptionsHandler:
             headers = await self._get_auth_headers(telegram_id)
             try:
                 plans_response = await self.api.get("/subscriptions/plans", headers=headers)
-                plans = plans_response if isinstance(plans_response, list) else []
+                plans: list = plans_response if isinstance(plans_response, list) else []
                 plan = next((p for p in plans if p.get("id") == plan_id), None)
             except Exception:
                 # Fallback to default plans (legacy pricing: 1 USDT = 120 Stars)
