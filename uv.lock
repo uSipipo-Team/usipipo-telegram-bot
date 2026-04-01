@@ -491,19 +491,19 @@ wheels = [
 
 [[package]]
 name = "usipipo-commons"
-version = "0.14.0"
+version = "0.15.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/87/88/35f1ab74c3b025f7b5383c0ab67b6ffe6c2c94059a9c9d4a50e7fa924b3b/usipipo_commons-0.14.0.tar.gz", hash = "sha256:6ee59e1aecba0bc8a266c618d60029fad46180ee49a66545851e926735d16bf0", size = 84500, upload-time = "2026-03-30T23:10:55.224Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/86/07/c98d6ef10e7f074c2cf5ce751b4ec521a43006ef0c1bafffbbcec83200ec/usipipo_commons-0.15.0.tar.gz", hash = "sha256:6f29445736df22fb6c9e6fa3857e51a57b8fc520aeff9b16120c0043068aea64", size = 34729, upload-time = "2026-04-01T23:31:45.927Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/91/b0/35092078ad5fe700b438138502ed38f600a7f00cb855d3965da2e523b131/usipipo_commons-0.14.0-py3-none-any.whl", hash = "sha256:ce767dd6428612415716137a83a28590b29fbb00d0b4325366ca01221b7f5cfd", size = 44483, upload-time = "2026-03-30T23:10:56.327Z" },
+    { url = "https://files.pythonhosted.org/packages/d2/9d/94ed5c9d01b6a04363b582fae2b737ce94a5a73094acbbc744442e346d47/usipipo_commons-0.15.0-py3-none-any.whl", hash = "sha256:6f3aab8a1f087c089e540a8fe92b97c2fa31e1bb87ebe2e307dd2a0a2edca077", size = 44964, upload-time = "2026-04-01T23:31:44.668Z" },
 ]
 
 [[package]]
 name = "usipipo-telegram-bot"
-version = "0.4.0"
+version = "0.5.0"
 source = { editable = "." }
 dependencies = [
     { name = "httpx" },
@@ -535,6 +535,6 @@ requires-dist = [
     { name = "python-telegram-bot", specifier = ">=21.0" },
     { name = "redis", specifier = ">=7.3.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.1.0" },
-    { name = "usipipo-commons", specifier = ">=0.12.0" },
+    { name = "usipipo-commons", specifier = ">=0.15.0" },
 ]
 provides-extras = ["dev"]
