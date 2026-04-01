@@ -86,7 +86,7 @@ class SubscriptionsHandler:
                 plan_name = subscription.get("plan_name", "Plan")
                 renewal_date = subscription.get("renewal_date", "N/A")[:10]
                 price = subscription.get("price", 0)
-                
+
                 message = SubscriptionsMessages.Subscription.SUBSCRIPTION_ACTIVE.format(
                     plan_name=plan_name,
                     renewal_date=renewal_date,
@@ -99,9 +99,7 @@ class SubscriptionsHandler:
                 keyboard = SubscriptionsKeyboard.subscription_inactive_menu()
 
             if update.callback_query:
-                await self._safe_edit_message(
-                    update.callback_query, context, message, keyboard
-                )
+                await self._safe_edit_message(update.callback_query, context, message, keyboard)
             elif update.message:
                 await update.message.reply_text(
                     message,
@@ -278,9 +276,9 @@ class SubscriptionsHandler:
                 price = f"{plan.get('price', 0):.2f}"
                 duration = plan.get("duration_days", 30)
                 features = plan.get("features", [])
-                
+
                 features_list = "\n".join([f"  ✓ {f}" for f in features])
-                
+
                 message = SubscriptionsMessages.Plans.PLAN_DETAILS.format(
                     plan_name=plan_name,
                     price=price,
@@ -314,12 +312,14 @@ class SubscriptionsHandler:
         if len(parts) < 3:
             logger.error(f"Invalid callback data: {query.data}")
             return
-        
+
         plan_id = parts[2] if len(parts) > 2 else ""
         payment_method = parts[3] if len(parts) > 3 else "crypto"
         telegram_id = update.effective_user.id if update.effective_user else 0
 
-        logger.info(f"User {telegram_id} activating subscription: plan={plan_id}, payment={payment_method}")
+        logger.info(
+            f"User {telegram_id} activating subscription: plan={plan_id}, payment={payment_method}"
+        )
 
         try:
             # Check authentication
@@ -363,13 +363,17 @@ class SubscriptionsHandler:
                     renewal_date=renewal_date,
                 )
                 keyboard = SubscriptionsKeyboard.back_to_menu()
-                logger.info(f"User {telegram_id} successfully activated subscription: {subscription_id}")
+                logger.info(
+                    f"User {telegram_id} successfully activated subscription: {subscription_id}"
+                )
             else:
                 message = SubscriptionsMessages.Subscription.ACTIVATION_FAILED.format(
                     reason=error_message or "Error desconocido",
                 )
                 keyboard = SubscriptionsKeyboard.back_to_plans()
-                logger.warning(f"User {telegram_id} failed to activate subscription: {error_message}")
+                logger.warning(
+                    f"User {telegram_id} failed to activate subscription: {error_message}"
+                )
 
             await self._safe_edit_message(query, context, message, keyboard)
 
@@ -502,9 +506,9 @@ class SubscriptionsHandler:
                 price = f"{subscription.get('price', 0):.2f}"
                 devices = subscription.get("devices", 0)
                 data_limit = subscription.get("data_limit", "Ilimitado")
-                
+
                 status_icon = "✅" if status == "active" else "⏳" if status == "pending" else "❌"
-                
+
                 message = SubscriptionsMessages.Subscription.SUBSCRIPTION_DETAILS.format(
                     status_icon=status_icon,
                     status=status.upper(),
@@ -563,7 +567,9 @@ class SubscriptionsHandler:
 from src.bot.keyboards.subscriptions import SubscriptionsKeyboard  # noqa: E402
 
 
-def get_subscriptions_handlers(api_client: APIClient, token_storage: TokenStorage) -> list[CommandHandler]:
+def get_subscriptions_handlers(
+    api_client: APIClient, token_storage: TokenStorage
+) -> list[CommandHandler]:
     """Retorna los handlers de comandos para suscripciones."""
     handler = SubscriptionsHandler(api_client, token_storage)
 
@@ -577,7 +583,9 @@ def get_subscriptions_handlers(api_client: APIClient, token_storage: TokenStorag
     ]
 
 
-def get_subscriptions_callback_handlers(api_client: APIClient, token_storage: TokenStorage) -> list[CallbackQueryHandler]:
+def get_subscriptions_callback_handlers(
+    api_client: APIClient, token_storage: TokenStorage
+) -> list[CallbackQueryHandler]:
     """Retorna los handlers de callbacks para suscripciones."""
     handler = SubscriptionsHandler(api_client, token_storage)
 
@@ -587,6 +595,8 @@ def get_subscriptions_callback_handlers(api_client: APIClient, token_storage: To
         CallbackQueryHandler(handler.select_plan, pattern="^select_plan_"),
         CallbackQueryHandler(handler.activate_subscription, pattern="^activate_plan_"),
         CallbackQueryHandler(handler.renew_subscription, pattern="^renew_subscription$"),
-        CallbackQueryHandler(handler.view_subscription_status, pattern="^view_subscription_status$"),
+        CallbackQueryHandler(
+            handler.view_subscription_status, pattern="^view_subscription_status$"
+        ),
         CallbackQueryHandler(handler.choose_payment_method, pattern="^choose_payment_"),
     ]

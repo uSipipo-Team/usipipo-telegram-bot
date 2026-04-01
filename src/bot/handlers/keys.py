@@ -145,9 +145,7 @@ class KeysHandler:
             # Count by type
             total_keys = len(keys)
             outline_count = len([k for k in keys if k.get("key_type", "").lower() == "outline"])
-            wireguard_count = len(
-                [k for k in keys if k.get("key_type", "").lower() == "wireguard"]
-            )
+            wireguard_count = len([k for k in keys if k.get("key_type", "").lower() == "wireguard"])
 
             if total_keys == 0:
                 message = KeysMessages.NO_KEYS
@@ -161,11 +159,11 @@ class KeysHandler:
             keyboard = KeysKeyboard.main_menu(total_keys, outline_count, wireguard_count)
 
             if update.callback_query:
-                await self._safe_edit_message(
-                    update.callback_query, context, message, keyboard
-                )
+                await self._safe_edit_message(update.callback_query, context, message, keyboard)
             elif update.message:
-                await update.message.reply_text(message, reply_markup=keyboard, parse_mode="Markdown")
+                await update.message.reply_text(
+                    message, reply_markup=keyboard, parse_mode="Markdown"
+                )
 
         except Exception as e:
             logger.error(f"Error showing keys menu: {e}")
@@ -213,7 +211,9 @@ class KeysHandler:
 
                 # Add key info
                 for key in filtered_keys:
-                    status = "🟢 Activa" if key.get("status", "active") == "active" else "🔴 Inactiva"
+                    status = (
+                        "🟢 Activa" if key.get("status", "active") == "active" else "🔴 Inactiva"
+                    )
                     message += (
                         f"\n🔑 {key.get('name', 'Unknown')}\n"
                         f"   📊 {key.get('data_used_gb', 0):.2f}/{key.get('data_limit_gb', 0):.2f} GB\n"
@@ -378,10 +378,16 @@ class KeysHandler:
             logger.error(f"Error fetching servers: {e}")
             await query.edit_message_text(
                 "⚠️ Error al cargar servidores. ¿Reintentar?",
-                reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("🔄 Reintentar", callback_data=f"vpn_create_{protocol}")],
-                    [InlineKeyboardButton("🔙 Volver", callback_data="vpn_keys_menu")],
-                ]),
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton(
+                                "🔄 Reintentar", callback_data=f"vpn_create_{protocol}"
+                            )
+                        ],
+                        [InlineKeyboardButton("🔙 Volver", callback_data="vpn_keys_menu")],
+                    ]
+                ),
             )
             return ConversationHandler.END
 
@@ -422,9 +428,13 @@ class KeysHandler:
 
                 message_text = "🌍 <b>Todos los Servidores Disponibles</b>\n\n"
                 for server in all_servers:
-                    load_emoji = ServerKeyboards.LOAD_EMOJIS.get(server.get("load_level", "low"), "🟢")
-                    city_text = f" - {server.get('city', '')}" if server.get('city') else ""
-                    message_text += f"{server.get('country_name', 'Unknown')}{city_text} {load_emoji}\n"
+                    load_emoji = ServerKeyboards.LOAD_EMOJIS.get(
+                        server.get("load_level", "low"), "🟢"
+                    )
+                    city_text = f" - {server.get('city', '')}" if server.get("city") else ""
+                    message_text += (
+                        f"{server.get('country_name', 'Unknown')}{city_text} {load_emoji}\n"
+                    )
 
                 await query.edit_message_text(
                     message_text,
@@ -452,9 +462,11 @@ class KeysHandler:
             "Ahora ingresa un <b>nombre</b> para tu clave VPN:\n\n"
             "<i>Ejemplo: Mi Casa, Trabajo, etc.</i>",
             parse_mode="HTML",
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("🔙 Cancelar", callback_data="vpn_keys_menu")],
-            ]),
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [InlineKeyboardButton("🔙 Cancelar", callback_data="vpn_keys_menu")],
+                ]
+            ),
         )
 
         return INPUT_NAME
@@ -479,13 +491,13 @@ class KeysHandler:
 
         for i, server in enumerate(recommended, 1):
             load_emoji = load_emojis.get(server.get("load_level", "low"), "🟢")
-            city_text = f" - {server.get('city', '')}" if server.get('city') else ""
+            city_text = f" - {server.get('city', '')}" if server.get("city") else ""
 
-            message += f"┌─────────────────────────────\n"
+            message += "┌─────────────────────────────\n"
             message += f"│ {i}. {server.get('country_name', 'Unknown')} {city_text}\n"
             message += f"│ Servidor: {server.get('name', 'N/A')}\n"
             message += f"│ {load_emoji} Carga: {server.get('load_percentage', 0)}% • 📶 Online\n"
-            message += f"└─────────────────────────────\n\n"
+            message += "└─────────────────────────────\n\n"
 
         message += "━━━━━━━━━━━━━━━━━━━━\n"
         message += "ℹ️ Los servidores se actualizan en tiempo real\n"
@@ -552,7 +564,7 @@ class KeysHandler:
             logger.info(f"✅ {vpn_type} key '{key_name}' created: {response.get('id')}")
 
             # Get key data from response
-            key_id = response.get("id")
+            response.get("id")
             key_config = response.get("config", "")
             data_limit = response.get("data_limit_gb", 5.0)
 
@@ -648,7 +660,7 @@ class KeysHandler:
             if context.user_data is not None:
                 context.user_data["rename_key_id"] = key_id
 
-            message = "✏️ *Renombrar Clave*\n\n" "Por favor, escribe el nuevo nombre para tu clave:"
+            message = "✏️ *Renombrar Clave*\n\nPor favor, escribe el nuevo nombre para tu clave:"
 
             await self._safe_edit_message(
                 query,
@@ -829,7 +841,7 @@ class KeysHandler:
         logger.warning(f"User {telegram_id} deleting key {key_id}")
 
         try:
-            message = "⚠️ *¿Eliminar clave?*\n\n" "Esta acción no se puede deshacer."
+            message = "⚠️ *¿Eliminar clave?*\n\nEsta acción no se puede deshacer."
 
             await self._safe_edit_message(
                 query,
@@ -909,9 +921,7 @@ class KeysHandler:
 
         try:
             headers = await self._get_auth_headers(telegram_id)
-            response = await self.api.get(
-                f"/vpn/keys/{key_id}/config", headers=headers
-            )
+            response = await self.api.get(f"/vpn/keys/{key_id}/config", headers=headers)
 
             config_str = response.get("config_string", "")
             key_name = response.get("external_id", "wg_config")
@@ -966,9 +976,7 @@ class KeysHandler:
 
         try:
             headers = await self._get_auth_headers(telegram_id)
-            response = await self.api.get(
-                f"/vpn/keys/{key_id}/config", headers=headers
-            )
+            response = await self.api.get(f"/vpn/keys/{key_id}/config", headers=headers)
 
             access_url = response.get("access_url", "")
 
@@ -1034,9 +1042,7 @@ class KeysHandler:
                 overall_percentage = (total_usage / total_limit * 100) if total_limit > 0 else 0
 
                 outline_keys = [k for k in keys if k.get("key_type", "").lower() == "outline"]
-                wireguard_keys = [
-                    k for k in keys if k.get("key_type", "").lower() == "wireguard"
-                ]
+                wireguard_keys = [k for k in keys if k.get("key_type", "").lower() == "wireguard"]
 
                 usage_bar = self._generate_progress_bar(overall_percentage)
 

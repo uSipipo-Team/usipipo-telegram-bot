@@ -10,8 +10,10 @@ class TestOperationsHandler:
     @pytest.mark.asyncio
     async def test_operations_handler_initialization(self):
         """OperationsHandler se inicializa correctamente."""
-        with patch('src.bot.handlers.operations.APIClient'), \
-             patch('src.bot.handlers.operations.TokenStorage'):
+        with (
+            patch("src.bot.handlers.operations.APIClient"),
+            patch("src.bot.handlers.operations.TokenStorage"),
+        ):
             from src.bot.handlers.operations import OperationsHandler
 
             mock_api = AsyncMock()
@@ -27,69 +29,69 @@ class TestOperationsHandler:
         """OperationsMessages constants están definidas."""
         from src.bot.keyboards.messages_operations import OperationsMessages
 
-        assert hasattr(OperationsMessages, 'Menu')
-        assert hasattr(OperationsMessages, 'Credits')
-        assert hasattr(OperationsMessages, 'Shop')
-        assert hasattr(OperationsMessages, 'Transactions')
-        assert hasattr(OperationsMessages, 'Referrals')
+        assert hasattr(OperationsMessages, "Menu")
+        assert hasattr(OperationsMessages, "Credits")
+        assert hasattr(OperationsMessages, "Shop")
+        assert hasattr(OperationsMessages, "Transactions")
+        assert hasattr(OperationsMessages, "Referrals")
 
     @pytest.mark.asyncio
     async def test_operations_messages_has_menu_messages(self):
         """OperationsMessages tiene mensajes de menú."""
         from src.bot.keyboards.messages_operations import OperationsMessages
 
-        assert hasattr(OperationsMessages.Menu, 'MAIN')
-        assert hasattr(OperationsMessages.Menu, 'MAIN_WITH_CREDITS')
+        assert hasattr(OperationsMessages.Menu, "MAIN")
+        assert hasattr(OperationsMessages.Menu, "MAIN_WITH_CREDITS")
 
     @pytest.mark.asyncio
     async def test_operations_messages_has_credits_messages(self):
         """OperationsMessages tiene mensajes de créditos."""
         from src.bot.keyboards.messages_operations import OperationsMessages
 
-        assert hasattr(OperationsMessages.Credits, 'DISPLAY')
-        assert hasattr(OperationsMessages.Credits, 'REDEEM_SUCCESS')
-        assert hasattr(OperationsMessages.Credits, 'INSUFFICIENT_CREDITS')
+        assert hasattr(OperationsMessages.Credits, "DISPLAY")
+        assert hasattr(OperationsMessages.Credits, "REDEEM_SUCCESS")
+        assert hasattr(OperationsMessages.Credits, "INSUFFICIENT_CREDITS")
 
     @pytest.mark.asyncio
     async def test_operations_messages_has_shop_messages(self):
         """OperationsMessages tiene mensajes de tienda."""
         from src.bot.keyboards.messages_operations import OperationsMessages
 
-        assert hasattr(OperationsMessages.Shop, 'WELCOME')
-        assert hasattr(OperationsMessages.Shop, 'ITEMS_LIST')
+        assert hasattr(OperationsMessages.Shop, "WELCOME")
+        assert hasattr(OperationsMessages.Shop, "ITEMS_LIST")
 
     @pytest.mark.asyncio
     async def test_operations_messages_has_transactions_messages(self):
         """OperationsMessages tiene mensajes de transacciones."""
         from src.bot.keyboards.messages_operations import OperationsMessages
 
-        assert hasattr(OperationsMessages.Transactions, 'HISTORY_HEADER')
-        assert hasattr(OperationsMessages.Transactions, 'NO_TRANSACTIONS')
-        assert hasattr(OperationsMessages.Transactions, 'TRANSACTION_ITEM')
+        assert hasattr(OperationsMessages.Transactions, "HISTORY_HEADER")
+        assert hasattr(OperationsMessages.Transactions, "NO_TRANSACTIONS")
+        assert hasattr(OperationsMessages.Transactions, "TRANSACTION_ITEM")
 
     @pytest.mark.asyncio
     async def test_operations_messages_has_referrals_messages(self):
         """OperationsMessages tiene mensajes de referidos."""
         from src.bot.keyboards.messages_operations import OperationsMessages
 
-        assert hasattr(OperationsMessages.Referrals, 'MENU')
+        assert hasattr(OperationsMessages.Referrals, "MENU")
 
     @pytest.mark.asyncio
     async def test_operations_messages_has_error_messages(self):
         """OperationsMessages tiene mensajes de error."""
         from src.bot.keyboards.messages_operations import OperationsMessages
 
-        assert hasattr(OperationsMessages.Error, 'SYSTEM_ERROR')
-        assert hasattr(OperationsMessages.Error, 'OPERATION_FAILED')
-        assert hasattr(OperationsMessages.Error, 'INVALID_OPTION')
+        assert hasattr(OperationsMessages.Error, "SYSTEM_ERROR")
+        assert hasattr(OperationsMessages.Error, "OPERATION_FAILED")
+        assert hasattr(OperationsMessages.Error, "INVALID_OPTION")
 
     @pytest.mark.asyncio
     async def test_operations_messages_has_success_messages(self):
         """OperationsMessages tiene mensajes de éxito."""
         from src.bot.keyboards.messages_operations import OperationsMessages
 
-        assert hasattr(OperationsMessages.Success, 'OPERATION_COMPLETED')
-        assert hasattr(OperationsMessages.Success, 'CHANGES_SAVED')
+        assert hasattr(OperationsMessages.Success, "OPERATION_COMPLETED")
+        assert hasattr(OperationsMessages.Success, "CHANGES_SAVED")
 
     @pytest.mark.asyncio
     async def test_operations_messages_main_menu_has_placeholder(self):
@@ -103,8 +105,8 @@ class TestOperationsHandler:
         """OperationsKeyboard.operations_menu existe."""
         from src.bot.keyboards.operations import OperationsKeyboard
 
-        assert hasattr(OperationsKeyboard, 'operations_menu')
-        assert callable(getattr(OperationsKeyboard, 'operations_menu'))
+        assert hasattr(OperationsKeyboard, "operations_menu")
+        assert callable(getattr(OperationsKeyboard, "operations_menu"))
 
     @pytest.mark.asyncio
     async def test_operations_keyboard_main_menu_returns_inline_keyboard(self):
@@ -135,6 +137,7 @@ class TestOperationsHandler:
         keyboard = OperationsKeyboard.credits_menu(credits=50)
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
     @pytest.mark.asyncio
@@ -145,6 +148,7 @@ class TestOperationsHandler:
         keyboard = OperationsKeyboard.shop_menu()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
     @pytest.mark.asyncio
@@ -155,6 +159,7 @@ class TestOperationsHandler:
         keyboard = OperationsKeyboard.transactions_history_menu(has_more=False, page=0)
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
     @pytest.mark.asyncio
@@ -165,20 +170,21 @@ class TestOperationsHandler:
         keyboard = OperationsKeyboard.back_to_operations()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
     @pytest.mark.asyncio
     async def test_operations_handler_get_auth_headers(self):
         """_get_auth_headers retorna headers con token."""
-        with patch('src.bot.handlers.operations.APIClient'), \
-             patch('src.bot.handlers.operations.TokenStorage') as MockTokenStorage:
+        with (
+            patch("src.bot.handlers.operations.APIClient"),
+            patch("src.bot.handlers.operations.TokenStorage"),
+        ):
             from src.bot.handlers.operations import OperationsHandler
 
             mock_api = AsyncMock()
             mock_storage = AsyncMock()
-            mock_storage.get.return_value = {
-                "access_token": "test-token-123"
-            }
+            mock_storage.get.return_value = {"access_token": "test-token-123"}
 
             handler = OperationsHandler(mock_api, mock_storage)
 
@@ -190,8 +196,10 @@ class TestOperationsHandler:
     @pytest.mark.asyncio
     async def test_operations_handler_get_auth_headers_unauthenticated(self):
         """_get_auth_headers lanza error si no está autenticado."""
-        with patch('src.bot.handlers.operations.APIClient'), \
-             patch('src.bot.handlers.operations.TokenStorage') as MockTokenStorage:
+        with (
+            patch("src.bot.handlers.operations.APIClient"),
+            patch("src.bot.handlers.operations.TokenStorage"),
+        ):
             from src.bot.handlers.operations import OperationsHandler
 
             mock_api = AsyncMock()
@@ -206,8 +214,10 @@ class TestOperationsHandler:
     @pytest.mark.asyncio
     async def test_get_operations_handlers_returns_list(self):
         """get_operations_handlers retorna una lista."""
-        with patch('src.bot.handlers.operations.APIClient'), \
-             patch('src.bot.handlers.operations.TokenStorage'):
+        with (
+            patch("src.bot.handlers.operations.APIClient"),
+            patch("src.bot.handlers.operations.TokenStorage"),
+        ):
             from src.bot.handlers.operations import get_operations_handlers
 
             mock_api = AsyncMock()
@@ -221,8 +231,10 @@ class TestOperationsHandler:
     @pytest.mark.asyncio
     async def test_get_operations_callback_handlers_returns_list(self):
         """get_operations_callback_handlers retorna una lista."""
-        with patch('src.bot.handlers.operations.APIClient'), \
-             patch('src.bot.handlers.operations.TokenStorage'):
+        with (
+            patch("src.bot.handlers.operations.APIClient"),
+            patch("src.bot.handlers.operations.TokenStorage"),
+        ):
             from src.bot.handlers.operations import get_operations_callback_handlers
 
             mock_api = AsyncMock()

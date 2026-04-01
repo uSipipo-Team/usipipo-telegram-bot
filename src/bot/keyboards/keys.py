@@ -7,7 +7,9 @@ class KeysKeyboard:
     """Teclados para gestión de claves VPN."""
 
     @staticmethod
-    def main_menu(total_keys: int, outline_count: int, wireguard_count: int) -> InlineKeyboardMarkup:
+    def main_menu(
+        total_keys: int, outline_count: int, wireguard_count: int
+    ) -> InlineKeyboardMarkup:
         """
         Teclado del menú principal de gestión de claves.
 
@@ -85,9 +87,7 @@ class KeysKeyboard:
             callback_data = f"vpn_key_details_{key['id']}"
             keyboard.append([InlineKeyboardButton(button_text, callback_data=callback_data)])
 
-        keyboard.append(
-            [InlineKeyboardButton("➕ Crear Nueva", callback_data="vpn_create_key")]
-        )
+        keyboard.append([InlineKeyboardButton("➕ Crear Nueva", callback_data="vpn_create_key")])
         keyboard.append([InlineKeyboardButton("🔙 Volver", callback_data="vpn_keys_menu")])
 
         return InlineKeyboardMarkup(keyboard)
@@ -141,11 +141,7 @@ class KeysKeyboard:
 
         # 3. Eliminar clave
         keyboard.append(
-            [
-                InlineKeyboardButton(
-                    "🗑️ Eliminar Clave", callback_data=f"vpn_delete_{key_id}"
-                )
-            ]
+            [InlineKeyboardButton("🗑️ Eliminar Clave", callback_data=f"vpn_delete_{key_id}")]
         )
 
         # 4. Navegación
@@ -168,7 +164,9 @@ class KeysKeyboard:
         """
         keyboard = [
             [
-                InlineKeyboardButton("✅ Sí, Eliminar", callback_data=f"vpn_confirm_delete_{key_id}"),
+                InlineKeyboardButton(
+                    "✅ Sí, Eliminar", callback_data=f"vpn_confirm_delete_{key_id}"
+                ),
                 InlineKeyboardButton("❌ Cancelar", callback_data="vpn_cancel_delete"),
             ]
         ]

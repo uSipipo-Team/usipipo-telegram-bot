@@ -40,6 +40,7 @@ class MockResponse:
         """httpx.Response.raise_for_status() es síncrono."""
         if self.status_code >= 400:
             import httpx
+
             raise httpx.HTTPStatusError(
                 f"HTTP {self.status_code}",
                 request=AsyncMock(),
@@ -51,12 +52,14 @@ class MockResponse:
 async def test_auto_register_success(adapter: BackendApiAdapter):
     """Test de auto-registro exitoso."""
     user_id = str(uuid4())
-    mock_response = MockResponse({
-        "access_token": "test_access",
-        "refresh_token": "test_refresh",
-        "expires_in": 1800,
-        "user_id": user_id,
-    })
+    mock_response = MockResponse(
+        {
+            "access_token": "test_access",
+            "refresh_token": "test_refresh",
+            "expires_in": 1800,
+            "user_id": user_id,
+        }
+    )
 
     mock_client = AsyncMock()
     mock_client.post = AsyncMock(return_value=mock_response)
@@ -92,11 +95,13 @@ async def test_auto_register_backend_error(adapter: BackendApiAdapter):
 @pytest.mark.asyncio
 async def test_refresh_tokens_success(adapter: BackendApiAdapter):
     """Test de refresh de tokens exitoso."""
-    mock_response = MockResponse({
-        "access_token": "new_access",
-        "refresh_token": "new_refresh",
-        "expires_in": 1800,
-    })
+    mock_response = MockResponse(
+        {
+            "access_token": "new_access",
+            "refresh_token": "new_refresh",
+            "expires_in": 1800,
+        }
+    )
 
     mock_client = AsyncMock()
     mock_client.post = AsyncMock(return_value=mock_response)
@@ -115,21 +120,23 @@ async def test_refresh_tokens_success(adapter: BackendApiAdapter):
 @pytest.mark.asyncio
 async def test_list_vpn_keys_success(adapter: BackendApiAdapter):
     """Test de listado de VPN keys exitoso."""
-    mock_response = MockResponse([
-        {
-            "id": str(uuid4()),
-            "user_id": str(uuid4()),
-            "name": "Test Key",
-            "key_type": "wireguard",
-            "status": "active",
-            "key_data": "wg://...",
-            "external_id": "ext_123",
-            "created_at": "2026-03-24T00:00:00Z",
-            "used_bytes": 0,
-            "data_limit_bytes": 5368709120,
-            "billing_reset_at": "2026-03-24T00:00:00Z",
-        }
-    ])
+    mock_response = MockResponse(
+        [
+            {
+                "id": str(uuid4()),
+                "user_id": str(uuid4()),
+                "name": "Test Key",
+                "key_type": "wireguard",
+                "status": "active",
+                "key_data": "wg://...",
+                "external_id": "ext_123",
+                "created_at": "2026-03-24T00:00:00Z",
+                "used_bytes": 0,
+                "data_limit_bytes": 5368709120,
+                "billing_reset_at": "2026-03-24T00:00:00Z",
+            }
+        ]
+    )
 
     mock_client = AsyncMock()
     mock_client.get = AsyncMock(return_value=mock_response)
@@ -199,10 +206,12 @@ async def test_get_referral_code_success(adapter: BackendApiAdapter):
 @pytest.mark.asyncio
 async def test_get_referral_stats_success(adapter: BackendApiAdapter):
     """Test de obtención de estadísticas de referidos."""
-    mock_response = MockResponse({
-        "referrals_count": 5,
-        "bonus_earned_gb": 10,
-    })
+    mock_response = MockResponse(
+        {
+            "referrals_count": 5,
+            "bonus_earned_gb": 10,
+        }
+    )
 
     mock_client = AsyncMock()
     mock_client.get = AsyncMock(return_value=mock_response)

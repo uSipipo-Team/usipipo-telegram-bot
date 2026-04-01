@@ -83,11 +83,41 @@ class PackagesHandler:
             except Exception:
                 # Fallback to default packages if endpoint not available
                 packages = [
-                    {"id": "basic", "name": "Básico", "data_gb": 10, "price_usd": 2.08, "price_stars": 250},
-                    {"id": "standard", "name": "Estándar", "data_gb": 30, "price_usd": 5.00, "price_stars": 600},
-                    {"id": "advanced", "name": "Avanzado", "data_gb": 60, "price_usd": 8.00, "price_stars": 960},
-                    {"id": "premium", "name": "Premium", "data_gb": 120, "price_usd": 12.00, "price_stars": 1440},
-                    {"id": "unlimited", "name": "Ilimitado", "data_gb": 200, "price_usd": 15.00, "price_stars": 1800},
+                    {
+                        "id": "basic",
+                        "name": "Básico",
+                        "data_gb": 10,
+                        "price_usd": 2.08,
+                        "price_stars": 250,
+                    },
+                    {
+                        "id": "standard",
+                        "name": "Estándar",
+                        "data_gb": 30,
+                        "price_usd": 5.00,
+                        "price_stars": 600,
+                    },
+                    {
+                        "id": "advanced",
+                        "name": "Avanzado",
+                        "data_gb": 60,
+                        "price_usd": 8.00,
+                        "price_stars": 960,
+                    },
+                    {
+                        "id": "premium",
+                        "name": "Premium",
+                        "data_gb": 120,
+                        "price_usd": 12.00,
+                        "price_stars": 1440,
+                    },
+                    {
+                        "id": "unlimited",
+                        "name": "Ilimitado",
+                        "data_gb": 200,
+                        "price_usd": 15.00,
+                        "price_stars": 1800,
+                    },
                 ]
 
             if not packages:
@@ -106,9 +136,7 @@ class PackagesHandler:
                 keyboard = PackagesKeyboard.packages_menu(packages)
 
             if update.callback_query:
-                await self._safe_edit_message(
-                    update.callback_query, context, message, keyboard
-                )
+                await self._safe_edit_message(update.callback_query, context, message, keyboard)
             elif update.message:
                 await update.message.reply_text(
                     message,
@@ -160,11 +188,36 @@ class PackagesHandler:
             if not package:
                 # Fallback to default packages
                 default_packages = {
-                    "basic": {"name": "Básico", "data_gb": 10, "price_usd": 2.08, "price_stars": 250},
-                    "standard": {"name": "Estándar", "data_gb": 30, "price_usd": 5.00, "price_stars": 600},
-                    "advanced": {"name": "Avanzado", "data_gb": 60, "price_usd": 8.00, "price_stars": 960},
-                    "premium": {"name": "Premium", "data_gb": 120, "price_usd": 12.00, "price_stars": 1440},
-                    "unlimited": {"name": "Ilimitado", "data_gb": 200, "price_usd": 15.00, "price_stars": 1800},
+                    "basic": {
+                        "name": "Básico",
+                        "data_gb": 10,
+                        "price_usd": 2.08,
+                        "price_stars": 250,
+                    },
+                    "standard": {
+                        "name": "Estándar",
+                        "data_gb": 30,
+                        "price_usd": 5.00,
+                        "price_stars": 600,
+                    },
+                    "advanced": {
+                        "name": "Avanzado",
+                        "data_gb": 60,
+                        "price_usd": 8.00,
+                        "price_stars": 960,
+                    },
+                    "premium": {
+                        "name": "Premium",
+                        "data_gb": 120,
+                        "price_usd": 12.00,
+                        "price_stars": 1440,
+                    },
+                    "unlimited": {
+                        "name": "Ilimitado",
+                        "data_gb": 200,
+                        "price_usd": 15.00,
+                        "price_stars": 1800,
+                    },
                 }
                 package = default_packages.get(package_id)
 
@@ -663,7 +716,11 @@ class PackagesHandler:
                 response = await self.api.get("/users/me/slots", headers=headers)
                 slots = response if isinstance(response, list) else []
                 max_slots = response.get("max_slots", 5) if isinstance(response, dict) else 5
-                used_slots = len([s for s in slots if s.get("status") == "active"]) if isinstance(response, list) else 0
+                used_slots = (
+                    len([s for s in slots if s.get("status") == "active"])
+                    if isinstance(response, list)
+                    else 0
+                )
 
             except Exception:
                 # Fallback if endpoint not available
@@ -725,7 +782,11 @@ class PackagesHandler:
                 response = await self.api.get("/users/me/slots", headers=headers)
                 slots = response if isinstance(response, list) else []
                 max_slots = response.get("max_slots", 5) if isinstance(response, dict) else 5
-                used_slots = len([s for s in slots if s.get("status") == "active"]) if isinstance(response, list) else 0
+                used_slots = (
+                    len([s for s in slots if s.get("status") == "active"])
+                    if isinstance(response, list)
+                    else 0
+                )
 
             except Exception:
                 used_slots = 0

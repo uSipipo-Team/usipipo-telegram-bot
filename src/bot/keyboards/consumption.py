@@ -132,7 +132,11 @@ class ConsumptionKeyboard:
             InlineKeyboardMarkup: Teclado de éxito
         """
         keyboard = [
-            [InlineKeyboardButton("💳 Generar Factura", callback_data="consumption_generate_invoice")],
+            [
+                InlineKeyboardButton(
+                    "💳 Generar Factura", callback_data="consumption_generate_invoice"
+                )
+            ],
             [InlineKeyboardButton("🔙 Volver al Menú", callback_data="main_menu")],
         ]
         return InlineKeyboardMarkup(keyboard)
@@ -170,14 +174,10 @@ class ConsumptionKeyboard:
             nav_buttons = []
             if page > 0:
                 prev_callback = f"consumption_invoices_{page - 1}"
-                nav_buttons.append(
-                    InlineKeyboardButton("◀️ Anterior", callback_data=prev_callback)
-                )
+                nav_buttons.append(InlineKeyboardButton("◀️ Anterior", callback_data=prev_callback))
             if has_next:
                 next_callback = f"consumption_invoices_{page + 1}"
-                nav_buttons.append(
-                    InlineKeyboardButton("Siguiente ▶️", callback_data=next_callback)
-                )
+                nav_buttons.append(InlineKeyboardButton("Siguiente ▶️", callback_data=next_callback))
             keyboard.append(nav_buttons)
 
         keyboard.append(

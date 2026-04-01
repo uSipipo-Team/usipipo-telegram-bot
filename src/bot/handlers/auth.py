@@ -15,15 +15,15 @@ logger = logging.getLogger(__name__)
 class AuthHandler:
     """
     Handler para autenticación invisible.
-    
+
     Gestiona el flujo de autenticación automática de usuarios,
     almacenamiento de tokens en Redis y auto-refresh silencioso.
     """
-    
+
     def __init__(self, api_client: APIClient, token_storage: TokenStorage):
         self.api = api_client
         self.tokens = token_storage
-    
+
     async def start_handler(
         self,
         update: Update,
@@ -31,16 +31,16 @@ class AuthHandler:
     ) -> None:
         """
         Maneja /start - registro y autenticación automática.
-        
+
         Si el usuario ya está autenticado, muestra mensaje de bienvenida.
         Si no, registra y autentica automáticamente.
         """
         if update.effective_user is None:
             logger.warning("start_handler called without effective_user")
             return
-            
+
         telegram_id = update.effective_user.id
-        
+
         # Check if already authenticated
         if await self.tokens.is_authenticated(telegram_id):
             if update.message:
@@ -50,10 +50,10 @@ class AuthHandler:
                     parse_mode="Markdown",
                 )
             return
-        
+
         # Register and auto-authenticate new user
         await self._register_and_auth(telegram_id, update, context)
-    
+
     async def _register_and_auth(
         self,
         telegram_id: int,
@@ -62,7 +62,7 @@ class AuthHandler:
     ) -> None:
         """
         Registra y autentica usuario automáticamente.
-        
+
         Llama al backend para crear usuario y obtener tokens.
         """
         try:
@@ -72,7 +72,7 @@ class AuthHandler:
                 "/auth/telegram/auto-register",
                 {"telegram_id": telegram_id},
             )
-            
+
             if "access_token" in response:
                 await self.tokens.store(telegram_id, response)
                 if update.message:
@@ -84,12 +84,12 @@ class AuthHandler:
             else:
                 if update.message:
                     await update.message.reply_text(AuthMessages.AUTH_ERROR)
-                
+
         except Exception as e:
             logger.error(f"Error en registro/auto-auth: {e}")
             if update.message:
                 await update.message.reply_text(AuthMessages.AUTH_ERROR)
-    
+
     async def me_handler(
         self,
         update: Update,
@@ -97,21 +97,21 @@ class AuthHandler:
     ) -> None:
         """
         Maneja /me - muestra perfil del usuario.
-        
+
         Verifica autenticación, hace auto-refresh si es necesario,
         y obtiene perfil del backend.
         """
         if update.effective_user is None:
             logger.warning("me_handler called without effective_user")
             return
-            
+
         telegram_id = update.effective_user.id
-        
+
         if not await self.tokens.is_authenticated(telegram_id):
             if update.message:
                 await update.message.reply_text(AuthMessages.ME_NOT_AUTHENTICATED)
             return
-        
+
         # Auto-refresh si es necesario
         if await self.tokens.needs_refresh(telegram_id):
             await self._refresh_tokens(telegram_id)
@@ -142,7 +142,7 @@ class AuthHandler:
                 await update.message.reply_text(
                     text=f"{AuthMessages.ME_ERROR}\n\nDetalle: {str(e)[:100]}",
                 )
-    
+
     async def unlink_handler(
         self,
         update: Update,
@@ -150,34 +150,34 @@ class AuthHandler:
     ) -> None:
         """
         Maneja /unlink - revoca acceso del bot.
-        
+
         Elimina tokens de Redis y (opcionalmente) revoca en backend.
         """
         if update.effective_user is None:
             logger.warning("unlink_handler called without effective_user")
             return
-            
+
         telegram_id = update.effective_user.id
-        
+
         if not await self.tokens.is_authenticated(telegram_id):
             if update.message:
                 await update.message.reply_text(AuthMessages.UNLINK_NOT_AUTHENTICATED)
             return
-        
+
         # Delete tokens from Redis
         await self.tokens.delete(telegram_id)
-        
+
         # TODO: Revocar tokens en backend (endpoint /auth/logout)
-        
+
         if update.message:
             await update.message.reply_text(AuthMessages.UNLINK_SUCCESS)
-    
+
     async def _refresh_tokens(self, telegram_id: int) -> bool:
         """
         Auto-refresh de tokens silencioso.
-        
+
         Usa refresh_token para obtener nuevos tokens sin intervención del usuario.
-        
+
         Returns:
             bool: True si el refresh fue exitoso, False si falló
         """
@@ -186,20 +186,20 @@ class AuthHandler:
             if tokens is None:
                 logger.warning(f"Cannot refresh: no tokens found for telegram_id={telegram_id}")
                 return False
-            
+
             response = await self.api.post(
                 "/auth/refresh",
                 {"refresh_token": tokens["refresh_token"]},
             )
-            
+
             if "access_token" in response:
                 await self.tokens.store(telegram_id, response)
                 logger.info(f"Tokens refreshed for telegram_id={telegram_id}")
                 return True
-            
+
             logger.warning(f"Refresh failed for telegram_id={telegram_id}")
             return False
-            
+
         except Exception as e:
             logger.error(f"Error en refresh: {e}")
             return False

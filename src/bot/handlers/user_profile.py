@@ -134,6 +134,7 @@ class UserProfileHandler:
 
             # Account info
             from datetime import datetime
+
             created_at = datetime.fromisoformat(user_response.get("created_at", "2024-01-01"))
             updated_at = datetime.fromisoformat(user_response.get("updated_at", "2024-01-01"))
             message += UserProfileMessages.format_account_info(created_at, updated_at)

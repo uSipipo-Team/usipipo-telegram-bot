@@ -1,6 +1,5 @@
 """Tests for UserProfileKeyboard."""
 
-import pytest
 from telegram import InlineKeyboardMarkup
 from src.bot.keyboards.user_profile import UserProfileKeyboard
 

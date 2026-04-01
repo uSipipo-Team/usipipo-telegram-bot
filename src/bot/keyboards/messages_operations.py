@@ -87,11 +87,7 @@ class OperationsMessages:
             "✨ Extras con créditos"
         )
 
-        ITEMS_LIST = (
-            "📦 *Paquetes Disponibles*\n\n"
-            "{items}\n\n"
-            "⚡ Selecciona un paquete para comprar"
-        )
+        ITEMS_LIST = "📦 *Paquetes Disponibles*\n\n{items}\n\n⚡ Selecciona un paquete para comprar"
 
     # ============================================
     # TRANSACTIONS HISTORY
@@ -100,10 +96,7 @@ class OperationsMessages:
     class Transactions:
         """Mensajes de historial de transacciones."""
 
-        HISTORY_HEADER = (
-            "📜 *Historial de Transacciones*\n\n"
-            "Página {page}\n\n"
-        )
+        HISTORY_HEADER = "📜 *Historial de Transacciones*\n\nPágina {page}\n\n"
 
         NO_TRANSACTIONS = (
             "📜 *Sin transacciones*\n\n"
@@ -111,11 +104,7 @@ class OperationsMessages:
             "💡 ¡Comienza comprando tu primer paquete!"
         )
 
-        TRANSACTION_ITEM = (
-            "🔹 {date} - {type}\n"
-            "   💰 {amount} créditos\n"
-            "   📦 {description}\n"
-        )
+        TRANSACTION_ITEM = "🔹 {date} - {type}\n   💰 {amount} créditos\n   📦 {description}\n"
 
     # ============================================
     # REFERRALS
@@ -144,21 +133,12 @@ class OperationsMessages:
         """Mensajes de error."""
 
         SYSTEM_ERROR = (
-            "🚨 *Error del sistema*\n\n"
-            "💥 Fallo temporal\n\n"
-            "🔄 Intenta de nuevo en un momento 📡"
+            "🚨 *Error del sistema*\n\n💥 Fallo temporal\n\n🔄 Intenta de nuevo en un momento 📡"
         )
 
-        OPERATION_FAILED = (
-            "❌ *Operación fallida*\n\n"
-            "💥 No se pudo completar\n\n"
-            "📟 {error}"
-        )
+        OPERATION_FAILED = "❌ *Operación fallida*\n\n💥 No se pudo completar\n\n📟 {error}"
 
-        INVALID_OPTION = (
-            "⛔ *Opción inválida*\n\n"
-            "🚫 No disponible en este momento"
-        )
+        INVALID_OPTION = "⛔ *Opción inválida*\n\n🚫 No disponible en este momento"
 
     # ============================================
     # SUCCESS
@@ -167,12 +147,6 @@ class OperationsMessages:
     class Success:
         """Mensajes de éxito."""
 
-        OPERATION_COMPLETED = (
-            "✅ *Listo*\n\n"
-            "⚡ Operación completada 🎯"
-        )
+        OPERATION_COMPLETED = "✅ *Listo*\n\n⚡ Operación completada 🎯"
 
-        CHANGES_SAVED = (
-            "💾 *Guardado*\n\n"
-            "✨ Cambios actualizados"
-        )
+        CHANGES_SAVED = "💾 *Guardado*\n\n✨ Cambios actualizados"

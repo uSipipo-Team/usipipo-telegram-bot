@@ -1,7 +1,7 @@
 """Tests para Subscriptions Handlers."""
 
 import pytest
-from unittest.mock import patch, AsyncMock, MagicMock
+from unittest.mock import patch, AsyncMock
 
 
 class TestSubscriptionsHandler:
@@ -10,8 +10,10 @@ class TestSubscriptionsHandler:
     @pytest.mark.asyncio
     async def test_subscriptions_handler_initialization(self):
         """SubscriptionsHandler se inicializa correctamente."""
-        with patch('src.bot.handlers.subscriptions.APIClient'), \
-             patch('src.bot.handlers.subscriptions.TokenStorage'):
+        with (
+            patch("src.bot.handlers.subscriptions.APIClient"),
+            patch("src.bot.handlers.subscriptions.TokenStorage"),
+        ):
             from src.bot.handlers.subscriptions import SubscriptionsHandler
 
             mock_api = AsyncMock()
@@ -31,76 +33,76 @@ class TestSubscriptionsHandler:
         """SubscriptionsMessages constants están definidas."""
         from src.bot.keyboards.messages_subscriptions import SubscriptionsMessages
 
-        assert hasattr(SubscriptionsMessages, 'Subscription')
-        assert hasattr(SubscriptionsMessages, 'Plans')
-        assert hasattr(SubscriptionsMessages, 'Payment')
-        assert hasattr(SubscriptionsMessages, 'Activation')
-        assert hasattr(SubscriptionsMessages, 'Renewal')
-        assert hasattr(SubscriptionsMessages, 'Error')
+        assert hasattr(SubscriptionsMessages, "Subscription")
+        assert hasattr(SubscriptionsMessages, "Plans")
+        assert hasattr(SubscriptionsMessages, "Payment")
+        assert hasattr(SubscriptionsMessages, "Activation")
+        assert hasattr(SubscriptionsMessages, "Renewal")
+        assert hasattr(SubscriptionsMessages, "Error")
 
     @pytest.mark.asyncio
     async def test_subscriptions_messages_has_menu_messages(self):
         """SubscriptionsMessages tiene mensajes de menú."""
         from src.bot.keyboards.messages_subscriptions import SubscriptionsMessages
 
-        assert hasattr(SubscriptionsMessages.Subscription, 'SUBSCRIPTION_ACTIVE')
-        assert hasattr(SubscriptionsMessages.Subscription, 'SUBSCRIPTION_INACTIVE')
-        assert hasattr(SubscriptionsMessages.Subscription, 'SUBSCRIPTION_EXPIRED')
-        assert hasattr(SubscriptionsMessages.Subscription, 'SUBSCRIPTION_DETAILS')
+        assert hasattr(SubscriptionsMessages.Subscription, "SUBSCRIPTION_ACTIVE")
+        assert hasattr(SubscriptionsMessages.Subscription, "SUBSCRIPTION_INACTIVE")
+        assert hasattr(SubscriptionsMessages.Subscription, "SUBSCRIPTION_EXPIRED")
+        assert hasattr(SubscriptionsMessages.Subscription, "SUBSCRIPTION_DETAILS")
 
     @pytest.mark.asyncio
     async def test_subscriptions_messages_has_plans_messages(self):
         """SubscriptionsMessages tiene mensajes de planes."""
         from src.bot.keyboards.messages_subscriptions import SubscriptionsMessages
 
-        assert hasattr(SubscriptionsMessages.Plans, 'PLANS_HEADER')
-        assert hasattr(SubscriptionsMessages.Plans, 'PLAN_ITEM')
-        assert hasattr(SubscriptionsMessages.Plans, 'PLAN_DETAILS')
-        assert hasattr(SubscriptionsMessages.Plans, 'NO_PLANS')
-        assert hasattr(SubscriptionsMessages.Plans, 'PLAN_NOT_FOUND')
+        assert hasattr(SubscriptionsMessages.Plans, "PLANS_HEADER")
+        assert hasattr(SubscriptionsMessages.Plans, "PLAN_ITEM")
+        assert hasattr(SubscriptionsMessages.Plans, "PLAN_DETAILS")
+        assert hasattr(SubscriptionsMessages.Plans, "NO_PLANS")
+        assert hasattr(SubscriptionsMessages.Plans, "PLAN_NOT_FOUND")
 
     @pytest.mark.asyncio
     async def test_subscriptions_messages_has_payment_messages(self):
         """SubscriptionsMessages tiene mensajes de pago."""
         from src.bot.keyboards.messages_subscriptions import SubscriptionsMessages
 
-        assert hasattr(SubscriptionsMessages.Payment, 'CHOOSE_PAYMENT_METHOD')
-        assert hasattr(SubscriptionsMessages.Payment, 'CRYPTO_PAYMENT')
-        assert hasattr(SubscriptionsMessages.Payment, 'STARS_PAYMENT')
-        assert hasattr(SubscriptionsMessages.Payment, 'CRYPTO_SUCCESS')
-        assert hasattr(SubscriptionsMessages.Payment, 'STARS_SUCCESS')
+        assert hasattr(SubscriptionsMessages.Payment, "CHOOSE_PAYMENT_METHOD")
+        assert hasattr(SubscriptionsMessages.Payment, "CRYPTO_PAYMENT")
+        assert hasattr(SubscriptionsMessages.Payment, "STARS_PAYMENT")
+        assert hasattr(SubscriptionsMessages.Payment, "CRYPTO_SUCCESS")
+        assert hasattr(SubscriptionsMessages.Payment, "STARS_SUCCESS")
 
     @pytest.mark.asyncio
     async def test_subscriptions_messages_has_activation_messages(self):
         """SubscriptionsMessages tiene mensajes de activación."""
         from src.bot.keyboards.messages_subscriptions import SubscriptionsMessages
 
-        assert hasattr(SubscriptionsMessages.Activation, 'SUCCESS')
-        assert hasattr(SubscriptionsMessages.Activation, 'FAILED')
-        assert hasattr(SubscriptionsMessages.Activation, 'ALREADY_ACTIVE')
+        assert hasattr(SubscriptionsMessages.Activation, "SUCCESS")
+        assert hasattr(SubscriptionsMessages.Activation, "FAILED")
+        assert hasattr(SubscriptionsMessages.Activation, "ALREADY_ACTIVE")
 
     @pytest.mark.asyncio
     async def test_subscriptions_messages_has_renewal_messages(self):
         """SubscriptionsMessages tiene mensajes de renovación."""
         from src.bot.keyboards.messages_subscriptions import SubscriptionsMessages
 
-        assert hasattr(SubscriptionsMessages.Renewal, 'RENEW_SUCCESS')
-        assert hasattr(SubscriptionsMessages.Renewal, 'RENEW_FAILED')
-        assert hasattr(SubscriptionsMessages.Renewal, 'NO_ACTIVE_SUBSCRIPTION')
-        assert hasattr(SubscriptionsMessages.Renewal, 'RENEWAL_PROMPT')
+        assert hasattr(SubscriptionsMessages.Renewal, "RENEW_SUCCESS")
+        assert hasattr(SubscriptionsMessages.Renewal, "RENEW_FAILED")
+        assert hasattr(SubscriptionsMessages.Renewal, "NO_ACTIVE_SUBSCRIPTION")
+        assert hasattr(SubscriptionsMessages.Renewal, "RENEWAL_PROMPT")
 
     @pytest.mark.asyncio
     async def test_subscriptions_messages_has_error_messages(self):
         """SubscriptionsMessages tiene mensajes de error."""
         from src.bot.keyboards.messages_subscriptions import SubscriptionsMessages
 
-        assert hasattr(SubscriptionsMessages.Error, 'SYSTEM_ERROR')
-        assert hasattr(SubscriptionsMessages.Error, 'NOT_AUTHENTICATED')
-        assert hasattr(SubscriptionsMessages.Error, 'INVALID_PLAN')
-        assert hasattr(SubscriptionsMessages.Error, 'PAYMENT_FAILED')
-        assert hasattr(SubscriptionsMessages.Error, 'NETWORK_ERROR')
-        assert hasattr(SubscriptionsMessages.Error, 'INSUFFICIENT_FUNDS')
-        assert hasattr(SubscriptionsMessages.Error, 'TIMEOUT')
+        assert hasattr(SubscriptionsMessages.Error, "SYSTEM_ERROR")
+        assert hasattr(SubscriptionsMessages.Error, "NOT_AUTHENTICATED")
+        assert hasattr(SubscriptionsMessages.Error, "INVALID_PLAN")
+        assert hasattr(SubscriptionsMessages.Error, "PAYMENT_FAILED")
+        assert hasattr(SubscriptionsMessages.Error, "NETWORK_ERROR")
+        assert hasattr(SubscriptionsMessages.Error, "INSUFFICIENT_FUNDS")
+        assert hasattr(SubscriptionsMessages.Error, "TIMEOUT")
 
     # ============================================
     # MESSAGE PLACEHOLDERS TESTS
@@ -219,6 +221,7 @@ class TestSubscriptionsHandler:
         keyboard_inactive = SubscriptionsKeyboard.subscription_menu(is_active=False)
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard_active, InlineKeyboardMarkup)
         assert isinstance(keyboard_inactive, InlineKeyboardMarkup)
 
@@ -245,13 +248,12 @@ class TestSubscriptionsHandler:
         keyboard = SubscriptionsKeyboard.plans_list(plans)
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("select_plan_basic" in btn.callback_data
-                   for row in buttons for btn in row)
-        assert any("select_plan_premium" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any("select_plan_basic" in btn.callback_data for row in buttons for btn in row)
+        assert any("select_plan_premium" in btn.callback_data for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_subscriptions_keyboard_plan_details_exists(self):
@@ -261,11 +263,11 @@ class TestSubscriptionsHandler:
         keyboard = SubscriptionsKeyboard.plan_details(plan_id="basic")
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("choose_payment_basic" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any("choose_payment_basic" in btn.callback_data for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_subscriptions_keyboard_payment_method_selection_exists(self):
@@ -275,13 +277,16 @@ class TestSubscriptionsHandler:
         keyboard = SubscriptionsKeyboard.payment_method_selection(plan_id="premium")
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("activate_plan_premium_stars" in btn.callback_data
-                   for row in buttons for btn in row)
-        assert any("activate_plan_premium_crypto" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any(
+            "activate_plan_premium_stars" in btn.callback_data for row in buttons for btn in row
+        )
+        assert any(
+            "activate_plan_premium_crypto" in btn.callback_data for row in buttons for btn in row
+        )
 
     @pytest.mark.asyncio
     async def test_subscriptions_keyboard_activation_success_exists(self):
@@ -291,13 +296,14 @@ class TestSubscriptionsHandler:
         keyboard = SubscriptionsKeyboard.activation_success()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("view_subscription_status" in btn.callback_data
-                   for row in buttons for btn in row)
-        assert any("main_menu" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any(
+            "view_subscription_status" in btn.callback_data for row in buttons for btn in row
+        )
+        assert any("main_menu" in btn.callback_data for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_subscriptions_keyboard_renewal_menu_exists(self):
@@ -307,11 +313,11 @@ class TestSubscriptionsHandler:
         keyboard = SubscriptionsKeyboard.renewal_menu()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("renew_subscription" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any("renew_subscription" in btn.callback_data for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_subscriptions_keyboard_back_to_subscription_exists(self):
@@ -321,13 +327,12 @@ class TestSubscriptionsHandler:
         keyboard = SubscriptionsKeyboard.back_to_subscription()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("subscription_menu" in btn.callback_data
-                   for row in buttons for btn in row)
-        assert any("main_menu" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any("subscription_menu" in btn.callback_data for row in buttons for btn in row)
+        assert any("main_menu" in btn.callback_data for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_subscriptions_keyboard_subscription_active_menu_exists(self):
@@ -337,13 +342,14 @@ class TestSubscriptionsHandler:
         keyboard = SubscriptionsKeyboard.subscription_active_menu()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("view_subscription_status" in btn.callback_data
-                   for row in buttons for btn in row)
-        assert any("renew_subscription" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any(
+            "view_subscription_status" in btn.callback_data for row in buttons for btn in row
+        )
+        assert any("renew_subscription" in btn.callback_data for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_subscriptions_keyboard_subscription_inactive_menu_exists(self):
@@ -353,11 +359,11 @@ class TestSubscriptionsHandler:
         keyboard = SubscriptionsKeyboard.subscription_inactive_menu()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("view_plans" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any("view_plans" in btn.callback_data for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_subscriptions_keyboard_subscription_status_menu_exists(self):
@@ -368,11 +374,11 @@ class TestSubscriptionsHandler:
         keyboard = SubscriptionsKeyboard.subscription_status_menu(subscription)
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("renew_subscription" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any("renew_subscription" in btn.callback_data for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_subscriptions_keyboard_view_plans_button_exists(self):
@@ -382,11 +388,11 @@ class TestSubscriptionsHandler:
         keyboard = SubscriptionsKeyboard.view_plans_button()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("view_plans" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any("view_plans" in btn.callback_data for row in buttons for btn in row)
 
     # ============================================
     # HANDLER METHODS TESTS
@@ -395,8 +401,10 @@ class TestSubscriptionsHandler:
     @pytest.mark.asyncio
     async def test_show_subscription_menu_command_exists(self):
         """show_subscription_menu handler existe."""
-        with patch('src.bot.handlers.subscriptions.APIClient'), \
-             patch('src.bot.handlers.subscriptions.TokenStorage'):
+        with (
+            patch("src.bot.handlers.subscriptions.APIClient"),
+            patch("src.bot.handlers.subscriptions.TokenStorage"),
+        ):
             from src.bot.handlers.subscriptions import SubscriptionsHandler
 
             mock_api = AsyncMock()
@@ -404,14 +412,16 @@ class TestSubscriptionsHandler:
 
             handler = SubscriptionsHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'show_subscription_menu')
-            assert callable(getattr(handler, 'show_subscription_menu'))
+            assert hasattr(handler, "show_subscription_menu")
+            assert callable(getattr(handler, "show_subscription_menu"))
 
     @pytest.mark.asyncio
     async def test_view_plans_command_exists(self):
         """view_plans handler existe."""
-        with patch('src.bot.handlers.subscriptions.APIClient'), \
-             patch('src.bot.handlers.subscriptions.TokenStorage'):
+        with (
+            patch("src.bot.handlers.subscriptions.APIClient"),
+            patch("src.bot.handlers.subscriptions.TokenStorage"),
+        ):
             from src.bot.handlers.subscriptions import SubscriptionsHandler
 
             mock_api = AsyncMock()
@@ -419,14 +429,16 @@ class TestSubscriptionsHandler:
 
             handler = SubscriptionsHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'view_plans')
-            assert callable(getattr(handler, 'view_plans'))
+            assert hasattr(handler, "view_plans")
+            assert callable(getattr(handler, "view_plans"))
 
     @pytest.mark.asyncio
     async def test_select_plan_callback_exists(self):
         """select_plan handler existe."""
-        with patch('src.bot.handlers.subscriptions.APIClient'), \
-             patch('src.bot.handlers.subscriptions.TokenStorage'):
+        with (
+            patch("src.bot.handlers.subscriptions.APIClient"),
+            patch("src.bot.handlers.subscriptions.TokenStorage"),
+        ):
             from src.bot.handlers.subscriptions import SubscriptionsHandler
 
             mock_api = AsyncMock()
@@ -434,14 +446,16 @@ class TestSubscriptionsHandler:
 
             handler = SubscriptionsHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'select_plan')
-            assert callable(getattr(handler, 'select_plan'))
+            assert hasattr(handler, "select_plan")
+            assert callable(getattr(handler, "select_plan"))
 
     @pytest.mark.asyncio
     async def test_activate_subscription_callback_exists(self):
         """activate_subscription handler existe."""
-        with patch('src.bot.handlers.subscriptions.APIClient'), \
-             patch('src.bot.handlers.subscriptions.TokenStorage'):
+        with (
+            patch("src.bot.handlers.subscriptions.APIClient"),
+            patch("src.bot.handlers.subscriptions.TokenStorage"),
+        ):
             from src.bot.handlers.subscriptions import SubscriptionsHandler
 
             mock_api = AsyncMock()
@@ -449,14 +463,16 @@ class TestSubscriptionsHandler:
 
             handler = SubscriptionsHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'activate_subscription')
-            assert callable(getattr(handler, 'activate_subscription'))
+            assert hasattr(handler, "activate_subscription")
+            assert callable(getattr(handler, "activate_subscription"))
 
     @pytest.mark.asyncio
     async def test_renew_subscription_command_exists(self):
         """renew_subscription handler existe."""
-        with patch('src.bot.handlers.subscriptions.APIClient'), \
-             patch('src.bot.handlers.subscriptions.TokenStorage'):
+        with (
+            patch("src.bot.handlers.subscriptions.APIClient"),
+            patch("src.bot.handlers.subscriptions.TokenStorage"),
+        ):
             from src.bot.handlers.subscriptions import SubscriptionsHandler
 
             mock_api = AsyncMock()
@@ -464,14 +480,16 @@ class TestSubscriptionsHandler:
 
             handler = SubscriptionsHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'renew_subscription')
-            assert callable(getattr(handler, 'renew_subscription'))
+            assert hasattr(handler, "renew_subscription")
+            assert callable(getattr(handler, "renew_subscription"))
 
     @pytest.mark.asyncio
     async def test_view_subscription_status_exists(self):
         """view_subscription_status handler existe."""
-        with patch('src.bot.handlers.subscriptions.APIClient'), \
-             patch('src.bot.handlers.subscriptions.TokenStorage'):
+        with (
+            patch("src.bot.handlers.subscriptions.APIClient"),
+            patch("src.bot.handlers.subscriptions.TokenStorage"),
+        ):
             from src.bot.handlers.subscriptions import SubscriptionsHandler
 
             mock_api = AsyncMock()
@@ -479,14 +497,16 @@ class TestSubscriptionsHandler:
 
             handler = SubscriptionsHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'view_subscription_status')
-            assert callable(getattr(handler, 'view_subscription_status'))
+            assert hasattr(handler, "view_subscription_status")
+            assert callable(getattr(handler, "view_subscription_status"))
 
     @pytest.mark.asyncio
     async def test_choose_payment_method_callback_exists(self):
         """choose_payment_method handler existe."""
-        with patch('src.bot.handlers.subscriptions.APIClient'), \
-             patch('src.bot.handlers.subscriptions.TokenStorage'):
+        with (
+            patch("src.bot.handlers.subscriptions.APIClient"),
+            patch("src.bot.handlers.subscriptions.TokenStorage"),
+        ):
             from src.bot.handlers.subscriptions import SubscriptionsHandler
 
             mock_api = AsyncMock()
@@ -494,8 +514,8 @@ class TestSubscriptionsHandler:
 
             handler = SubscriptionsHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'choose_payment_method')
-            assert callable(getattr(handler, 'choose_payment_method'))
+            assert hasattr(handler, "choose_payment_method")
+            assert callable(getattr(handler, "choose_payment_method"))
 
     # ============================================
     # AUTHENTICATION & INTEGRATION TESTS
@@ -504,15 +524,15 @@ class TestSubscriptionsHandler:
     @pytest.mark.asyncio
     async def test_subscriptions_handler_get_auth_headers(self):
         """_get_auth_headers retorna headers con token."""
-        with patch('src.bot.handlers.subscriptions.APIClient'), \
-             patch('src.bot.handlers.subscriptions.TokenStorage') as MockTokenStorage:
+        with (
+            patch("src.bot.handlers.subscriptions.APIClient"),
+            patch("src.bot.handlers.subscriptions.TokenStorage"),
+        ):
             from src.bot.handlers.subscriptions import SubscriptionsHandler
 
             mock_api = AsyncMock()
             mock_storage = AsyncMock()
-            mock_storage.get.return_value = {
-                "access_token": "test-token-456"
-            }
+            mock_storage.get.return_value = {"access_token": "test-token-456"}
 
             handler = SubscriptionsHandler(mock_api, mock_storage)
 
@@ -524,8 +544,10 @@ class TestSubscriptionsHandler:
     @pytest.mark.asyncio
     async def test_subscriptions_handler_get_auth_headers_unauthenticated(self):
         """_get_auth_headers lanza error si no está autenticado."""
-        with patch('src.bot.handlers.subscriptions.APIClient'), \
-             patch('src.bot.handlers.subscriptions.TokenStorage') as MockTokenStorage:
+        with (
+            patch("src.bot.handlers.subscriptions.APIClient"),
+            patch("src.bot.handlers.subscriptions.TokenStorage"),
+        ):
             from src.bot.handlers.subscriptions import SubscriptionsHandler
 
             mock_api = AsyncMock()
@@ -540,8 +562,10 @@ class TestSubscriptionsHandler:
     @pytest.mark.asyncio
     async def test_get_subscriptions_handlers_returns_list(self):
         """get_subscriptions_handlers retorna una lista."""
-        with patch('src.bot.handlers.subscriptions.APIClient'), \
-             patch('src.bot.handlers.subscriptions.TokenStorage'):
+        with (
+            patch("src.bot.handlers.subscriptions.APIClient"),
+            patch("src.bot.handlers.subscriptions.TokenStorage"),
+        ):
             from src.bot.handlers.subscriptions import get_subscriptions_handlers
 
             mock_api = AsyncMock()
@@ -555,8 +579,10 @@ class TestSubscriptionsHandler:
     @pytest.mark.asyncio
     async def test_get_subscriptions_callback_handlers_returns_list(self):
         """get_subscriptions_callback_handlers retorna una lista."""
-        with patch('src.bot.handlers.subscriptions.APIClient'), \
-             patch('src.bot.handlers.subscriptions.TokenStorage'):
+        with (
+            patch("src.bot.handlers.subscriptions.APIClient"),
+            patch("src.bot.handlers.subscriptions.TokenStorage"),
+        ):
             from src.bot.handlers.subscriptions import get_subscriptions_callback_handlers
 
             mock_api = AsyncMock()
@@ -574,8 +600,10 @@ class TestSubscriptionsHandler:
     @pytest.mark.asyncio
     async def test_safe_answer_query_method_exists(self):
         """_safe_answer_query método existe."""
-        with patch('src.bot.handlers.subscriptions.APIClient'), \
-             patch('src.bot.handlers.subscriptions.TokenStorage'):
+        with (
+            patch("src.bot.handlers.subscriptions.APIClient"),
+            patch("src.bot.handlers.subscriptions.TokenStorage"),
+        ):
             from src.bot.handlers.subscriptions import SubscriptionsHandler
 
             mock_api = AsyncMock()
@@ -583,14 +611,16 @@ class TestSubscriptionsHandler:
 
             handler = SubscriptionsHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, '_safe_answer_query')
-            assert callable(getattr(handler, '_safe_answer_query'))
+            assert hasattr(handler, "_safe_answer_query")
+            assert callable(getattr(handler, "_safe_answer_query"))
 
     @pytest.mark.asyncio
     async def test_safe_edit_message_method_exists(self):
         """_safe_edit_message método existe."""
-        with patch('src.bot.handlers.subscriptions.APIClient'), \
-             patch('src.bot.handlers.subscriptions.TokenStorage'):
+        with (
+            patch("src.bot.handlers.subscriptions.APIClient"),
+            patch("src.bot.handlers.subscriptions.TokenStorage"),
+        ):
             from src.bot.handlers.subscriptions import SubscriptionsHandler
 
             mock_api = AsyncMock()
@@ -598,8 +628,8 @@ class TestSubscriptionsHandler:
 
             handler = SubscriptionsHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, '_safe_edit_message')
-            assert callable(getattr(handler, '_safe_edit_message'))
+            assert hasattr(handler, "_safe_edit_message")
+            assert callable(getattr(handler, "_safe_edit_message"))
 
     # ============================================
     # ADDITIONAL KEYBOARD TESTS
@@ -613,11 +643,11 @@ class TestSubscriptionsHandler:
         keyboard = SubscriptionsKeyboard.back_to_main()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("main_menu" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any("main_menu" in btn.callback_data for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_subscriptions_keyboard_back_to_plans_exists(self):
@@ -627,11 +657,11 @@ class TestSubscriptionsHandler:
         keyboard = SubscriptionsKeyboard.back_to_plans()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("view_plans" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any("view_plans" in btn.callback_data for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_subscriptions_keyboard_plan_selection_is_alias(self):
@@ -674,11 +704,15 @@ class TestSubscriptionsHandler:
         keyboard = SubscriptionsKeyboard.crypto_payment_status(payment_id="crypto_sub_123")
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("check_crypto_status_crypto_sub_123" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any(
+            "check_crypto_status_crypto_sub_123" in btn.callback_data
+            for row in buttons
+            for btn in row
+        )
 
     # ============================================
     # ERROR HANDLING TESTS
@@ -689,14 +723,14 @@ class TestSubscriptionsHandler:
         """SubscriptionsMessages tiene error de no autorizado."""
         from src.bot.keyboards.messages_subscriptions import SubscriptionsMessages
 
-        assert hasattr(SubscriptionsMessages.Error, 'UNAUTHORIZED')
+        assert hasattr(SubscriptionsMessages.Error, "UNAUTHORIZED")
 
     @pytest.mark.asyncio
     async def test_subscriptions_messages_has_invalid_plan_error(self):
         """SubscriptionsMessages tiene error de plan inválido."""
         from src.bot.keyboards.messages_subscriptions import SubscriptionsMessages
 
-        assert hasattr(SubscriptionsMessages.Error, 'INVALID_PLAN')
+        assert hasattr(SubscriptionsMessages.Error, "INVALID_PLAN")
 
     @pytest.mark.asyncio
     async def test_subscriptions_messages_subscription_expired_has_placeholders(self):
@@ -740,12 +774,9 @@ class TestSubscriptionsHandler:
         keyboard = SubscriptionsKeyboard.plans_list(plans)
 
         buttons = keyboard.inline_keyboard
-        assert any("select_plan_basic" in btn.callback_data
-                   for row in buttons for btn in row)
-        assert any("select_plan_standard" in btn.callback_data
-                   for row in buttons for btn in row)
-        assert any("select_plan_premium" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any("select_plan_basic" in btn.callback_data for row in buttons for btn in row)
+        assert any("select_plan_standard" in btn.callback_data for row in buttons for btn in row)
+        assert any("select_plan_premium" in btn.callback_data for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_subscriptions_keyboard_active_menu_has_correct_buttons(self):

@@ -130,7 +130,6 @@ class ErrorTranslator:
             BackendConnectionError
         """
         return BackendConnectionError(
-            "❌ No se pudo conectar con el backend. "
-            "Verifica tu conexión e intenta nuevamente.",
+            "❌ No se pudo conectar con el backend. Verifica tu conexión e intenta nuevamente.",
             original_exception,
         )

@@ -31,13 +31,13 @@ class BasicHandler:
             return
         user = update.effective_user
         logger.info(f"User {user.id if user else 'unknown'} requested help")
-        
+
         # Send help message with support info
         await update.message.reply_text(
             text=BasicMessages.HELP_TEXT,
             parse_mode="Markdown",
         )
-        
+
         # Send support help message
         await update.message.reply_text(
             text=BasicMessages.SUPPORT_HELP,

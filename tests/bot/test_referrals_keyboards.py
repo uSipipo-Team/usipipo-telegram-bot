@@ -19,12 +19,10 @@ class TestReferralsKeyboards:
 
         # Check for referral_redeem button
         buttons = keyboard.inline_keyboard
-        assert any("referral_redeem" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any("referral_redeem" in btn.callback_data for row in buttons for btn in row)
 
         # Check for referral_apply button
-        assert any("referral_apply" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any("referral_apply" in btn.callback_data for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_redeem_confirmation_keyboard_exists(self):
@@ -38,12 +36,12 @@ class TestReferralsKeyboards:
 
         # Check for confirm button with credits
         buttons = keyboard.inline_keyboard
-        assert any("referral_redeem_confirm:100" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any(
+            "referral_redeem_confirm:100" in btn.callback_data for row in buttons for btn in row
+        )
 
         # Check for cancel button
-        assert any("referral_cancel" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any("referral_cancel" in btn.callback_data for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_apply_code_keyboard_exists(self):
@@ -57,8 +55,7 @@ class TestReferralsKeyboards:
 
         # Check for back button
         buttons = keyboard.inline_keyboard
-        assert any("referral_back" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any("referral_back" in btn.callback_data for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_back_to_menu_keyboard_exists(self):
@@ -72,8 +69,7 @@ class TestReferralsKeyboards:
 
         # Check for back button
         buttons = keyboard.inline_keyboard
-        assert any("referral_back" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any("referral_back" in btn.callback_data for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_callback_data_patterns_are_correct(self):

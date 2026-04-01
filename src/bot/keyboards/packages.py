@@ -24,23 +24,31 @@ class PackagesKeyboard:
             package_id = pkg.get("id", "unknown")
             package_name = pkg.get("name", "Unknown")
             data_gb = pkg.get("data_gb", 0)
-            keyboard.append([
-                InlineKeyboardButton(
-                    f"📦 {package_name} ({data_gb} GB)",
-                    callback_data=f"select_package_{package_id}",
-                )
-            ])
+            keyboard.append(
+                [
+                    InlineKeyboardButton(
+                        f"📦 {package_name} ({data_gb} GB)",
+                        callback_data=f"select_package_{package_id}",
+                    )
+                ]
+            )
 
         # Additional options
-        keyboard.append([
-            InlineKeyboardButton("📊 Ver Resumen de Datos", callback_data="view_data_summary"),
-        ])
-        keyboard.append([
-            InlineKeyboardButton("🗂️ Gestionar Slots", callback_data="buy_slots_menu"),
-        ])
-        keyboard.append([
-            InlineKeyboardButton("🔙 Volver al Menú Principal", callback_data="main_menu"),
-        ])
+        keyboard.append(
+            [
+                InlineKeyboardButton("📊 Ver Resumen de Datos", callback_data="view_data_summary"),
+            ]
+        )
+        keyboard.append(
+            [
+                InlineKeyboardButton("🗂️ Gestionar Slots", callback_data="buy_slots_menu"),
+            ]
+        )
+        keyboard.append(
+            [
+                InlineKeyboardButton("🔙 Volver al Menú Principal", callback_data="main_menu"),
+            ]
+        )
 
         return InlineKeyboardMarkup(keyboard)
 
@@ -181,16 +189,22 @@ class PackagesKeyboard:
         keyboard = []
 
         if has_packages:
-            keyboard.append([
-                InlineKeyboardButton("➕ Comprar Slot Extra", callback_data="buy_extra_slot"),
-            ])
+            keyboard.append(
+                [
+                    InlineKeyboardButton("➕ Comprar Slot Extra", callback_data="buy_extra_slot"),
+                ]
+            )
 
-        keyboard.append([
-            InlineKeyboardButton("📊 Ver Resumen", callback_data="view_data_summary"),
-        ])
-        keyboard.append([
-            InlineKeyboardButton("🔙 Volver", callback_data="buy_gb_menu"),
-        ])
+        keyboard.append(
+            [
+                InlineKeyboardButton("📊 Ver Resumen", callback_data="view_data_summary"),
+            ]
+        )
+        keyboard.append(
+            [
+                InlineKeyboardButton("🔙 Volver", callback_data="buy_gb_menu"),
+            ]
+        )
 
         return InlineKeyboardMarkup(keyboard)
 

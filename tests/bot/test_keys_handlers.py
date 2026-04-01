@@ -1,7 +1,7 @@
 """Tests para VPN Keys Handlers."""
 
 import pytest
-from unittest.mock import patch, AsyncMock, MagicMock
+from unittest.mock import patch, AsyncMock
 
 
 class TestKeysHandler:
@@ -10,8 +10,7 @@ class TestKeysHandler:
     @pytest.mark.asyncio
     async def test_keys_handler_initialization(self):
         """KeysHandler se inicializa correctamente."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage'):
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import KeysHandler
 
             mock_api = AsyncMock()
@@ -27,39 +26,39 @@ class TestKeysHandler:
         """KeysMessages constants están definidas."""
         from src.bot.keyboards.messages_keys import KeysMessages
 
-        assert hasattr(KeysMessages, 'MAIN_MENU')
-        assert hasattr(KeysMessages, 'NO_KEYS')
-        assert hasattr(KeysMessages, 'KEY_DETAILS')
-        assert hasattr(KeysMessages, 'KEY_NOT_FOUND')
+        assert hasattr(KeysMessages, "MAIN_MENU")
+        assert hasattr(KeysMessages, "NO_KEYS")
+        assert hasattr(KeysMessages, "KEY_DETAILS")
+        assert hasattr(KeysMessages, "KEY_NOT_FOUND")
 
     @pytest.mark.asyncio
     async def test_keys_messages_has_action_messages(self):
         """KeysMessages tiene mensajes de acciones."""
         from src.bot.keyboards.messages_keys import KeysMessages
 
-        assert hasattr(KeysMessages.Actions, 'KEY_SUSPENDED')
-        assert hasattr(KeysMessages.Actions, 'KEY_REACTIVATED')
-        assert hasattr(KeysMessages.Actions, 'KEY_DELETED')
-        assert hasattr(KeysMessages.Actions, 'KEY_RENAMED')
-        assert hasattr(KeysMessages.Actions, 'KEY_CREATED')
+        assert hasattr(KeysMessages.Actions, "KEY_SUSPENDED")
+        assert hasattr(KeysMessages.Actions, "KEY_REACTIVATED")
+        assert hasattr(KeysMessages.Actions, "KEY_DELETED")
+        assert hasattr(KeysMessages.Actions, "KEY_RENAMED")
+        assert hasattr(KeysMessages.Actions, "KEY_CREATED")
 
     @pytest.mark.asyncio
     async def test_keys_messages_has_error_messages(self):
         """KeysMessages tiene mensajes de error."""
         from src.bot.keyboards.messages_keys import KeysMessages
 
-        assert hasattr(KeysMessages.Error, 'SYSTEM_ERROR')
-        assert hasattr(KeysMessages.Error, 'KEY_NOT_ACCESSIBLE')
-        assert hasattr(KeysMessages.Error, 'OPERATION_FAILED')
-        assert hasattr(KeysMessages.Error, 'MAX_KEYS_REACHED')
+        assert hasattr(KeysMessages.Error, "SYSTEM_ERROR")
+        assert hasattr(KeysMessages.Error, "KEY_NOT_ACCESSIBLE")
+        assert hasattr(KeysMessages.Error, "OPERATION_FAILED")
+        assert hasattr(KeysMessages.Error, "MAX_KEYS_REACHED")
 
     @pytest.mark.asyncio
     async def test_keys_messages_has_success_messages(self):
         """KeysMessages tiene mensajes de éxito."""
         from src.bot.keyboards.messages_keys import KeysMessages
 
-        assert hasattr(KeysMessages.Success, 'OPERATION_COMPLETED')
-        assert hasattr(KeysMessages.Success, 'CHANGES_SAVED')
+        assert hasattr(KeysMessages.Success, "OPERATION_COMPLETED")
+        assert hasattr(KeysMessages.Success, "CHANGES_SAVED")
 
     @pytest.mark.asyncio
     async def test_keys_messages_main_menu_has_placeholders(self):
@@ -86,8 +85,8 @@ class TestKeysHandler:
         """KeysKeyboard.main_menu existe."""
         from src.bot.keyboards.keys import KeysKeyboard
 
-        assert hasattr(KeysKeyboard, 'main_menu')
-        assert callable(getattr(KeysKeyboard, 'main_menu'))
+        assert hasattr(KeysKeyboard, "main_menu")
+        assert callable(getattr(KeysKeyboard, "main_menu"))
 
     @pytest.mark.asyncio
     async def test_keys_keyboard_main_menu_returns_inline_keyboard(self):
@@ -133,6 +132,7 @@ class TestKeysHandler:
         keyboard = KeysKeyboard.keys_list(keys, key_type="outline")
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
     @pytest.mark.asyncio
@@ -140,13 +140,10 @@ class TestKeysHandler:
         """KeysKeyboard.key_actions existe."""
         from src.bot.keyboards.keys import KeysKeyboard
 
-        keyboard = KeysKeyboard.key_actions(
-            key_id="uuid-1",
-            is_active=True,
-            key_type="wireguard"
-        )
+        keyboard = KeysKeyboard.key_actions(key_id="uuid-1", is_active=True, key_type="wireguard")
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
     @pytest.mark.asyncio
@@ -154,30 +151,22 @@ class TestKeysHandler:
         """key_actions para WireGuard muestra descarga de config."""
         from src.bot.keyboards.keys import KeysKeyboard
 
-        keyboard = KeysKeyboard.key_actions(
-            key_id="uuid-1",
-            is_active=True,
-            key_type="wireguard"
-        )
+        keyboard = KeysKeyboard.key_actions(key_id="uuid-1", is_active=True, key_type="wireguard")
 
         buttons = keyboard.inline_keyboard
-        assert any("Descargar" in btn.text or "📥" in btn.text
-                   for row in buttons for btn in row)
+        assert any("Descargar" in btn.text or "📥" in btn.text for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_keys_keyboard_key_actions_outline_has_link(self):
         """key_actions para Outline muestra enlace de acceso."""
         from src.bot.keyboards.keys import KeysKeyboard
 
-        keyboard = KeysKeyboard.key_actions(
-            key_id="uuid-1",
-            is_active=True,
-            key_type="outline"
-        )
+        keyboard = KeysKeyboard.key_actions(key_id="uuid-1", is_active=True, key_type="outline")
 
         buttons = keyboard.inline_keyboard
-        assert any("Clave de Acceso" in btn.text or "🔗" in btn.text
-                   for row in buttons for btn in row)
+        assert any(
+            "Clave de Acceso" in btn.text or "🔗" in btn.text for row in buttons for btn in row
+        )
 
     @pytest.mark.asyncio
     async def test_keys_keyboard_confirm_delete_exists(self):
@@ -187,6 +176,7 @@ class TestKeysHandler:
         keyboard = KeysKeyboard.confirm_delete(key_id="uuid-1")
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
@@ -201,6 +191,7 @@ class TestKeysHandler:
         keyboard = KeysKeyboard.cancel_rename()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
     @pytest.mark.asyncio
@@ -211,20 +202,18 @@ class TestKeysHandler:
         keyboard = KeysKeyboard.back_to_menu()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
     @pytest.mark.asyncio
     async def test_keys_handler_get_auth_headers(self):
         """_get_auth_headers retorna headers con token."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage') as MockTokenStorage:
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import KeysHandler
 
             mock_api = AsyncMock()
             mock_storage = AsyncMock()
-            mock_storage.get.return_value = {
-                "access_token": "test-token-123"
-            }
+            mock_storage.get.return_value = {"access_token": "test-token-123"}
 
             handler = KeysHandler(mock_api, mock_storage)
 
@@ -236,8 +225,7 @@ class TestKeysHandler:
     @pytest.mark.asyncio
     async def test_keys_handler_get_auth_headers_unauthenticated(self):
         """_get_auth_headers lanza error si no está autenticado."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage') as MockTokenStorage:
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import KeysHandler
 
             mock_api = AsyncMock()
@@ -252,8 +240,7 @@ class TestKeysHandler:
     @pytest.mark.asyncio
     async def test_keys_handler_progress_bar_generation(self):
         """_generate_progress_bar genera barra correcta."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage'):
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import KeysHandler
 
             mock_api = AsyncMock()
@@ -270,8 +257,7 @@ class TestKeysHandler:
     @pytest.mark.asyncio
     async def test_keys_handler_progress_bar_full(self):
         """_generate_progress_bar con 100% está llena."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage'):
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import KeysHandler
 
             mock_api = AsyncMock()
@@ -286,8 +272,7 @@ class TestKeysHandler:
     @pytest.mark.asyncio
     async def test_keys_handler_progress_bar_empty(self):
         """_generate_progress_bar con 0% está vacía."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage'):
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import KeysHandler
 
             mock_api = AsyncMock()
@@ -302,8 +287,7 @@ class TestKeysHandler:
     @pytest.mark.asyncio
     async def test_get_keys_handlers_returns_list(self):
         """get_keys_handlers retorna una lista."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage'):
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import get_keys_handlers
 
             mock_api = AsyncMock()
@@ -317,8 +301,7 @@ class TestKeysHandler:
     @pytest.mark.asyncio
     async def test_get_keys_callback_handlers_returns_list(self):
         """get_keys_callback_handlers retorna una lista."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage'):
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import get_keys_callback_handlers
 
             mock_api = AsyncMock()

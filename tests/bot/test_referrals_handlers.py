@@ -10,8 +10,10 @@ class TestReferralsHandlerInitialization:
     @pytest.mark.asyncio
     async def test_handler_initialization(self):
         """ReferralsHandler initializes correctly with api and tokens attributes."""
-        with patch('src.bot.handlers.referrals.APIClient'), \
-             patch('src.bot.handlers.referrals.TokenStorage'):
+        with (
+            patch("src.bot.handlers.referrals.APIClient"),
+            patch("src.bot.handlers.referrals.TokenStorage"),
+        ):
             from src.bot.handlers.referrals import ReferralsHandler
 
             mock_api = AsyncMock()
@@ -33,8 +35,8 @@ class TestReferralsHandlerInitialization:
         # Mock token storage to return a valid token
         expected_token = "test_access_token_123"
         mock_storage.get.return_value = {
-            'access_token': expected_token,
-            'refresh_token': 'test_refresh_token'
+            "access_token": expected_token,
+            "refresh_token": "test_refresh_token",
         }
 
         handler = ReferralsHandler(mock_api, mock_storage)
@@ -212,11 +214,13 @@ class TestShowReferralsCommand:
         handler._get_auth_headers = AsyncMock(return_value={"Authorization": "Bearer test_token"})
 
         # Mock API response - handler uses self.api.get()
-        handler.api.get = AsyncMock(return_value={
-            "referral_code": "ABC123",
-            "total_referrals": 5,
-            "referral_credits": 10,
-        })
+        handler.api.get = AsyncMock(
+            return_value={
+                "referral_code": "ABC123",
+                "total_referrals": 5,
+                "referral_credits": 10,
+            }
+        )
 
         await handler.show_referrals(mock_update, mock_context)
 
@@ -263,11 +267,13 @@ class TestGetReferralLinkCommand:
         handler._get_auth_headers = AsyncMock(return_value={"Authorization": "Bearer test_token"})
 
         # Mock API response - handler uses self.api.get()
-        handler.api.get = AsyncMock(return_value={
-            "referral_code": "ABC123",
-            "total_referrals": 5,
-            "referral_credits": 10,
-        })
+        handler.api.get = AsyncMock(
+            return_value={
+                "referral_code": "ABC123",
+                "total_referrals": 5,
+                "referral_credits": 10,
+            }
+        )
 
         await handler.get_referral_link(mock_update, mock_context)
 
@@ -343,12 +349,14 @@ class TestReferralCallbacks:
         handler._get_auth_headers = AsyncMock(return_value={"Authorization": "Bearer test_token"})
 
         # Mock API response - handler uses self.api.post()
-        handler.api.post = AsyncMock(return_value={
-            "gb_added": 1,
-            "data": {
-                "remaining_credits": 5,
-            },
-        })
+        handler.api.post = AsyncMock(
+            return_value={
+                "gb_added": 1,
+                "data": {
+                    "remaining_credits": 5,
+                },
+            }
+        )
 
         await handler.redeem_credits_callback(mock_update, mock_context)
 

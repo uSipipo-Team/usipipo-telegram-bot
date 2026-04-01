@@ -17,9 +17,7 @@ class PackagesMessages:
         )
 
         PACKAGE_ITEM = (
-            "🔹 *{name}* - {data} GB\n"
-            "   💰 ${price_usd} USD\n"
-            "   ⭐ {price_stars} Stars\n\n"
+            "🔹 *{name}* - {data} GB\n   💰 ${price_usd} USD\n   ⭐ {price_stars} Stars\n\n"
         )
 
         PACKAGE_DETAILS = (
@@ -37,7 +35,7 @@ class PackagesMessages:
             "💡 Intenta más tarde."
         )
 
-        INVALID_PACKAGE = "❌ *Paquete inválido*\n\n" "El paquete seleccionado no existe."
+        INVALID_PACKAGE = "❌ *Paquete inválido*\n\nEl paquete seleccionado no existe."
 
     # ============================================
     # PAYMENT MESSAGES
@@ -148,16 +146,10 @@ class PackagesMessages:
         """Mensajes de gestión de slots."""
 
         SLOTS_HEADER = (
-            "🗂️ *Tus Slots de Datos*\n\n"
-            "Slots usados: {used}/{max}\n\n"
-            "📦 *Paquetes activos:*\n\n"
+            "🗂️ *Tus Slots de Datos*\n\nSlots usados: {used}/{max}\n\n📦 *Paquetes activos:*\n\n"
         )
 
-        SLOT_ITEM = (
-            "{status} *{name}*\n"
-            "   📊 {data} GB\n"
-            "   📅 Expira: {expires}\n\n"
-        )
+        SLOT_ITEM = "{status} *{name}*\n   📊 {data} GB\n   📅 Expira: {expires}\n\n"
 
         NO_SLOTS = (
             "📭 *Sin Slots Activos*\n\n"

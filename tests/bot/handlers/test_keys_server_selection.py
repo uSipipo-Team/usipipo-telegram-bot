@@ -10,25 +10,41 @@ class TestServerSelectionConversation:
     @pytest.mark.asyncio
     async def test_protocol_selected_fetches_servers(self):
         """protocol_selected debe fetchear servidores del backend."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage') as MockTokenStorage:
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import KeysHandler, SELECT_SERVER
-            from telegram import InlineKeyboardMarkup
 
             mock_api = AsyncMock()
             mock_storage = AsyncMock()
             mock_storage.get.return_value = {"access_token": "test-token"}
             mock_api.get.return_value = {
                 "servers": [
-                    {"id": "srv-1", "name": "US-East", "country_name": "United States", 
-                     "city": "New York", "load_level": "low", "load_percentage": 25},
-                    {"id": "srv-2", "name": "EU-West", "country_name": "Germany",
-                     "city": "Frankfurt", "load_level": "medium", "load_percentage": 65},
+                    {
+                        "id": "srv-1",
+                        "name": "US-East",
+                        "country_name": "United States",
+                        "city": "New York",
+                        "load_level": "low",
+                        "load_percentage": 25,
+                    },
+                    {
+                        "id": "srv-2",
+                        "name": "EU-West",
+                        "country_name": "Germany",
+                        "city": "Frankfurt",
+                        "load_level": "medium",
+                        "load_percentage": 65,
+                    },
                 ],
                 "recommended": [
-                    {"id": "srv-1", "name": "US-East", "country_name": "United States",
-                     "city": "New York", "load_level": "low", "load_percentage": 25},
-                ]
+                    {
+                        "id": "srv-1",
+                        "name": "US-East",
+                        "country_name": "United States",
+                        "city": "New York",
+                        "load_level": "low",
+                        "load_percentage": 25,
+                    },
+                ],
             }
 
             handler = KeysHandler(mock_api, mock_storage)
@@ -60,8 +76,7 @@ class TestServerSelectionConversation:
     @pytest.mark.asyncio
     async def test_protocol_selected_no_servers_available(self):
         """protocol_selected maneja cuando no hay servidores."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage') as MockTokenStorage:
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import KeysHandler
             import telegram
 
@@ -93,8 +108,7 @@ class TestServerSelectionConversation:
     @pytest.mark.asyncio
     async def test_protocol_selected_api_error_handling(self):
         """protocol_selected maneja errores de API."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage') as MockTokenStorage:
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import KeysHandler
             import telegram
 
@@ -127,8 +141,7 @@ class TestServerSelectionConversation:
     @pytest.mark.asyncio
     async def test_server_selected_stores_server_id(self):
         """server_selected debe guardar server_id en user_data."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage'):
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import KeysHandler, INPUT_NAME
 
             mock_api = AsyncMock()
@@ -160,24 +173,29 @@ class TestServerSelectionConversation:
     @pytest.mark.asyncio
     async def test_server_selected_show_all_callback(self):
         """server_selected maneja callback 'servers_show_all'."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage') as MockTokenStorage:
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import KeysHandler, SELECT_SERVER
-            from src.bot.keyboards.servers import ServerKeyboards
 
             mock_api = AsyncMock()
             mock_storage = AsyncMock()
             mock_storage.get.return_value = {"access_token": "test-token"}
-            
+
             # Mock servers as dicts (API response format)
             mock_api.get.return_value = {
                 "servers": [
-                    {"id": "srv-1", "country_name": "United States", "city": "New York", 
-                     "load_level": "low"},
-                    {"id": "srv-2", "country_name": "Germany", "city": "Frankfurt",
-                     "load_level": "medium"},
-                    {"id": "srv-3", "country_name": "Japan", "city": "Tokyo",
-                     "load_level": "high"},
+                    {
+                        "id": "srv-1",
+                        "country_name": "United States",
+                        "city": "New York",
+                        "load_level": "low",
+                    },
+                    {
+                        "id": "srv-2",
+                        "country_name": "Germany",
+                        "city": "Frankfurt",
+                        "load_level": "medium",
+                    },
+                    {"id": "srv-3", "country_name": "Japan", "city": "Tokyo", "load_level": "high"},
                 ]
             }
 
@@ -205,8 +223,7 @@ class TestServerSelectionConversation:
     @pytest.mark.asyncio
     async def test_server_selected_show_all_api_error(self):
         """server_selected maneja errores en show_all."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage') as MockTokenStorage:
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import KeysHandler
             import telegram
 
@@ -238,8 +255,7 @@ class TestServerSelectionConversation:
     @pytest.mark.asyncio
     async def test_server_selected_invalid_callback_data(self):
         """server_selected ignora callback data inválido."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage'):
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import KeysHandler
             import telegram
 
@@ -264,8 +280,7 @@ class TestServerSelectionConversation:
     @pytest.mark.asyncio
     async def test_server_selected_missing_protocol(self):
         """server_selected maneja protocolo faltante en show_all."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage'):
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import KeysHandler
             import telegram
 
@@ -295,8 +310,7 @@ class TestServerSelectionConversation:
     @pytest.mark.asyncio
     async def test_format_server_list_message(self):
         """_format_server_list_message formatea mensaje correctamente."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage'):
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import KeysHandler
 
             mock_api = AsyncMock()
@@ -305,10 +319,22 @@ class TestServerSelectionConversation:
             handler = KeysHandler(mock_api, mock_storage)
 
             servers = [
-                {"id": "srv-1", "name": "US-East", "country_name": "United States",
-                 "city": "New York", "load_level": "low", "load_percentage": 25},
-                {"id": "srv-2", "name": "EU-West", "country_name": "Germany",
-                 "city": "Frankfurt", "load_level": "medium", "load_percentage": 65},
+                {
+                    "id": "srv-1",
+                    "name": "US-East",
+                    "country_name": "United States",
+                    "city": "New York",
+                    "load_level": "low",
+                    "load_percentage": 25,
+                },
+                {
+                    "id": "srv-2",
+                    "name": "EU-West",
+                    "country_name": "Germany",
+                    "city": "Frankfurt",
+                    "load_level": "medium",
+                    "load_percentage": 65,
+                },
             ]
 
             message = handler._format_server_list_message(servers)
@@ -329,8 +355,7 @@ class TestServerSelectionConversation:
     @pytest.mark.asyncio
     async def test_format_server_list_message_no_city(self):
         """_format_server_list_message maneja servidores sin ciudad."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage'):
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import KeysHandler
 
             mock_api = AsyncMock()
@@ -339,8 +364,13 @@ class TestServerSelectionConversation:
             handler = KeysHandler(mock_api, mock_storage)
 
             servers = [
-                {"id": "srv-1", "name": "US-East", "country_name": "United States",
-                 "load_level": "low", "load_percentage": 25},  # No city
+                {
+                    "id": "srv-1",
+                    "name": "US-East",
+                    "country_name": "United States",
+                    "load_level": "low",
+                    "load_percentage": 25,
+                },  # No city
             ]
 
             message = handler._format_server_list_message(servers)
@@ -352,8 +382,7 @@ class TestServerSelectionConversation:
     @pytest.mark.asyncio
     async def test_format_server_list_message_empty_list(self):
         """_format_server_list_message maneja lista vacía."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage'):
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import KeysHandler
 
             mock_api = AsyncMock()
@@ -370,10 +399,8 @@ class TestServerSelectionConversation:
     @pytest.mark.asyncio
     async def test_name_received_includes_server_id(self):
         """name_received debe incluir server_id al crear clave."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage') as MockTokenStorage:
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import KeysHandler
-            import telegram
 
             mock_api = AsyncMock()
             mock_storage = AsyncMock()
@@ -397,7 +424,7 @@ class TestServerSelectionConversation:
                 "server_id": "srv-456",
             }
 
-            result = await handler.name_received(mock_update, mock_context)
+            await handler.name_received(mock_update, mock_context)
 
             # Verify API post called with server_id
             mock_api.post.assert_called_once()
@@ -413,8 +440,7 @@ class TestServerSelectionConversation:
     @pytest.mark.asyncio
     async def test_name_received_without_server_id(self):
         """name_received funciona sin server_id (opcional)."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage') as MockTokenStorage:
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import KeysHandler
 
             mock_api = AsyncMock()
@@ -439,7 +465,7 @@ class TestServerSelectionConversation:
                 # No server_id
             }
 
-            result = await handler.name_received(mock_update, mock_context)
+            await handler.name_received(mock_update, mock_context)
 
             # Verify API post called without server_id
             mock_api.post.assert_called_once()
@@ -450,8 +476,7 @@ class TestServerSelectionConversation:
     @pytest.mark.asyncio
     async def test_conversation_handler_includes_select_server_state(self):
         """ConversationHandler debe incluir estado SELECT_SERVER."""
-        with patch('src.bot.handlers.keys.APIClient'), \
-             patch('src.bot.handlers.keys.TokenStorage'):
+        with patch("src.bot.handlers.keys.APIClient"), patch("src.bot.handlers.keys.TokenStorage"):
             from src.bot.handlers.keys import get_key_creation_conversation_handler, KeysHandler
             from telegram.ext import CallbackQueryHandler
 
@@ -508,10 +533,20 @@ class TestServerKeyboards:
         from telegram import InlineKeyboardMarkup
 
         servers = [
-            {"id": "srv-1", "country_name": "United States", "country_code": "🇺🇸", 
-             "city": "New York", "load_level": "low"},
-            {"id": "srv-2", "country_name": "Germany", "country_code": "🇩🇪",
-             "city": "Frankfurt", "load_level": "medium"},
+            {
+                "id": "srv-1",
+                "country_name": "United States",
+                "country_code": "🇺🇸",
+                "city": "New York",
+                "load_level": "low",
+            },
+            {
+                "id": "srv-2",
+                "country_name": "Germany",
+                "country_code": "🇩🇪",
+                "city": "Frankfurt",
+                "load_level": "medium",
+            },
         ]
 
         keyboard = ServerKeyboards.server_selection(servers)
@@ -520,7 +555,9 @@ class TestServerKeyboards:
         buttons = keyboard.inline_keyboard
 
         # Should have server buttons
-        server_buttons = [btn for row in buttons for btn in row if btn.callback_data.startswith("server_select:")]
+        server_buttons = [
+            btn for row in buttons for btn in row if btn.callback_data.startswith("server_select:")
+        ]
         assert len(server_buttons) == 2
 
         # Verify callback data format
@@ -533,8 +570,13 @@ class TestServerKeyboards:
         from src.bot.keyboards.servers import ServerKeyboards
 
         servers = [
-            {"id": f"srv-{i}", "country_name": f"Country {i}", "country_code": "🇺🇸",
-             "city": f"City {i}", "load_level": "low"}
+            {
+                "id": f"srv-{i}",
+                "country_name": f"Country {i}",
+                "country_code": "🇺🇸",
+                "city": f"City {i}",
+                "load_level": "low",
+            }
             for i in range(6)
         ]
 
@@ -551,11 +593,21 @@ class TestServerKeyboards:
         from src.bot.keyboards.servers import ServerKeyboards
 
         # Low load
-        low_load_server = {"id": "srv-1", "country_name": "United States", 
-                          "country_code": "🇺🇸", "city": "NYC", "load_level": "low"}
+        low_load_server = {
+            "id": "srv-1",
+            "country_name": "United States",
+            "country_code": "🇺🇸",
+            "city": "NYC",
+            "load_level": "low",
+        }
         # High load
-        high_load_server = {"id": "srv-2", "country_name": "Germany",
-                           "country_code": "🇩🇪", "city": "FRA", "load_level": "high"}
+        high_load_server = {
+            "id": "srv-2",
+            "country_name": "Germany",
+            "country_code": "🇩🇪",
+            "city": "FRA",
+            "load_level": "high",
+        }
 
         keyboard_low = ServerKeyboards.server_selection([low_load_server])
         keyboard_high = ServerKeyboards.server_selection([high_load_server])
@@ -576,10 +628,20 @@ class TestServerKeyboards:
         from telegram import InlineKeyboardMarkup
 
         servers = [
-            {"id": "srv-1", "country_name": "United States", "country_code": "🇺🇸",
-             "city": "New York", "load_level": "low"},
-            {"id": "srv-2", "country_name": "Germany", "country_code": "🇩🇪",
-             "city": "Frankfurt", "load_level": "medium"},
+            {
+                "id": "srv-1",
+                "country_name": "United States",
+                "country_code": "🇺🇸",
+                "city": "New York",
+                "load_level": "low",
+            },
+            {
+                "id": "srv-2",
+                "country_name": "Germany",
+                "country_code": "🇩🇪",
+                "city": "Frankfurt",
+                "load_level": "medium",
+            },
         ]
 
         keyboard = ServerKeyboards.server_selection_full(servers)
@@ -588,7 +650,9 @@ class TestServerKeyboards:
         buttons = keyboard.inline_keyboard
 
         # Should have server buttons
-        server_buttons = [btn for row in buttons for btn in row if btn.callback_data.startswith("server_select:")]
+        server_buttons = [
+            btn for row in buttons for btn in row if btn.callback_data.startswith("server_select:")
+        ]
         assert len(server_buttons) == 2
 
         # Should have back button

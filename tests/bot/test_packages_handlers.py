@@ -1,7 +1,7 @@
 """Tests para Data Packages Handlers."""
 
 import pytest
-from unittest.mock import patch, AsyncMock, MagicMock
+from unittest.mock import patch, AsyncMock
 
 
 class TestPackagesHandler:
@@ -10,8 +10,10 @@ class TestPackagesHandler:
     @pytest.mark.asyncio
     async def test_packages_handler_initialization(self):
         """PackagesHandler se inicializa correctamente."""
-        with patch('src.bot.handlers.packages.APIClient'), \
-             patch('src.bot.handlers.packages.TokenStorage'):
+        with (
+            patch("src.bot.handlers.packages.APIClient"),
+            patch("src.bot.handlers.packages.TokenStorage"),
+        ):
             from src.bot.handlers.packages import PackagesHandler
 
             mock_api = AsyncMock()
@@ -27,72 +29,72 @@ class TestPackagesHandler:
         """PackagesMessages constants están definidas."""
         from src.bot.keyboards.messages_packages import PackagesMessages
 
-        assert hasattr(PackagesMessages, 'Menu')
-        assert hasattr(PackagesMessages, 'Payment')
-        assert hasattr(PackagesMessages, 'Summary')
-        assert hasattr(PackagesMessages, 'Slots')
-        assert hasattr(PackagesMessages, 'Error')
+        assert hasattr(PackagesMessages, "Menu")
+        assert hasattr(PackagesMessages, "Payment")
+        assert hasattr(PackagesMessages, "Summary")
+        assert hasattr(PackagesMessages, "Slots")
+        assert hasattr(PackagesMessages, "Error")
 
     @pytest.mark.asyncio
     async def test_packages_messages_has_menu_messages(self):
         """PackagesMessages tiene mensajes de menú."""
         from src.bot.keyboards.messages_packages import PackagesMessages
 
-        assert hasattr(PackagesMessages.Menu, 'PACKAGES_LIST')
-        assert hasattr(PackagesMessages.Menu, 'PACKAGE_ITEM')
-        assert hasattr(PackagesMessages.Menu, 'PACKAGE_DETAILS')
-        assert hasattr(PackagesMessages.Menu, 'NO_PACKAGES')
-        assert hasattr(PackagesMessages.Menu, 'INVALID_PACKAGE')
+        assert hasattr(PackagesMessages.Menu, "PACKAGES_LIST")
+        assert hasattr(PackagesMessages.Menu, "PACKAGE_ITEM")
+        assert hasattr(PackagesMessages.Menu, "PACKAGE_DETAILS")
+        assert hasattr(PackagesMessages.Menu, "NO_PACKAGES")
+        assert hasattr(PackagesMessages.Menu, "INVALID_PACKAGE")
 
     @pytest.mark.asyncio
     async def test_packages_messages_has_payment_messages(self):
         """PackagesMessages tiene mensajes de pago."""
         from src.bot.keyboards.messages_packages import PackagesMessages
 
-        assert hasattr(PackagesMessages.Payment, 'SELECT_METHOD')
-        assert hasattr(PackagesMessages.Payment, 'STARS_PAYMENT_SENT')
-        assert hasattr(PackagesMessages.Payment, 'STARS_SUCCESS')
-        assert hasattr(PackagesMessages.Payment, 'STARS_FAILED')
-        assert hasattr(PackagesMessages.Payment, 'CRYPTO_PAYMENT')
-        assert hasattr(PackagesMessages.Payment, 'CRYPTO_PENDING')
-        assert hasattr(PackagesMessages.Payment, 'CRYPTO_SUCCESS')
-        assert hasattr(PackagesMessages.Payment, 'CRYPTO_EXPIRED')
-        assert hasattr(PackagesMessages.Payment, 'CRYPTO_PAYMENT_FAILED')
+        assert hasattr(PackagesMessages.Payment, "SELECT_METHOD")
+        assert hasattr(PackagesMessages.Payment, "STARS_PAYMENT_SENT")
+        assert hasattr(PackagesMessages.Payment, "STARS_SUCCESS")
+        assert hasattr(PackagesMessages.Payment, "STARS_FAILED")
+        assert hasattr(PackagesMessages.Payment, "CRYPTO_PAYMENT")
+        assert hasattr(PackagesMessages.Payment, "CRYPTO_PENDING")
+        assert hasattr(PackagesMessages.Payment, "CRYPTO_SUCCESS")
+        assert hasattr(PackagesMessages.Payment, "CRYPTO_EXPIRED")
+        assert hasattr(PackagesMessages.Payment, "CRYPTO_PAYMENT_FAILED")
 
     @pytest.mark.asyncio
     async def test_packages_messages_has_summary_messages(self):
         """PackagesMessages tiene mensajes de resumen."""
         from src.bot.keyboards.messages_packages import PackagesMessages
 
-        assert hasattr(PackagesMessages.Summary, 'DATA_SUMMARY')
-        assert hasattr(PackagesMessages.Summary, 'NO_ACTIVE_PACKAGES')
+        assert hasattr(PackagesMessages.Summary, "DATA_SUMMARY")
+        assert hasattr(PackagesMessages.Summary, "NO_ACTIVE_PACKAGES")
 
     @pytest.mark.asyncio
     async def test_packages_messages_has_slots_messages(self):
         """PackagesMessages tiene mensajes de slots."""
         from src.bot.keyboards.messages_packages import PackagesMessages
 
-        assert hasattr(PackagesMessages.Slots, 'SLOTS_HEADER')
-        assert hasattr(PackagesMessages.Slots, 'SLOT_ITEM')
-        assert hasattr(PackagesMessages.Slots, 'NO_SLOTS')
-        assert hasattr(PackagesMessages.Slots, 'BUY_SLOT_PROMPT')
-        assert hasattr(PackagesMessages.Slots, 'SLOT_PURCHASED')
-        assert hasattr(PackagesMessages.Slots, 'SLOT_PURCHASE_FAILED')
-        assert hasattr(PackagesMessages.Slots, 'MAX_SLOTS_REACHED')
+        assert hasattr(PackagesMessages.Slots, "SLOTS_HEADER")
+        assert hasattr(PackagesMessages.Slots, "SLOT_ITEM")
+        assert hasattr(PackagesMessages.Slots, "NO_SLOTS")
+        assert hasattr(PackagesMessages.Slots, "BUY_SLOT_PROMPT")
+        assert hasattr(PackagesMessages.Slots, "SLOT_PURCHASED")
+        assert hasattr(PackagesMessages.Slots, "SLOT_PURCHASE_FAILED")
+        assert hasattr(PackagesMessages.Slots, "MAX_SLOTS_REACHED")
 
     @pytest.mark.asyncio
     async def test_packages_messages_has_error_messages(self):
         """PackagesMessages tiene mensajes de error."""
         from src.bot.keyboards.messages_packages import PackagesMessages
 
-        assert hasattr(PackagesMessages.Error, 'SYSTEM_ERROR')
-        assert hasattr(PackagesMessages.Error, 'NOT_AUTHENTICATED')
-        assert hasattr(PackagesMessages.Error, 'INVALID_PACKAGE')
-        assert hasattr(PackagesMessages.Error, 'PAYMENT_FAILED')
-        assert hasattr(PackagesMessages.Error, 'CRYPTO_PAYMENT_FAILED')
-        assert hasattr(PackagesMessages.Error, 'NETWORK_ERROR')
-        assert hasattr(PackagesMessages.Error, 'INSUFFICIENT_FUNDS')
-        assert hasattr(PackagesMessages.Error, 'TIMEOUT')
+        assert hasattr(PackagesMessages.Error, "SYSTEM_ERROR")
+        assert hasattr(PackagesMessages.Error, "NOT_AUTHENTICATED")
+        assert hasattr(PackagesMessages.Error, "INVALID_PACKAGE")
+        assert hasattr(PackagesMessages.Error, "PAYMENT_FAILED")
+        assert hasattr(PackagesMessages.Error, "CRYPTO_PAYMENT_FAILED")
+        assert hasattr(PackagesMessages.Error, "NETWORK_ERROR")
+        assert hasattr(PackagesMessages.Error, "INSUFFICIENT_FUNDS")
+        assert hasattr(PackagesMessages.Error, "TIMEOUT")
 
     @pytest.mark.asyncio
     async def test_packages_messages_menu_has_placeholders(self):
@@ -212,6 +214,7 @@ class TestPackagesHandler:
         keyboard = PackagesKeyboard.packages_menu(packages)
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
     @pytest.mark.asyncio
@@ -222,7 +225,13 @@ class TestPackagesHandler:
 
         packages = [
             {"id": "small", "name": "Pequeño", "data_gb": 5, "price_usd": 5.00, "price_stars": 600},
-            {"id": "medium", "name": "Mediano", "data_gb": 10, "price_usd": 10.00, "price_stars": 1200},
+            {
+                "id": "medium",
+                "name": "Mediano",
+                "data_gb": 10,
+                "price_usd": 10.00,
+                "price_stars": 1200,
+            },
         ]
         keyboard = PackagesKeyboard.packages_menu(packages)
 
@@ -237,13 +246,12 @@ class TestPackagesHandler:
         keyboard = PackagesKeyboard.payment_method_selection(package_id="small")
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("Stars" in btn.text or "⭐" in btn.text
-                   for row in buttons for btn in row)
-        assert any("Crypto" in btn.text or "🪙" in btn.text
-                   for row in buttons for btn in row)
+        assert any("Stars" in btn.text or "⭐" in btn.text for row in buttons for btn in row)
+        assert any("Crypto" in btn.text or "🪙" in btn.text for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_packages_keyboard_stars_payment_exists(self):
@@ -253,8 +261,7 @@ class TestPackagesHandler:
         keyboard = PackagesKeyboard.payment_method_selection(package_id="medium")
 
         buttons = keyboard.inline_keyboard
-        assert any("pay_stars_medium" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any("pay_stars_medium" in btn.callback_data for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_packages_keyboard_crypto_payment_exists(self):
@@ -264,8 +271,7 @@ class TestPackagesHandler:
         keyboard = PackagesKeyboard.payment_method_selection(package_id="large")
 
         buttons = keyboard.inline_keyboard
-        assert any("pay_crypto_large" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any("pay_crypto_large" in btn.callback_data for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_packages_keyboard_package_selection_exists(self):
@@ -279,10 +285,8 @@ class TestPackagesHandler:
         keyboard = PackagesKeyboard.packages_menu(packages)
 
         buttons = keyboard.inline_keyboard
-        assert any("select_package_small" in btn.callback_data
-                   for row in buttons for btn in row)
-        assert any("select_package_large" in btn.callback_data
-                   for row in buttons for btn in row)
+        assert any("select_package_small" in btn.callback_data for row in buttons for btn in row)
+        assert any("select_package_large" in btn.callback_data for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_packages_keyboard_data_summary_exists(self):
@@ -292,13 +296,12 @@ class TestPackagesHandler:
         keyboard = PackagesKeyboard.data_summary_menu()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("Comprar" in btn.text or "📦" in btn.text
-                   for row in buttons for btn in row)
-        assert any("Slots" in btn.text or "🗂️" in btn.text
-                   for row in buttons for btn in row)
+        assert any("Comprar" in btn.text or "📦" in btn.text for row in buttons for btn in row)
+        assert any("Slots" in btn.text or "🗂️" in btn.text for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_packages_keyboard_slots_menu_exists(self):
@@ -308,11 +311,11 @@ class TestPackagesHandler:
         keyboard = PackagesKeyboard.slots_menu(has_packages=True)
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("Slot" in btn.text or "➕" in btn.text
-                   for row in buttons for btn in row)
+        assert any("Slot" in btn.text or "➕" in btn.text for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_packages_keyboard_back_to_packages_exists(self):
@@ -322,11 +325,11 @@ class TestPackagesHandler:
         keyboard = PackagesKeyboard.back_to_packages()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("Paquetes" in btn.text or "📦" in btn.text
-                   for row in buttons for btn in row)
+        assert any("Paquetes" in btn.text or "📦" in btn.text for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_packages_keyboard_payment_success_exists(self):
@@ -336,6 +339,7 @@ class TestPackagesHandler:
         keyboard = PackagesKeyboard.back_to_menu()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
     @pytest.mark.asyncio
@@ -346,11 +350,11 @@ class TestPackagesHandler:
         keyboard = PackagesKeyboard.crypto_payment_status(payment_id="crypto_123")
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("Verificar" in btn.text or "🔄" in btn.text
-                   for row in buttons for btn in row)
+        assert any("Verificar" in btn.text or "🔄" in btn.text for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_packages_keyboard_buy_slot_confirmation_exists(self):
@@ -360,19 +364,20 @@ class TestPackagesHandler:
         keyboard = PackagesKeyboard.buy_slot_confirmation()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("Confirmar" in btn.text or "✅" in btn.text
-                   for row in buttons for btn in row)
-        assert any("Cancelar" in btn.text or "❌" in btn.text
-                   for row in buttons for btn in row)
+        assert any("Confirmar" in btn.text or "✅" in btn.text for row in buttons for btn in row)
+        assert any("Cancelar" in btn.text or "❌" in btn.text for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_show_packages_command_exists(self):
         """show_packages command handler existe."""
-        with patch('src.bot.handlers.packages.APIClient'), \
-             patch('src.bot.handlers.packages.TokenStorage'):
+        with (
+            patch("src.bot.handlers.packages.APIClient"),
+            patch("src.bot.handlers.packages.TokenStorage"),
+        ):
             from src.bot.handlers.packages import PackagesHandler
 
             mock_api = AsyncMock()
@@ -380,14 +385,16 @@ class TestPackagesHandler:
 
             handler = PackagesHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'show_packages')
-            assert callable(getattr(handler, 'show_packages'))
+            assert hasattr(handler, "show_packages")
+            assert callable(getattr(handler, "show_packages"))
 
     @pytest.mark.asyncio
     async def test_select_payment_method_callback_exists(self):
         """select_payment_method callback handler existe."""
-        with patch('src.bot.handlers.packages.APIClient'), \
-             patch('src.bot.handlers.packages.TokenStorage'):
+        with (
+            patch("src.bot.handlers.packages.APIClient"),
+            patch("src.bot.handlers.packages.TokenStorage"),
+        ):
             from src.bot.handlers.packages import PackagesHandler
 
             mock_api = AsyncMock()
@@ -395,14 +402,16 @@ class TestPackagesHandler:
 
             handler = PackagesHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'select_payment_method')
-            assert callable(getattr(handler, 'select_payment_method'))
+            assert hasattr(handler, "select_payment_method")
+            assert callable(getattr(handler, "select_payment_method"))
 
     @pytest.mark.asyncio
     async def test_pay_with_stars_flow(self):
         """pay_with_stars inicia el flujo de pago con stars."""
-        with patch('src.bot.handlers.packages.APIClient'), \
-             patch('src.bot.handlers.packages.TokenStorage'):
+        with (
+            patch("src.bot.handlers.packages.APIClient"),
+            patch("src.bot.handlers.packages.TokenStorage"),
+        ):
             from src.bot.handlers.packages import PackagesHandler
 
             mock_api = AsyncMock()
@@ -412,14 +421,16 @@ class TestPackagesHandler:
 
             handler = PackagesHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'pay_with_stars')
-            assert callable(getattr(handler, 'pay_with_stars'))
+            assert hasattr(handler, "pay_with_stars")
+            assert callable(getattr(handler, "pay_with_stars"))
 
     @pytest.mark.asyncio
     async def test_pay_with_crypto_flow(self):
         """pay_with_crypto inicia el flujo de pago con crypto."""
-        with patch('src.bot.handlers.packages.APIClient'), \
-             patch('src.bot.handlers.packages.TokenStorage'):
+        with (
+            patch("src.bot.handlers.packages.APIClient"),
+            patch("src.bot.handlers.packages.TokenStorage"),
+        ):
             from src.bot.handlers.packages import PackagesHandler
 
             mock_api = AsyncMock()
@@ -429,14 +440,16 @@ class TestPackagesHandler:
 
             handler = PackagesHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'pay_with_crypto')
-            assert callable(getattr(handler, 'pay_with_crypto'))
+            assert hasattr(handler, "pay_with_crypto")
+            assert callable(getattr(handler, "pay_with_crypto"))
 
     @pytest.mark.asyncio
     async def test_view_data_summary_exists(self):
         """view_data_summary handler existe."""
-        with patch('src.bot.handlers.packages.APIClient'), \
-             patch('src.bot.handlers.packages.TokenStorage'):
+        with (
+            patch("src.bot.handlers.packages.APIClient"),
+            patch("src.bot.handlers.packages.TokenStorage"),
+        ):
             from src.bot.handlers.packages import PackagesHandler
 
             mock_api = AsyncMock()
@@ -444,14 +457,16 @@ class TestPackagesHandler:
 
             handler = PackagesHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'view_data_summary')
-            assert callable(getattr(handler, 'view_data_summary'))
+            assert hasattr(handler, "view_data_summary")
+            assert callable(getattr(handler, "view_data_summary"))
 
     @pytest.mark.asyncio
     async def test_pre_checkout_callback_exists(self):
         """pre_checkout_callback handler existe."""
-        with patch('src.bot.handlers.packages.APIClient'), \
-             patch('src.bot.handlers.packages.TokenStorage'):
+        with (
+            patch("src.bot.handlers.packages.APIClient"),
+            patch("src.bot.handlers.packages.TokenStorage"),
+        ):
             from src.bot.handlers.packages import PackagesHandler
 
             mock_api = AsyncMock()
@@ -459,14 +474,16 @@ class TestPackagesHandler:
 
             handler = PackagesHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'pre_checkout_callback')
-            assert callable(getattr(handler, 'pre_checkout_callback'))
+            assert hasattr(handler, "pre_checkout_callback")
+            assert callable(getattr(handler, "pre_checkout_callback"))
 
     @pytest.mark.asyncio
     async def test_successful_payment_handler_exists(self):
         """successful_payment handler existe."""
-        with patch('src.bot.handlers.packages.APIClient'), \
-             patch('src.bot.handlers.packages.TokenStorage'):
+        with (
+            patch("src.bot.handlers.packages.APIClient"),
+            patch("src.bot.handlers.packages.TokenStorage"),
+        ):
             from src.bot.handlers.packages import PackagesHandler
 
             mock_api = AsyncMock()
@@ -474,14 +491,16 @@ class TestPackagesHandler:
 
             handler = PackagesHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'successful_payment')
-            assert callable(getattr(handler, 'successful_payment'))
+            assert hasattr(handler, "successful_payment")
+            assert callable(getattr(handler, "successful_payment"))
 
     @pytest.mark.asyncio
     async def test_check_crypto_payment_status_exists(self):
         """check_crypto_payment_status handler existe."""
-        with patch('src.bot.handlers.packages.APIClient'), \
-             patch('src.bot.handlers.packages.TokenStorage'):
+        with (
+            patch("src.bot.handlers.packages.APIClient"),
+            patch("src.bot.handlers.packages.TokenStorage"),
+        ):
             from src.bot.handlers.packages import PackagesHandler
 
             mock_api = AsyncMock()
@@ -489,14 +508,16 @@ class TestPackagesHandler:
 
             handler = PackagesHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'check_crypto_payment_status')
-            assert callable(getattr(handler, 'check_crypto_payment_status'))
+            assert hasattr(handler, "check_crypto_payment_status")
+            assert callable(getattr(handler, "check_crypto_payment_status"))
 
     @pytest.mark.asyncio
     async def test_show_slots_menu_exists(self):
         """show_slots_menu handler existe."""
-        with patch('src.bot.handlers.packages.APIClient'), \
-             patch('src.bot.handlers.packages.TokenStorage'):
+        with (
+            patch("src.bot.handlers.packages.APIClient"),
+            patch("src.bot.handlers.packages.TokenStorage"),
+        ):
             from src.bot.handlers.packages import PackagesHandler
 
             mock_api = AsyncMock()
@@ -504,14 +525,16 @@ class TestPackagesHandler:
 
             handler = PackagesHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'show_slots_menu')
-            assert callable(getattr(handler, 'show_slots_menu'))
+            assert hasattr(handler, "show_slots_menu")
+            assert callable(getattr(handler, "show_slots_menu"))
 
     @pytest.mark.asyncio
     async def test_buy_extra_slot_exists(self):
         """buy_extra_slot handler existe."""
-        with patch('src.bot.handlers.packages.APIClient'), \
-             patch('src.bot.handlers.packages.TokenStorage'):
+        with (
+            patch("src.bot.handlers.packages.APIClient"),
+            patch("src.bot.handlers.packages.TokenStorage"),
+        ):
             from src.bot.handlers.packages import PackagesHandler
 
             mock_api = AsyncMock()
@@ -519,14 +542,16 @@ class TestPackagesHandler:
 
             handler = PackagesHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'buy_extra_slot')
-            assert callable(getattr(handler, 'buy_extra_slot'))
+            assert hasattr(handler, "buy_extra_slot")
+            assert callable(getattr(handler, "buy_extra_slot"))
 
     @pytest.mark.asyncio
     async def test_confirm_buy_slot_exists(self):
         """confirm_buy_slot handler existe."""
-        with patch('src.bot.handlers.packages.APIClient'), \
-             patch('src.bot.handlers.packages.TokenStorage'):
+        with (
+            patch("src.bot.handlers.packages.APIClient"),
+            patch("src.bot.handlers.packages.TokenStorage"),
+        ):
             from src.bot.handlers.packages import PackagesHandler
 
             mock_api = AsyncMock()
@@ -534,21 +559,21 @@ class TestPackagesHandler:
 
             handler = PackagesHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'confirm_buy_slot')
-            assert callable(getattr(handler, 'confirm_buy_slot'))
+            assert hasattr(handler, "confirm_buy_slot")
+            assert callable(getattr(handler, "confirm_buy_slot"))
 
     @pytest.mark.asyncio
     async def test_packages_handler_get_auth_headers(self):
         """_get_auth_headers retorna headers con token."""
-        with patch('src.bot.handlers.packages.APIClient'), \
-             patch('src.bot.handlers.packages.TokenStorage') as MockTokenStorage:
+        with (
+            patch("src.bot.handlers.packages.APIClient"),
+            patch("src.bot.handlers.packages.TokenStorage"),
+        ):
             from src.bot.handlers.packages import PackagesHandler
 
             mock_api = AsyncMock()
             mock_storage = AsyncMock()
-            mock_storage.get.return_value = {
-                "access_token": "test-token-123"
-            }
+            mock_storage.get.return_value = {"access_token": "test-token-123"}
 
             handler = PackagesHandler(mock_api, mock_storage)
 
@@ -560,8 +585,10 @@ class TestPackagesHandler:
     @pytest.mark.asyncio
     async def test_packages_handler_get_auth_headers_unauthenticated(self):
         """_get_auth_headers lanza error si no está autenticado."""
-        with patch('src.bot.handlers.packages.APIClient'), \
-             patch('src.bot.handlers.packages.TokenStorage') as MockTokenStorage:
+        with (
+            patch("src.bot.handlers.packages.APIClient"),
+            patch("src.bot.handlers.packages.TokenStorage"),
+        ):
             from src.bot.handlers.packages import PackagesHandler
 
             mock_api = AsyncMock()
@@ -576,8 +603,10 @@ class TestPackagesHandler:
     @pytest.mark.asyncio
     async def test_get_packages_handlers_returns_list(self):
         """get_packages_handlers retorna una lista."""
-        with patch('src.bot.handlers.packages.APIClient'), \
-             patch('src.bot.handlers.packages.TokenStorage'):
+        with (
+            patch("src.bot.handlers.packages.APIClient"),
+            patch("src.bot.handlers.packages.TokenStorage"),
+        ):
             from src.bot.handlers.packages import get_packages_handlers
 
             mock_api = AsyncMock()
@@ -591,8 +620,10 @@ class TestPackagesHandler:
     @pytest.mark.asyncio
     async def test_get_packages_callback_handlers_returns_list(self):
         """get_packages_callback_handlers retorna una lista."""
-        with patch('src.bot.handlers.packages.APIClient'), \
-             patch('src.bot.handlers.packages.TokenStorage'):
+        with (
+            patch("src.bot.handlers.packages.APIClient"),
+            patch("src.bot.handlers.packages.TokenStorage"),
+        ):
             from src.bot.handlers.packages import get_packages_callback_handlers
 
             mock_api = AsyncMock()
@@ -606,8 +637,10 @@ class TestPackagesHandler:
     @pytest.mark.asyncio
     async def test_get_packages_payment_handlers_returns_list(self):
         """get_packages_payment_handlers retorna una lista."""
-        with patch('src.bot.handlers.packages.APIClient'), \
-             patch('src.bot.handlers.packages.TokenStorage'):
+        with (
+            patch("src.bot.handlers.packages.APIClient"),
+            patch("src.bot.handlers.packages.TokenStorage"),
+        ):
             from src.bot.handlers.packages import get_packages_payment_handlers
 
             mock_api = AsyncMock()
@@ -626,11 +659,13 @@ class TestPackagesHandler:
         keyboard = PackagesKeyboard.back_to_main_menu()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("Menú Principal" in btn.text or "🔙" in btn.text
-                   for row in buttons for btn in row)
+        assert any(
+            "Menú Principal" in btn.text or "🔙" in btn.text for row in buttons for btn in row
+        )
 
     @pytest.mark.asyncio
     async def test_packages_keyboard_packages_menu_button_exists(self):
@@ -640,17 +675,19 @@ class TestPackagesHandler:
         keyboard = PackagesKeyboard.packages_menu_button()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("Paquetes" in btn.text or "📦" in btn.text
-                   for row in buttons for btn in row)
+        assert any("Paquetes" in btn.text or "📦" in btn.text for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_select_package_handler_exists(self):
         """select_package handler existe."""
-        with patch('src.bot.handlers.packages.APIClient'), \
-             patch('src.bot.handlers.packages.TokenStorage'):
+        with (
+            patch("src.bot.handlers.packages.APIClient"),
+            patch("src.bot.handlers.packages.TokenStorage"),
+        ):
             from src.bot.handlers.packages import PackagesHandler
 
             mock_api = AsyncMock()
@@ -658,14 +695,16 @@ class TestPackagesHandler:
 
             handler = PackagesHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'select_package')
-            assert callable(getattr(handler, 'select_package'))
+            assert hasattr(handler, "select_package")
+            assert callable(getattr(handler, "select_package"))
 
     @pytest.mark.asyncio
     async def test_back_to_main_menu_handler_exists(self):
         """back_to_main_menu handler existe."""
-        with patch('src.bot.handlers.packages.APIClient'), \
-             patch('src.bot.handlers.packages.TokenStorage'):
+        with (
+            patch("src.bot.handlers.packages.APIClient"),
+            patch("src.bot.handlers.packages.TokenStorage"),
+        ):
             from src.bot.handlers.packages import PackagesHandler
 
             mock_api = AsyncMock()
@@ -673,8 +712,8 @@ class TestPackagesHandler:
 
             handler = PackagesHandler(mock_api, mock_storage)
 
-            assert hasattr(handler, 'back_to_main_menu')
-            assert callable(getattr(handler, 'back_to_main_menu'))
+            assert hasattr(handler, "back_to_main_menu")
+            assert callable(getattr(handler, "back_to_main_menu"))
 
     @pytest.mark.asyncio
     async def test_packages_messages_invoice_has_placeholders(self):
@@ -682,7 +721,7 @@ class TestPackagesHandler:
         from src.bot.keyboards.messages_packages import PackagesMessages
 
         # Verify invoice-related messages exist
-        assert hasattr(PackagesMessages.Payment, 'STARS_PAYMENT_SENT')
+        assert hasattr(PackagesMessages.Payment, "STARS_PAYMENT_SENT")
         assert "{stars}" in PackagesMessages.Payment.STARS_PAYMENT_SENT
 
     @pytest.mark.asyncio
@@ -694,8 +733,7 @@ class TestPackagesHandler:
         keyboard = PackagesKeyboard.packages_menu(packages)
 
         buttons = keyboard.inline_keyboard
-        assert any("Resumen" in btn.text or "📊" in btn.text
-                   for row in buttons for btn in row)
+        assert any("Resumen" in btn.text or "📊" in btn.text for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_packages_keyboard_main_menu_has_slots_button(self):
@@ -706,8 +744,7 @@ class TestPackagesHandler:
         keyboard = PackagesKeyboard.packages_menu(packages)
 
         buttons = keyboard.inline_keyboard
-        assert any("Slots" in btn.text or "🗂️" in btn.text
-                   for row in buttons for btn in row)
+        assert any("Slots" in btn.text or "🗂️" in btn.text for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_packages_keyboard_main_menu_has_back_button(self):
@@ -718,5 +755,4 @@ class TestPackagesHandler:
         keyboard = PackagesKeyboard.packages_menu(packages)
 
         buttons = keyboard.inline_keyboard
-        assert any("Volver" in btn.text or "🔙" in btn.text
-                   for row in buttons for btn in row)
+        assert any("Volver" in btn.text or "🔙" in btn.text for row in buttons for btn in row)

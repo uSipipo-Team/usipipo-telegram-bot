@@ -8,7 +8,7 @@ from src.infrastructure.config import settings
 
 class TestBackendIntegration:
     """Tests de integración con el backend."""
-    
+
     @pytest.fixture
     def api_client(self):
         """Crea APIClient configurado con el backend de producción."""
@@ -16,14 +16,14 @@ class TestBackendIntegration:
             base_url=settings.BACKEND_URL,
             api_prefix=settings.API_PREFIX,
         )
-    
+
     @pytest.mark.asyncio
     async def test_backend_url_is_production(self):
         """Verifica que la URL del backend sea la de producción (no localhost)."""
         assert "duckdns.org" in settings.BACKEND_URL
         assert "localhost" not in settings.BACKEND_URL
         assert settings.BACKEND_URL == "https://usipipo.duckdns.org"
-    
+
     @pytest.mark.asyncio
     async def test_backend_health(self, api_client):
         """Verifica que el backend esté accesible en producción."""
@@ -32,15 +32,14 @@ class TestBackendIntegration:
             assert response["status"] == "healthy"
         except Exception:
             pytest.skip("Backend no está disponible en usipipo.duckdns.org")
-    
+
     @pytest.mark.asyncio
     async def test_auto_register_endpoint_production(self, api_client):
         """Verifica que el endpoint auto-register existe en producción."""
         try:
             # Test con telegram_id de prueba
             response = await api_client.post(
-                "/auth/telegram/auto-register",
-                {"telegram_id": 999999999}
+                "/auth/telegram/auto-register", {"telegram_id": 999999999}
             )
             # Si llega aquí, el endpoint existe
             assert "access_token" in response or response.get("detail")
@@ -50,18 +49,15 @@ class TestBackendIntegration:
                 pytest.skip("Backend no está disponible en producción")
             else:
                 raise
-    
+
     @pytest.mark.asyncio
     async def test_refresh_endpoint_production(self, api_client):
         """Verifica que el endpoint refresh existe en producción."""
         import httpx
-        
+
         try:
             # Test con refresh token inválido (el endpoint debe responder 401)
-            response = await api_client.post(
-                "/auth/refresh",
-                {"refresh_token": "invalid_token"}
-            )
+            response = await api_client.post("/auth/refresh", {"refresh_token": "invalid_token"})
             # Debe responder (aunque sea con error 401)
             assert response is not None
         except httpx.HTTPStatusError as e:
@@ -75,17 +71,17 @@ class TestBackendIntegration:
                 pytest.skip("Backend no está disponible en producción")
             else:
                 raise
-    
+
     @pytest.mark.asyncio
     async def test_config_api_prefix(self):
         """Verifica que el API prefix sea correcto."""
         assert settings.API_PREFIX == "/api/v1"
-    
+
     @pytest.mark.asyncio
     async def test_redis_connection(self):
         """Verifica que Redis esté configurado."""
         from src.infrastructure.redis import RedisPool
-        
+
         try:
             await RedisPool.get_instance()
             health = await RedisPool.health_check()

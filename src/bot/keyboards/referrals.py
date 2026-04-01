@@ -11,14 +11,10 @@ class ReferralsKeyboard:
         """Main referrals menu keyboard."""
         keyboard = [
             [
-                InlineKeyboardButton(
-                    "💰 Canjear Créditos", callback_data="referral_redeem"
-                ),
+                InlineKeyboardButton("💰 Canjear Créditos", callback_data="referral_redeem"),
             ],
             [
-                InlineKeyboardButton(
-                    "📝 Aplicar Código", callback_data="referral_apply"
-                ),
+                InlineKeyboardButton("📝 Aplicar Código", callback_data="referral_apply"),
             ],
         ]
         return InlineKeyboardMarkup(keyboard)
@@ -28,7 +24,9 @@ class ReferralsKeyboard:
         """Confirmation keyboard for redeeming credits."""
         keyboard = [
             [
-                InlineKeyboardButton("✅ Confirmar", callback_data=f"referral_redeem_confirm:{credits}"),
+                InlineKeyboardButton(
+                    "✅ Confirmar", callback_data=f"referral_redeem_confirm:{credits}"
+                ),
             ],
             [
                 InlineKeyboardButton("❌ Cancelar", callback_data="referral_cancel"),

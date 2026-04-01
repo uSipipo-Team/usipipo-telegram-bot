@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 if TYPE_CHECKING:
-    from usipipo_commons.domain.entities.server import Server
+    pass
 
 
 class ServerKeyboards:
@@ -67,14 +67,16 @@ class ServerKeyboards:
 
         # Add "Show all servers" button if more than 5 servers
         if len(servers) > 5:
-            keyboard.append([
-                InlineKeyboardButton("🔍 Ver todos los servidores", callback_data="servers_show_all")
-            ])
+            keyboard.append(
+                [
+                    InlineKeyboardButton(
+                        "🔍 Ver todos los servidores", callback_data="servers_show_all"
+                    )
+                ]
+            )
 
         # Add back button
-        keyboard.append([
-            InlineKeyboardButton("🔙 Volver", callback_data="vpn_keys_menu")
-        ])
+        keyboard.append([InlineKeyboardButton("🔙 Volver", callback_data="vpn_keys_menu")])
 
         return InlineKeyboardMarkup(keyboard)
 
@@ -120,8 +122,6 @@ class ServerKeyboards:
             keyboard.append([InlineKeyboardButton(button_text, callback_data=callback_data)])
 
         # Add back button
-        keyboard.append([
-            InlineKeyboardButton("🔙 Volver", callback_data="vpn_keys_menu")
-        ])
+        keyboard.append([InlineKeyboardButton("🔙 Volver", callback_data="vpn_keys_menu")])
 
         return InlineKeyboardMarkup(keyboard)

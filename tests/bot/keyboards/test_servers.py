@@ -12,7 +12,7 @@ class TestServerKeyboards:
     def sample_servers(self):
         """Create sample server list for testing."""
         from usipipo_commons.domain.entities.server import Server
-        
+
         return [
             Server(
                 id=uuid4(),
@@ -65,7 +65,7 @@ class TestServerKeyboards:
     def sample_servers_many(self, sample_servers):
         """Create sample server list with more than 5 servers."""
         from usipipo_commons.domain.entities.server import Server
-        
+
         additional_servers = [
             Server(
                 id=uuid4(),
@@ -92,7 +92,7 @@ class TestServerKeyboards:
     def sample_server_no_city(self):
         """Create a server without city."""
         from usipipo_commons.domain.entities.server import Server
-        
+
         return Server(
             id=uuid4(),
             name="Server No City",
@@ -140,11 +140,7 @@ class TestServerKeyboards:
         assert len(keyboard.inline_keyboard) == 6
 
         # Verify no "show all" button
-        buttons_text = [
-            btn.text
-            for row in keyboard.inline_keyboard
-            for btn in row
-        ]
+        buttons_text = [btn.text for row in keyboard.inline_keyboard for btn in row]
         assert "🔍 Ver todos los servidores" not in buttons_text
 
     @pytest.mark.asyncio
@@ -155,11 +151,7 @@ class TestServerKeyboards:
         keyboard = ServerKeyboards.server_selection(sample_servers_many)
 
         # Verify "show all" button exists
-        buttons_text = [
-            btn.text
-            for row in keyboard.inline_keyboard
-            for btn in row
-        ]
+        buttons_text = [btn.text for row in keyboard.inline_keyboard for btn in row]
         assert "🔍 Ver todos los servidores" in buttons_text
 
     @pytest.mark.asyncio
@@ -170,11 +162,7 @@ class TestServerKeyboards:
         keyboard = ServerKeyboards.server_selection(sample_servers)
 
         # Verify back button exists
-        buttons_text = [
-            btn.text
-            for row in keyboard.inline_keyboard
-            for btn in row
-        ]
+        buttons_text = [btn.text for row in keyboard.inline_keyboard for btn in row]
         assert "🔙 Volver" in buttons_text
 
     @pytest.mark.asyncio
@@ -212,10 +200,7 @@ class TestServerKeyboards:
 
         # Find back button
         back_buttons = [
-            btn
-            for row in keyboard.inline_keyboard
-            for btn in row
-            if btn.text == "🔙 Volver"
+            btn for row in keyboard.inline_keyboard for btn in row if btn.text == "🔙 Volver"
         ]
 
         assert len(back_buttons) == 1
@@ -268,11 +253,7 @@ class TestServerKeyboards:
         keyboard = ServerKeyboards.server_selection_full(sample_servers_many)
 
         # Verify no "show all" button
-        buttons_text = [
-            btn.text
-            for row in keyboard.inline_keyboard
-            for btn in row
-        ]
+        buttons_text = [btn.text for row in keyboard.inline_keyboard for btn in row]
         assert "🔍 Ver todos los servidores" not in buttons_text
 
     @pytest.mark.asyncio
@@ -283,11 +264,7 @@ class TestServerKeyboards:
         keyboard = ServerKeyboards.server_selection_full(sample_servers)
 
         # Verify back button exists
-        buttons_text = [
-            btn.text
-            for row in keyboard.inline_keyboard
-            for btn in row
-        ]
+        buttons_text = [btn.text for row in keyboard.inline_keyboard for btn in row]
         assert "🔙 Volver" in buttons_text
 
     @pytest.mark.asyncio

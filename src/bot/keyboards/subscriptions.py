@@ -21,30 +21,36 @@ class SubscriptionsKeyboard:
 
         if is_active:
             # User has active subscription - show renewal and status options
-            keyboard.append([
-                InlineKeyboardButton(
-                    "📊 Ver Estado de Suscripción",
-                    callback_data="view_subscription_status",
-                )
-            ])
-            keyboard.append([
-                InlineKeyboardButton(
-                    "🔄 Renovar Suscripción",
-                    callback_data="renew_subscription",
-                )
-            ])
+            keyboard.append(
+                [
+                    InlineKeyboardButton(
+                        "📊 Ver Estado de Suscripción",
+                        callback_data="view_subscription_status",
+                    )
+                ]
+            )
+            keyboard.append(
+                [
+                    InlineKeyboardButton(
+                        "🔄 Renovar Suscripción",
+                        callback_data="renew_subscription",
+                    )
+                ]
+            )
         else:
             # No active subscription - show view plans option
-            keyboard.append([
-                InlineKeyboardButton(
-                    "📦 Ver Planes Disponibles",
-                    callback_data="view_plans",
-                )
-            ])
+            keyboard.append(
+                [
+                    InlineKeyboardButton(
+                        "📦 Ver Planes Disponibles",
+                        callback_data="view_plans",
+                    )
+                ]
+            )
 
-        keyboard.append([
-            InlineKeyboardButton("🔙 Volver al Menú Principal", callback_data="main_menu")
-        ])
+        keyboard.append(
+            [InlineKeyboardButton("🔙 Volver al Menú Principal", callback_data="main_menu")]
+        )
 
         return InlineKeyboardMarkup(keyboard)
 
@@ -69,9 +75,7 @@ class SubscriptionsKeyboard:
                     callback_data="renew_subscription",
                 )
             ],
-            [
-                InlineKeyboardButton("🔙 Volver al Menú Principal", callback_data="main_menu")
-            ],
+            [InlineKeyboardButton("🔙 Volver al Menú Principal", callback_data="main_menu")],
         ]
         return InlineKeyboardMarkup(keyboard)
 
@@ -90,9 +94,7 @@ class SubscriptionsKeyboard:
                     callback_data="view_plans",
                 )
             ],
-            [
-                InlineKeyboardButton("🔙 Volver al Menú Principal", callback_data="main_menu")
-            ],
+            [InlineKeyboardButton("🔙 Volver al Menú Principal", callback_data="main_menu")],
         ]
         return InlineKeyboardMarkup(keyboard)
 
@@ -111,19 +113,25 @@ class SubscriptionsKeyboard:
 
         # Show renewal button if subscription is active
         if subscription.get("status") == "active":
-            keyboard.append([
-                InlineKeyboardButton(
-                    "🔄 Renovar Ahora",
-                    callback_data="renew_subscription",
-                )
-            ])
+            keyboard.append(
+                [
+                    InlineKeyboardButton(
+                        "🔄 Renovar Ahora",
+                        callback_data="renew_subscription",
+                    )
+                ]
+            )
 
-        keyboard.append([
-            InlineKeyboardButton("📦 Ver Otros Planes", callback_data="view_plans"),
-        ])
-        keyboard.append([
-            InlineKeyboardButton("🔙 Volver", callback_data="subscription_menu"),
-        ])
+        keyboard.append(
+            [
+                InlineKeyboardButton("📦 Ver Otros Planes", callback_data="view_plans"),
+            ]
+        )
+        keyboard.append(
+            [
+                InlineKeyboardButton("🔙 Volver", callback_data="subscription_menu"),
+            ]
+        )
 
         return InlineKeyboardMarkup(keyboard)
 
@@ -145,17 +153,17 @@ class SubscriptionsKeyboard:
             plan_id = plan.get("id", "unknown")
             plan_name = plan.get("name", "Unknown Plan")
             price = plan.get("price", 0)
-            keyboard.append([
-                InlineKeyboardButton(
-                    f"📦 {plan_name} - ${price:.2f}",
-                    callback_data=f"select_plan_{plan_id}",
-                )
-            ])
+            keyboard.append(
+                [
+                    InlineKeyboardButton(
+                        f"📦 {plan_name} - ${price:.2f}",
+                        callback_data=f"select_plan_{plan_id}",
+                    )
+                ]
+            )
 
         # Back button
-        keyboard.append([
-            InlineKeyboardButton("🔙 Volver", callback_data="subscription_menu")
-        ])
+        keyboard.append([InlineKeyboardButton("🔙 Volver", callback_data="subscription_menu")])
 
         return InlineKeyboardMarkup(keyboard)
 
@@ -244,9 +252,7 @@ class SubscriptionsKeyboard:
                     callback_data="view_subscription_status",
                 )
             ],
-            [
-                InlineKeyboardButton("🔙 Volver al Menú Principal", callback_data="main_menu")
-            ],
+            [InlineKeyboardButton("🔙 Volver al Menú Principal", callback_data="main_menu")],
         ]
         return InlineKeyboardMarkup(keyboard)
 
@@ -283,12 +289,8 @@ class SubscriptionsKeyboard:
             InlineKeyboardMarkup: Teclado de retorno
         """
         keyboard = [
-            [
-                InlineKeyboardButton("📊 Suscripción", callback_data="subscription_menu")
-            ],
-            [
-                InlineKeyboardButton("🔙 Menú Principal", callback_data="main_menu")
-            ],
+            [InlineKeyboardButton("📊 Suscripción", callback_data="subscription_menu")],
+            [InlineKeyboardButton("🔙 Menú Principal", callback_data="main_menu")],
         ]
         return InlineKeyboardMarkup(keyboard)
 
@@ -372,7 +374,9 @@ class SubscriptionsKeyboard:
                 ),
             ],
             [
-                InlineKeyboardButton("🔙 Volver a Suscripciones", callback_data="subscription_menu"),
+                InlineKeyboardButton(
+                    "🔙 Volver a Suscripciones", callback_data="subscription_menu"
+                ),
             ],
         ]
         return InlineKeyboardMarkup(keyboard)
