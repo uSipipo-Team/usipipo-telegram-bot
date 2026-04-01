@@ -4,7 +4,7 @@ import io
 import logging
 from typing import TYPE_CHECKING, Any
 
-from telegram import Update
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import (
     CallbackQueryHandler,
     CommandHandler,
@@ -16,6 +16,7 @@ from telegram.ext import (
 
 from src.bot.keyboards.keys import KeysKeyboard
 from src.bot.keyboards.messages_keys import KeysMessages
+from src.bot.keyboards.servers import ServerKeyboards
 from src.infrastructure.api_client import APIClient
 from src.infrastructure.token_storage import TokenStorage
 
@@ -25,7 +26,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 # Estados de la conversación para creación de claves
-SELECT_PROTOCOL, INPUT_NAME = range(2)
+SELECT_PROTOCOL, SELECT_SERVER, INPUT_NAME, CONFIRM_ACTION = range(4)
 
 
 class KeysHandler:
@@ -321,12 +322,12 @@ class KeysHandler:
 
     async def protocol_selected(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Maneja selección de protocolo VPN."""
-        query = update.callback_query
-        if query is None or query.data is None:
+        if not update.effective_user or not update.callback_query:
             return ConversationHandler.END
 
+        query = update.callback_query
         await query.answer()
-        telegram_id = update.effective_user.id if update.effective_user else 0
+        telegram_id = update.effective_user.id
 
         # Extract protocol from callback_data
         # Format: "vpn_create_outline" or "vpn_create_wireguard"
@@ -338,18 +339,159 @@ class KeysHandler:
             # Store selected protocol
             context.user_data["vpn_protocol"] = protocol
 
-            # Ask for key name
-            await query.edit_message_text(
-                text=KeysMessages.ENTER_KEY_NAME,
-                parse_mode="Markdown",
+            # Fetch servers from backend
+            tokens = await self.tokens.get(telegram_id)
+            if not tokens:
+                await query.edit_message_text(
+                    text="❌ Error de autenticación. Por favor iniciá sesión con /start",
+                )
+                return ConversationHandler.END
+
+            servers_response = await self.api.get(
+                f"/vpn/servers?protocol={protocol}",
+                headers={"Authorization": f"Bearer {tokens['access_token']}"},
             )
 
-            return INPUT_NAME
+            servers = servers_response.get("servers", [])
+            recommended = servers_response.get("recommended", [])
+
+            if not servers:
+                await query.edit_message_text(
+                    "⚠️ No hay servidores disponibles para el protocolo seleccionado.\n\n"
+                    "Por favor intenta en unos minutos.",
+                    reply_markup=ServerKeyboards.server_selection([]),
+                )
+                return ConversationHandler.END
+
+            # Format and display server list
+            message_text = self._format_server_list_message(recommended)
+
+            await query.edit_message_text(
+                message_text,
+                reply_markup=ServerKeyboards.server_selection(recommended),
+                parse_mode="HTML",
+            )
+
+            return SELECT_SERVER
 
         except Exception as e:
-            logger.error(f"Error selecting protocol: {e}")
-            await query.edit_message_text(text=KeysMessages.Error.SYSTEM_ERROR)
+            logger.error(f"Error fetching servers: {e}")
+            await query.edit_message_text(
+                "⚠️ Error al cargar servidores. ¿Reintentar?",
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton("🔄 Reintentar", callback_data=f"vpn_create_{protocol}")],
+                    [InlineKeyboardButton("🔙 Volver", callback_data="vpn_keys_menu")],
+                ]),
+            )
             return ConversationHandler.END
+
+    async def server_selected(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Maneja la selección de un servidor."""
+        if not update.effective_user or not update.callback_query:
+            return ConversationHandler.END
+
+        query = update.callback_query
+        await query.answer()
+
+        callback_data = query.data
+
+        # Handle "show all servers"
+        if callback_data == "servers_show_all":
+            protocol = context.user_data.get("vpn_protocol")
+            telegram_id = update.effective_user.id
+
+            if not protocol:
+                logger.error("No protocol in user_data for show_all")
+                await query.edit_message_text("⚠️ Error: Protocolo no seleccionado.")
+                return ConversationHandler.END
+
+            try:
+                tokens = await self.tokens.get(telegram_id)
+                if not tokens:
+                    await query.edit_message_text(
+                        text="❌ Error de autenticación. Por favor iniciá sesión con /start",
+                    )
+                    return ConversationHandler.END
+
+                servers_response = await self.api.get(
+                    f"/vpn/servers?protocol={protocol}",
+                    headers={"Authorization": f"Bearer {tokens['access_token']}"},
+                )
+
+                all_servers = servers_response.get("servers", [])
+
+                message_text = "🌍 <b>Todos los Servidores Disponibles</b>\n\n"
+                for server in all_servers:
+                    load_emoji = ServerKeyboards.LOAD_EMOJIS.get(server.get("load_level", "low"), "🟢")
+                    city_text = f" - {server.get('city', '')}" if server.get('city') else ""
+                    message_text += f"{server.get('country_name', 'Unknown')}{city_text} {load_emoji}\n"
+
+                await query.edit_message_text(
+                    message_text,
+                    reply_markup=ServerKeyboards.server_selection_full(all_servers),
+                    parse_mode="HTML",
+                )
+                return SELECT_SERVER
+
+            except Exception as e:
+                logger.error(f"Error fetching all servers: {e}")
+                await query.edit_message_text("⚠️ Error al cargar servidores.")
+                return ConversationHandler.END
+
+        # Extract server_id from callback data
+        if not callback_data.startswith("server_select:"):
+            return ConversationHandler.END
+
+        server_id = callback_data.replace("server_select:", "")
+        context.user_data["server_id"] = server_id
+
+        logger.info(f"User {update.effective_user.id} selected server {server_id}")
+
+        await query.edit_message_text(
+            "✅ Servidor seleccionado\n\n"
+            "Ahora ingresa un <b>nombre</b> para tu clave VPN:\n\n"
+            "<i>Ejemplo: Mi Casa, Trabajo, etc.</i>",
+            parse_mode="HTML",
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("🔙 Cancelar", callback_data="vpn_keys_menu")],
+            ]),
+        )
+
+        return INPUT_NAME
+
+    def _format_server_list_message(self, recommended: list[dict]) -> str:
+        """Format server list message with load indicators.
+
+        Args:
+            recommended: List of recommended servers with load info
+
+        Returns:
+            Formatted message string with server details
+        """
+        load_emojis = {
+            "low": "🟢",
+            "medium": "🟡",
+            "high": "🔴",
+        }
+
+        message = "🌍 <b>Selecciona un Servidor VPN</b>\n\n"
+        message += "🔥 <b>Recomendados (menor carga):</b>\n\n"
+
+        for i, server in enumerate(recommended, 1):
+            load_emoji = load_emojis.get(server.get("load_level", "low"), "🟢")
+            city_text = f" - {server.get('city', '')}" if server.get('city') else ""
+
+            message += f"┌─────────────────────────────\n"
+            message += f"│ {i}. {server.get('country_name', 'Unknown')} {city_text}\n"
+            message += f"│ Servidor: {server.get('name', 'N/A')}\n"
+            message += f"│ {load_emoji} Carga: {server.get('load_percentage', 0)}% • 📶 Online\n"
+            message += f"└─────────────────────────────\n\n"
+
+        message += "━━━━━━━━━━━━━━━━━━━━\n"
+        message += "ℹ️ Los servidores se actualizan en tiempo real\n"
+        message += "💡 Tip: Los servidores con 🟢 tienen mejor rendimiento"
+
+        return message
 
     async def name_received(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Finaliza la creación de la clave con el nombre proporcionado."""
@@ -384,19 +526,28 @@ class KeysHandler:
             # Map protocol to KeyType enum value (lowercase)
             vpn_type = "outline" if protocol.lower() == "outline" else "wireguard"
 
+            # Get server_id from user_data (may be None if not set)
+            server_id = context.user_data.get("server_id")
+
             # Create key via API
+            payload = {
+                "name": key_name,
+                "vpn_type": vpn_type,
+                "data_limit_gb": 5.0,  # Default 5GB
+            }
+            if server_id:
+                payload["server_id"] = server_id
+
             response = await self.api.post(
                 "/vpn/keys",
-                data={
-                    "name": key_name,
-                    "vpn_type": vpn_type,
-                    "data_limit_gb": 5.0,  # Default 5GB
-                },
+                data=payload,
                 headers=headers,
             )
 
-            # Clear protocol from user_data
+            # Clear protocol and server_id from user_data
             del context.user_data["vpn_protocol"]
+            if "server_id" in context.user_data:
+                del context.user_data["server_id"]
 
             logger.info(f"✅ {vpn_type} key '{key_name}' created: {response.get('id')}")
 
@@ -951,6 +1102,11 @@ def get_key_creation_conversation_handler(handler: KeysHandler) -> ConversationH
         states={
             SELECT_PROTOCOL: [
                 CallbackQueryHandler(handler.protocol_selected, pattern="^vpn_create_"),
+                CallbackQueryHandler(handler.cancel_creation, pattern="^cancel_create$"),
+            ],
+            SELECT_SERVER: [
+                CallbackQueryHandler(handler.server_selected, pattern="^server_select:"),
+                CallbackQueryHandler(handler.server_selected, pattern="^servers_show_all$"),
                 CallbackQueryHandler(handler.cancel_creation, pattern="^cancel_create$"),
             ],
             INPUT_NAME: [
