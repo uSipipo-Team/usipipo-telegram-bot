@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.5.0] - 2026-04-01
+
+### Fixed
+- **CI Type Checking Errors** - Fixed all 65 mypy type errors that were blocking CI pipeline
+  - Added explicit type annotations for empty list variables in handlers
+  - Fixed None handling with proper union type checks
+  - Corrected SuccessfulPayment attribute name (telegram_payment_id → telegram_payment_charge_id)
+  - Added missing put() method to APIClient
+  - Fixed type mismatches in main.py handler registrations
+
+### Changed
+- **API Client** - Changed parameter name from `json=` to `data=` for consistency
+- **Mypy Configuration** - Added mypy configuration to pyproject.toml with ignore_missing_imports
+
+### Technical Details
+- **Files Modified:** 9 files
+  - `src/bot/handlers/keys.py` - Fixed None handling, type annotations
+  - `src/bot/handlers/payments.py` - Fixed type annotations, attribute names
+  - `src/bot/handlers/packages.py` - Fixed type annotations, attribute names
+  - `src/bot/handlers/referrals.py` - Fixed API client parameter usage
+  - `src/bot/handlers/subscriptions.py` - Fixed type annotations
+  - `src/infrastructure/api_client.py` - Added put() method
+  - `src/main.py` - Fixed type mismatches with assertions
+  - `pyproject.toml` - Added mypy configuration
+  - `tests/bot/test_referrals_handlers.py` - Updated test to match API client usage
+
+### Quality Gates
+- ✅ All 421 tests passing
+- ✅ mypy passes with 0 errors
+- ✅ ruff clean
+
 ## [0.4.0] - 2026-03-31
 
 ### Added

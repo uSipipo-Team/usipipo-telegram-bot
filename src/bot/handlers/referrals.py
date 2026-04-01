@@ -4,7 +4,7 @@ import logging
 from typing import Any
 
 from telegram import Update
-from telegram.ext import CallbackQueryHandler, CommandHandler, ContextTypes
+from telegram.ext import CallbackQueryHandler, CommandHandler, ContextTypes, ConversationHandler
 
 from src.bot.keyboards.messages_referrals import ReferralsMessages
 from src.bot.keyboards.referrals import ReferralsKeyboard
@@ -178,14 +178,16 @@ class ReferralsHandler:
 
             # Parse credits from callback_data
             # Format: "referral_redeem_confirm:10"
+            if not query.data:
+                return ConversationHandler.END
             credits = int(query.data.split(":")[1])
 
             # Redeem credits
             headers = await self._get_auth_headers(telegram_id)
             response = await self.api.post(
                 "/referrals/redeem",
+                data={"credits": credits},
                 headers=headers,
-                json={"credits": credits},
             )
 
             # Calculate GB added (10 credits = 1 GB)

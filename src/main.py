@@ -216,6 +216,10 @@ def create_application(token: str) -> Application:
     # Initialize dependencies (Redis, API, handlers)
     asyncio.run(_init_dependencies())
 
+    # Type assertions - these are guaranteed to be non-None after _init_dependencies
+    assert _api_client is not None, "API client should be initialized"
+    assert _token_storage is not None, "Token storage should be initialized"
+
     app = Application.builder().token(token).build()
 
     # Register command handlers

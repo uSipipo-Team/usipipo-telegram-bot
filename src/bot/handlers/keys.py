@@ -140,7 +140,7 @@ class KeysHandler:
             headers = await self._get_auth_headers(telegram_id)
             response = await self.api.get("/vpn/keys", headers=headers)
 
-            keys = response if isinstance(response, list) else []
+            keys: list = response if isinstance(response, list) else []
 
             # Count by type
             total_keys = len(keys)
@@ -199,7 +199,7 @@ class KeysHandler:
             headers = await self._get_auth_headers(telegram_id)
             response = await self.api.get("/vpn/keys", headers=headers)
 
-            keys = response if isinstance(response, list) else []
+            keys: list = response if isinstance(response, list) else []
             filtered_keys = [k for k in keys if k.get("key_type", "").lower() == key_type.lower()]
 
             if not filtered_keys:
@@ -331,13 +331,16 @@ class KeysHandler:
 
         # Extract protocol from callback_data
         # Format: "vpn_create_outline" or "vpn_create_wireguard"
+        if not query.data:
+            return ConversationHandler.END
         protocol = query.data.replace("vpn_create_", "")
 
         logger.info(f"User {telegram_id} selected {protocol} protocol")
 
         try:
             # Store selected protocol
-            context.user_data["vpn_protocol"] = protocol
+            if context.user_data is not None:
+                context.user_data["vpn_protocol"] = protocol
 
             # Fetch servers from backend
             tokens = await self.tokens.get(telegram_id)
@@ -400,9 +403,13 @@ class KeysHandler:
         await query.answer()
 
         callback_data = query.data
+        if not callback_data:
+            return ConversationHandler.END
 
         # Handle "show all servers"
         if callback_data == "servers_show_all":
+            if context.user_data is None:
+                return ConversationHandler.END
             protocol = context.user_data.get("vpn_protocol")
             telegram_id = update.effective_user.id
 
@@ -453,7 +460,8 @@ class KeysHandler:
             return ConversationHandler.END
 
         server_id = callback_data.replace("server_select:", "")
-        context.user_data["server_id"] = server_id
+        if context.user_data is not None:
+            context.user_data["server_id"] = server_id
 
         logger.info(f"User {update.effective_user.id} selected server {server_id}")
 
@@ -512,7 +520,16 @@ class KeysHandler:
 
         key_name = update.message.text.strip()
         telegram_id = update.effective_user.id
+        if context.user_data is None:
+            return ConversationHandler.END
         protocol = context.user_data.get("vpn_protocol")
+
+        if not protocol:
+            logger.error(f"User {telegram_id} has no protocol in user_data")
+            await update.message.reply_text(
+                text="❌ Error: Protocolo no seleccionado. Por favor intentá de nuevo.",
+            )
+            return ConversationHandler.END
 
         logger.info(f"User {telegram_id} naming {protocol} key: '{key_name}'")
 
@@ -694,6 +711,13 @@ class KeysHandler:
         telegram_id = update.effective_user.id if update.effective_user else 0
         protocol = context.user_data.get("vpn_protocol")
 
+        if not protocol:
+            logger.error(f"User {telegram_id} has no protocol in user_data")
+            await update.message.reply_text(
+                text="❌ Error: Protocolo no seleccionado. Por favor intentá de nuevo.",
+            )
+            return
+
         try:
             logger.info(f"User {telegram_id} creating {protocol} key with name '{key_name}'")
 
@@ -764,7 +788,8 @@ class KeysHandler:
             return
 
         # No active operation, ignore message
-        logger.debug(f"User {update.effective_user.id} sent text but no active operation")
+        if update.effective_user:
+            logger.debug(f"User {update.effective_user.id} sent text but no active operation")
 
     async def process_rename_key(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Procesa el mensaje de texto con el nuevo nombre para la clave."""
@@ -791,8 +816,8 @@ class KeysHandler:
             headers = await self._get_auth_headers(telegram_id)
             await self.api.put(
                 f"/vpn/keys/{key_id}",
+                data={"name": new_name},
                 headers=headers,
-                json={"name": new_name},
             )
 
             message = KeysMessages.Actions.KEY_RENAMED.format(new_name=new_name)
@@ -1029,7 +1054,7 @@ class KeysHandler:
             headers = await self._get_auth_headers(telegram_id)
             response = await self.api.get("/vpn/keys", headers=headers)
 
-            keys = response if isinstance(response, list) else []
+            keys: list = response if isinstance(response, list) else []
 
             if not keys:
                 message = KeysMessages.NO_KEYS

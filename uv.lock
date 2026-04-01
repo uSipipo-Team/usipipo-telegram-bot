@@ -491,14 +491,14 @@ wheels = [
 
 [[package]]
 name = "usipipo-commons"
-version = "0.12.0"
+version = "0.14.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8b/95/c7336f5864bfb8f86c581d5d42b6c7dbce5fc97916eb4dffd6b829c66eb2/usipipo_commons-0.12.0.tar.gz", hash = "sha256:d77f0369a2a64241b80d648cf602ee7fc2e6c895a7246991db8d39fb918883b9", size = 59525, upload-time = "2026-03-22T22:35:25.281Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/87/88/35f1ab74c3b025f7b5383c0ab67b6ffe6c2c94059a9c9d4a50e7fa924b3b/usipipo_commons-0.14.0.tar.gz", hash = "sha256:6ee59e1aecba0bc8a266c618d60029fad46180ee49a66545851e926735d16bf0", size = 84500, upload-time = "2026-03-30T23:10:55.224Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5f/25/7bb2b6b263fa487d97ca044939c6e829d2438cfdab086e34539117bf465f/usipipo_commons-0.12.0-py3-none-any.whl", hash = "sha256:e14613fd80a0f66cf62592cade2225ee97955af2d3539567374922d16d01cb86", size = 33262, upload-time = "2026-03-22T22:35:24.192Z" },
+    { url = "https://files.pythonhosted.org/packages/91/b0/35092078ad5fe700b438138502ed38f600a7f00cb855d3965da2e523b131/usipipo_commons-0.14.0-py3-none-any.whl", hash = "sha256:ce767dd6428612415716137a83a28590b29fbb00d0b4325366ca01221b7f5cfd", size = 44483, upload-time = "2026-03-30T23:10:56.327Z" },
 ]
 
 [[package]]
