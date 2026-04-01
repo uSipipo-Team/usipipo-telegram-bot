@@ -61,7 +61,16 @@ _subscriptions_handler: SubscriptionsHandler | None = None
 
 async def _init_dependencies() -> None:
     """Inicializa dependencias globales del bot."""
-    global _api_client, _token_storage, _auth_handler, _keys_handler, _operations_handler, _consumption_handler, _packages_handler, _payments_handler, _subscriptions_handler
+    global \
+        _api_client, \
+        _token_storage, \
+        _auth_handler, \
+        _keys_handler, \
+        _operations_handler, \
+        _consumption_handler, \
+        _packages_handler, \
+        _payments_handler, \
+        _subscriptions_handler
 
     # Initialize Redis pool
     await RedisPool.get_instance(settings.REDIS_URL)
@@ -160,7 +169,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle /start command."""
     user = update.effective_user
     logger.info(f"User {user.id if user else 'unknown'} executed /start")
-    
+
     auth_handler = _get_auth_handler()
     await auth_handler.start_handler(update, context)
 
@@ -169,7 +178,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     """Handle /help command."""
     user = update.effective_user
     logger.info(f"User {user.id if user else 'unknown'} executed /help")
-    
+
     handler = BasicHandler()
     await handler.help_handler(update, context)
 
@@ -186,7 +195,7 @@ async def me(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle /me command - show user profile."""
     user = update.effective_user
     logger.info(f"User {user.id if user else 'unknown'} executed /me")
-    
+
     auth_handler = _get_auth_handler()
     await auth_handler.me_handler(update, context)
 
@@ -195,7 +204,7 @@ async def unlink(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle /unlink command - revoke bot access."""
     user = update.effective_user
     logger.info(f"User {user.id if user else 'unknown'} executed /unlink")
-    
+
     auth_handler = _get_auth_handler()
     await auth_handler.unlink_handler(update, context)
 
@@ -216,28 +225,62 @@ def create_application(token: str) -> Application:
     app.add_handler(CommandHandler("me", me))
     app.add_handler(CommandHandler("unlink", unlink))
     app.add_handler(CommandHandler("keys", lambda u, c: _get_keys_handler().show_keys_menu(u, c)))
-    app.add_handler(CommandHandler("operaciones", lambda u, c: _get_operations_handler().operations_menu(u, c)))
+    app.add_handler(
+        CommandHandler("operaciones", lambda u, c: _get_operations_handler().operations_menu(u, c))
+    )
 
     # Consumption billing commands
-    app.add_handler(CommandHandler("consumo", lambda u, c: _get_consumption_handler().show_consumption_menu(u, c)))
-    app.add_handler(CommandHandler("activar", lambda u, c: _get_consumption_handler().start_activation(u, c)))
-    app.add_handler(CommandHandler("cancelar", lambda u, c: _get_consumption_handler().start_cancellation(u, c)))
-    app.add_handler(CommandHandler("factura", lambda u, c: _get_consumption_handler().view_invoices(u, c)))
+    app.add_handler(
+        CommandHandler(
+            "consumo", lambda u, c: _get_consumption_handler().show_consumption_menu(u, c)
+        )
+    )
+    app.add_handler(
+        CommandHandler("activar", lambda u, c: _get_consumption_handler().start_activation(u, c))
+    )
+    app.add_handler(
+        CommandHandler("cancelar", lambda u, c: _get_consumption_handler().start_cancellation(u, c))
+    )
+    app.add_handler(
+        CommandHandler("factura", lambda u, c: _get_consumption_handler().view_invoices(u, c))
+    )
 
     # Data packages commands
-    app.add_handler(CommandHandler("comprar", lambda u, c: _get_packages_handler().show_packages(u, c)))
-    app.add_handler(CommandHandler("paquetes", lambda u, c: _get_packages_handler().show_packages(u, c)))
-    app.add_handler(CommandHandler("packages", lambda u, c: _get_packages_handler().show_packages(u, c)))
+    app.add_handler(
+        CommandHandler("comprar", lambda u, c: _get_packages_handler().show_packages(u, c))
+    )
+    app.add_handler(
+        CommandHandler("paquetes", lambda u, c: _get_packages_handler().show_packages(u, c))
+    )
+    app.add_handler(
+        CommandHandler("packages", lambda u, c: _get_packages_handler().show_packages(u, c))
+    )
 
     # Payments commands
-    app.add_handler(CommandHandler("pago", lambda u, c: _get_payments_handler().show_payment_menu(u, c)))
-    app.add_handler(CommandHandler("pagar", lambda u, c: _get_payments_handler().show_payment_menu(u, c)))
-    app.add_handler(CommandHandler("historial", lambda u, c: _get_payments_handler().view_payment_history(u, c)))
+    app.add_handler(
+        CommandHandler("pago", lambda u, c: _get_payments_handler().show_payment_menu(u, c))
+    )
+    app.add_handler(
+        CommandHandler("pagar", lambda u, c: _get_payments_handler().show_payment_menu(u, c))
+    )
+    app.add_handler(
+        CommandHandler("historial", lambda u, c: _get_payments_handler().view_payment_history(u, c))
+    )
 
     # Subscriptions commands
-    app.add_handler(CommandHandler("suscripcion", lambda u, c: _get_subscriptions_handler().show_subscription_menu(u, c)))
-    app.add_handler(CommandHandler("planes", lambda u, c: _get_subscriptions_handler().view_plans(u, c)))
-    app.add_handler(CommandHandler("renovar", lambda u, c: _get_subscriptions_handler().renew_subscription(u, c)))
+    app.add_handler(
+        CommandHandler(
+            "suscripcion", lambda u, c: _get_subscriptions_handler().show_subscription_menu(u, c)
+        )
+    )
+    app.add_handler(
+        CommandHandler("planes", lambda u, c: _get_subscriptions_handler().view_plans(u, c))
+    )
+    app.add_handler(
+        CommandHandler(
+            "renovar", lambda u, c: _get_subscriptions_handler().renew_subscription(u, c)
+        )
+    )
 
     # Register handlers for keys management (includes ConversationHandler for creation)
     for handler in get_keys_handlers(_api_client, _token_storage):
@@ -285,12 +328,14 @@ def create_application(token: str) -> Application:
 
     # Register callback handler for user profile
     from src.bot.handlers.user_profile import get_user_profile_handlers
+
     for handler in get_user_profile_handlers(_api_client, _token_storage):
         app.add_handler(handler)
 
     # Register main menu handler
     from src.bot.handlers.main_menu import show_main_menu
     from telegram.ext import CallbackQueryHandler
+
     app.add_handler(CallbackQueryHandler(show_main_menu, pattern="^main_menu$"))
 
     app.add_error_handler(error_handler)  # type: ignore[arg-type]

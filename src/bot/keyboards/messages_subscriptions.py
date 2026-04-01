@@ -96,15 +96,10 @@ class SubscriptionsMessages:
         """Mensajes de planes disponibles."""
 
         PLANS_HEADER = (
-            "📦 *Planes Disponibles*\n\n"
-            "Elige el plan que mejor se adapte a tus necesidades:\n\n"
+            "📦 *Planes Disponibles*\n\nElige el plan que mejor se adapte a tus necesidades:\n\n"
         )
 
-        PLAN_ITEM = (
-            "🔹 *{name}*\n"
-            "   💰 ${price} USD/mes\n"
-            "   📅 Duración: {duration} días\n\n"
-        )
+        PLAN_ITEM = "🔹 *{name}*\n   💰 ${price} USD/mes\n   📅 Duración: {duration} días\n\n"
 
         PLAN_DETAILS = (
             "📦 *{plan_name}*\n\n"
@@ -310,10 +305,7 @@ class SubscriptionsMessages:
             "💡 Usa /start para autenticarte."
         )
 
-        UNAUTHORIZED = (
-            "🚫 *Acceso Denegado*\n\n"
-            "No tienes permisos para realizar esta acción."
-        )
+        UNAUTHORIZED = "🚫 *Acceso Denegado*\n\nNo tienes permisos para realizar esta acción."
 
         NETWORK_ERROR = (
             "📡 *Error de Conexión*\n\n"

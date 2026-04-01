@@ -103,9 +103,7 @@ class PaymentsHandler:
                 keyboard = PaymentsKeyboard.payment_menu(payment_methods)
 
             if update.callback_query:
-                await self._safe_edit_message(
-                    update.callback_query, context, message, keyboard
-                )
+                await self._safe_edit_message(update.callback_query, context, message, keyboard)
             elif update.message:
                 await update.message.reply_text(
                     message,
@@ -325,17 +323,30 @@ class PaymentsHandler:
                 )
 
                 for payment in payments:
-                    status_icon = "⏳" if payment.get("status") == "pending" else \
-                                  "✅" if payment.get("status") == "completed" else \
-                                  "❌" if payment.get("status") == "failed" else "⚪"
+                    status_icon = (
+                        "⏳"
+                        if payment.get("status") == "pending"
+                        else "✅"
+                        if payment.get("status") == "completed"
+                        else "❌"
+                        if payment.get("status") == "failed"
+                        else "⚪"
+                    )
 
-                    payment_type = "🪙 Crypto" if payment.get("type") == "crypto" else \
-                                   "⭐ Stars" if payment.get("type") == "stars" else "💳"
+                    payment_type = (
+                        "🪙 Crypto"
+                        if payment.get("type") == "crypto"
+                        else "⭐ Stars"
+                        if payment.get("type") == "stars"
+                        else "💳"
+                    )
 
                     message += PaymentsMessages.History.PAYMENT_ITEM.format(
                         date=payment.get("created_at", "N/A")[:10],
                         type=payment_type,
-                        amount=f"{payment.get('amount_usd', 0):.2f}" if payment.get("type") == "crypto" else f"{payment.get('stars_amount', 0)} ⭐",
+                        amount=f"{payment.get('amount_usd', 0):.2f}"
+                        if payment.get("type") == "crypto"
+                        else f"{payment.get('stars_amount', 0)} ⭐",
                         status=status_icon,
                         status_text=payment.get("status", "unknown").upper(),
                     )
@@ -426,13 +437,17 @@ class PaymentsHandler:
                     stars=credited_amount if credited_amount > 0 else amount,
                 )
                 keyboard = PaymentsKeyboard.back_to_menu()
-                logger.info(f"User {telegram_id} successfully activated stars payment: {payment_payload}")
+                logger.info(
+                    f"User {telegram_id} successfully activated stars payment: {payment_payload}"
+                )
             else:
                 message = PaymentsMessages.Payment.STARS_FAILED.format(
                     reason=error_message or "Error desconocido",
                 )
                 keyboard = PaymentsKeyboard.back_to_menu()
-                logger.warning(f"User {telegram_id} failed to activate stars payment: {error_message}")
+                logger.warning(
+                    f"User {telegram_id} failed to activate stars payment: {error_message}"
+                )
 
             await update.message.reply_text(
                 text=message,

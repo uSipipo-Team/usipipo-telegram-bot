@@ -227,10 +227,7 @@ class ConsumptionMessages:
             "📋 **Lista de facturas:**\n\n"
         )
 
-        INVOICE_ITEM = (
-            "🔹 {date} - ${amount} USD\n"
-            "   Estado: {status} ({status_text})\n\n"
-        )
+        INVOICE_ITEM = "🔹 {date} - ${amount} USD\n   Estado: {status} ({status_text})\n\n"
 
         NO_INVOICES = (
             "📜 **Sin facturas**\n\n"
@@ -247,9 +244,7 @@ class ConsumptionMessages:
         )
 
         SYSTEM_ERROR = (
-            "🚨 **Error del sistema**\n\n"
-            "💥 Fallo temporal\n\n"
-            "🔄 Intenta de nuevo en un momento 📡"
+            "🚨 **Error del sistema**\n\n💥 Fallo temporal\n\n🔄 Intenta de nuevo en un momento 📡"
         )
 
         NOT_AUTHENTICATED = (
@@ -258,10 +253,7 @@ class ConsumptionMessages:
             "💡 Usa /start para autenticarte."
         )
 
-        UNAUTHORIZED = (
-            "🚫 **Acceso denegado**\n\n"
-            "No tienes permisos para realizar esta acción."
-        )
+        UNAUTHORIZED = "🚫 **Acceso denegado**\n\nNo tienes permisos para realizar esta acción."
 
         INVOICE_GENERATION = (
             "❌ **Error generando factura**\n\n"
@@ -325,7 +317,4 @@ class ConsumptionMessages:
             "💡 Genera una nueva factura para realizar el pago."
         )
 
-        NO_PENDING_DEBT = (
-            "ℹ️ **No tienes deudas pendientes**\n\n"
-            "✅ Estás al día con tus pagos"
-        )
+        NO_PENDING_DEBT = "ℹ️ **No tienes deudas pendientes**\n\n✅ Estás al día con tus pagos"

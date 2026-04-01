@@ -65,12 +65,15 @@ class RedisAdapter(TokenStoragePort):
         redis_client = await self._get_redis()
 
         async with redis_client.pipeline() as pipe:
-            await pipe.hset(key, mapping={  # type: ignore[misc]
-                "access_token": access_token,
-                "refresh_token": refresh_token,
-                "expires_at": str(int(time.time()) + expires_in),
-                "created_at": str(int(time.time())),
-            })
+            await pipe.hset(
+                key,
+                mapping={  # type: ignore[misc]
+                    "access_token": access_token,
+                    "refresh_token": refresh_token,
+                    "expires_at": str(int(time.time()) + expires_in),
+                    "created_at": str(int(time.time())),
+                },
+            )
             await pipe.expire(key, self.REFRESH_TOKEN_EXPIRY)
             await pipe.execute()
 

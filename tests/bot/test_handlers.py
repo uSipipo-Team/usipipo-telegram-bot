@@ -41,11 +41,11 @@ class TestBasicHandler:
 
         # Help handler sends 2 messages: HELP_TEXT and SUPPORT_HELP
         assert mock_update.message.reply_text.call_count == 2
-        
+
         # First call should be HELP_TEXT
         first_call_args = mock_update.message.reply_text.call_args_list[0]
         assert BasicMessages.HELP_TEXT in first_call_args[1].get("text", "")
-        
+
         # Second call should be SUPPORT_HELP
         second_call_args = mock_update.message.reply_text.call_args_list[1]
         assert BasicMessages.SUPPORT_HELP in second_call_args[1].get("text", "")

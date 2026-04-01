@@ -76,10 +76,7 @@ class OperationsHandler:
             credits = 0
             try:
                 headers = await self._get_auth_headers(telegram_id)
-                response = await self.api.get(
-                    "/referrals/me",
-                    headers=headers
-                )
+                response = await self.api.get("/referrals/me", headers=headers)
                 credits = response.get("referral_credits", 0)
             except Exception:
                 # Referrals endpoint may not be implemented yet
@@ -87,23 +84,17 @@ class OperationsHandler:
 
             # Show menu
             if credits > 0:
-                message = OperationsMessages.Menu.MAIN_WITH_CREDITS.format(
-                    credits=credits
-                )
+                message = OperationsMessages.Menu.MAIN_WITH_CREDITS.format(credits=credits)
             else:
                 message = OperationsMessages.Menu.MAIN
 
             keyboard = OperationsKeyboard.operations_menu(credits=credits)
 
             if update.callback_query:
-                await self._safe_edit_message(
-                    update.callback_query, context, message, keyboard
-                )
+                await self._safe_edit_message(update.callback_query, context, message, keyboard)
             elif update.message:
                 await update.message.reply_text(
-                    message,
-                    reply_markup=keyboard,
-                    parse_mode="Markdown"
+                    message, reply_markup=keyboard, parse_mode="Markdown"
                 )
 
         except Exception as e:
@@ -138,10 +129,7 @@ class OperationsHandler:
             credits = 0
             try:
                 headers = await self._get_auth_headers(telegram_id)
-                response = await self.api.get(
-                    "/referrals/me",
-                    headers=headers
-                )
+                response = await self.api.get("/referrals/me", headers=headers)
                 credits = response.get("referral_credits", 0)
             except Exception:
                 credits = 0
@@ -185,11 +173,7 @@ class OperationsHandler:
                 OperationsKeyboard.back_to_operations(),
             )
 
-    async def show_transactions_history(
-        self,
-        update: Update,
-        context: ContextTypes.DEFAULT_TYPE
-    ):
+    async def show_transactions_history(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Muestra el historial de transacciones."""
         query = update.callback_query
         if query is None or update.effective_user is None:
@@ -216,8 +200,7 @@ class OperationsHandler:
                         page = 0
 
                 response = await self.api.get(
-                    f"/transactions?limit=10&offset={page * 10}",
-                    headers=headers
+                    f"/transactions?limit=10&offset={page * 10}", headers=headers
                 )
                 transactions = response.get("transactions", [])
                 has_more = response.get("has_more", False)
@@ -238,8 +221,7 @@ class OperationsHandler:
                         description=tx.get("description", "N/A"),
                     )
                 keyboard = OperationsKeyboard.transactions_history_menu(
-                    has_more=has_more,
-                    page=page
+                    has_more=has_more, page=page
                 )
 
             await self._safe_edit_message(query, context, message, keyboard)
@@ -272,10 +254,7 @@ class OperationsHandler:
 
             try:
                 headers = await self._get_auth_headers(telegram_id)
-                response = await self.api.get(
-                    "/referrals/me",
-                    headers=headers
-                )
+                response = await self.api.get("/referrals/me", headers=headers)
                 invited = response.get("total_referrals", 0)
                 credits = response.get("referral_credits", 0)
             except Exception:
@@ -283,9 +262,7 @@ class OperationsHandler:
                 pass
 
             message = OperationsMessages.Referrals.MENU.format(
-                link=link,
-                invited=invited,
-                credits=credits
+                link=link, invited=invited, credits=credits
             )
             keyboard = OperationsKeyboard.back_to_operations()
 

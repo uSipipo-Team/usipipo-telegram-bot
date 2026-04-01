@@ -11,14 +11,14 @@ class TestReferralsMessages:
         """ReferralsMessages.Menu category exists."""
         from src.bot.keyboards.messages_referrals import ReferralsMessages
 
-        assert hasattr(ReferralsMessages, 'Menu')
+        assert hasattr(ReferralsMessages, "Menu")
 
     @pytest.mark.asyncio
     async def test_error_category_exists(self):
         """ReferralsMessages.Error category exists."""
         from src.bot.keyboards.messages_referrals import ReferralsMessages
 
-        assert hasattr(ReferralsMessages, 'Error')
+        assert hasattr(ReferralsMessages, "Error")
 
     @pytest.mark.asyncio
     async def test_referral_stats_has_correct_placeholders(self):
@@ -41,7 +41,7 @@ class TestReferralsMessages:
         """REDEEM_CONFIRMATION message exists."""
         from src.bot.keyboards.messages_referrals import ReferralsMessages
 
-        assert hasattr(ReferralsMessages.Menu, 'REDEEM_CONFIRMATION')
+        assert hasattr(ReferralsMessages.Menu, "REDEEM_CONFIRMATION")
         assert ReferralsMessages.Menu.REDEEM_CONFIRMATION is not None
 
     @pytest.mark.asyncio
@@ -49,9 +49,9 @@ class TestReferralsMessages:
         """All error messages exist."""
         from src.bot.keyboards.messages_referrals import ReferralsMessages
 
-        assert hasattr(ReferralsMessages.Error, 'NOT_AUTHENTICATED')
-        assert hasattr(ReferralsMessages.Error, 'INVALID_CODE')
-        assert hasattr(ReferralsMessages.Error, 'SELF_REFERRAL')
-        assert hasattr(ReferralsMessages.Error, 'ALREADY_REFERRED')
-        assert hasattr(ReferralsMessages.Error, 'INSUFFICIENT_CREDITS')
-        assert hasattr(ReferralsMessages.Error, 'SYSTEM_ERROR')
+        assert hasattr(ReferralsMessages.Error, "NOT_AUTHENTICATED")
+        assert hasattr(ReferralsMessages.Error, "INVALID_CODE")
+        assert hasattr(ReferralsMessages.Error, "SELF_REFERRAL")
+        assert hasattr(ReferralsMessages.Error, "ALREADY_REFERRED")
+        assert hasattr(ReferralsMessages.Error, "INSUFFICIENT_CREDITS")
+        assert hasattr(ReferralsMessages.Error, "SYSTEM_ERROR")

@@ -20,33 +20,41 @@ class PaymentsKeyboard:
         keyboard = []
 
         # Crypto payment button
-        keyboard.append([
-            InlineKeyboardButton(
-                "🪙 Pagar con Criptomonedas (USDT)",
-                callback_data="pay_crypto_10",
-            ),
-        ])
+        keyboard.append(
+            [
+                InlineKeyboardButton(
+                    "🪙 Pagar con Criptomonedas (USDT)",
+                    callback_data="pay_crypto_10",
+                ),
+            ]
+        )
 
         # Stars payment button
-        keyboard.append([
-            InlineKeyboardButton(
-                "⭐ Pagar con Telegram Stars",
-                callback_data="pay_stars_600",
-            ),
-        ])
+        keyboard.append(
+            [
+                InlineKeyboardButton(
+                    "⭐ Pagar con Telegram Stars",
+                    callback_data="pay_stars_600",
+                ),
+            ]
+        )
 
         # Payment history
-        keyboard.append([
-            InlineKeyboardButton(
-                "📜 Ver Historial de Pagos",
-                callback_data="payment_history_0",
-            ),
-        ])
+        keyboard.append(
+            [
+                InlineKeyboardButton(
+                    "📜 Ver Historial de Pagos",
+                    callback_data="payment_history_0",
+                ),
+            ]
+        )
 
         # Back to main menu
-        keyboard.append([
-            InlineKeyboardButton("🔙 Volver al Menú Principal", callback_data="main_menu"),
-        ])
+        keyboard.append(
+            [
+                InlineKeyboardButton("🔙 Volver al Menú Principal", callback_data="main_menu"),
+            ]
+        )
 
         return InlineKeyboardMarkup(keyboard)
 
@@ -139,16 +147,20 @@ class PaymentsKeyboard:
         keyboard = []
 
         if has_next:
-            keyboard.append([
-                InlineKeyboardButton(
-                    "📄 Página Siguiente",
-                    callback_data=f"payment_history_{page + 1}",
-                ),
-            ])
+            keyboard.append(
+                [
+                    InlineKeyboardButton(
+                        "📄 Página Siguiente",
+                        callback_data=f"payment_history_{page + 1}",
+                    ),
+                ]
+            )
 
-        keyboard.append([
-            InlineKeyboardButton("🔙 Volver a Pagos", callback_data="payment_menu"),
-        ])
+        keyboard.append(
+            [
+                InlineKeyboardButton("🔙 Volver a Pagos", callback_data="payment_menu"),
+            ]
+        )
 
         return InlineKeyboardMarkup(keyboard)
 

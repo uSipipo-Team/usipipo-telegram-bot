@@ -32,21 +32,23 @@ class TestUserProfileHandler:
     async def test_show_user_profile_authenticated(self, handler, mock_api_client):
         """Test showing profile for authenticated user."""
         # Mock user data
-        mock_api_client.get = AsyncMock(return_value={
-            "username": "testuser",
-            "first_name": "Test",
-            "last_name": "User",
-            "balance_gb": 15.5,
-            "total_purchased_gb": 50.0,
-            "referral_code": "ABC123",
-            "referred_users_with_purchase": 5,
-            "referral_credits": 2.5,
-            "loyalty_bonus_percent": 7,
-            "purchase_count": 8,
-            "welcome_bonus_used": True,
-            "created_at": "2024-01-15T10:30:00",
-            "updated_at": "2025-03-28T14:45:00",
-        })
+        mock_api_client.get = AsyncMock(
+            return_value={
+                "username": "testuser",
+                "first_name": "Test",
+                "last_name": "User",
+                "balance_gb": 15.5,
+                "total_purchased_gb": 50.0,
+                "referral_code": "ABC123",
+                "referred_users_with_purchase": 5,
+                "referral_credits": 2.5,
+                "loyalty_bonus_percent": 7,
+                "purchase_count": 8,
+                "welcome_bonus_used": True,
+                "created_at": "2024-01-15T10:30:00",
+                "updated_at": "2025-03-28T14:45:00",
+            }
+        )
 
         # Mock update
         callback_query = MagicMock(spec=CallbackQuery)

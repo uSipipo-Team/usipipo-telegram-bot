@@ -7,6 +7,68 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.0] - 2026-03-31
+
+### Added
+- **VPN Server Selection Feature** - Users can now select their preferred VPN server during key creation
+  - New server selection conversation state in VPN key creation flow
+  - Real-time server list with load indicators (🟢 low, 🟡 medium, 🔴 high)
+  - Protocol filtering (Outline/WireGuard)
+  - Top 5 recommended servers (lowest load first)
+  - "Show all servers" option for full list
+  - Server details display: country, city, server name, load percentage
+
+### Changed
+- **VPN Key Creation Flow** - Enhanced multi-step conversation
+  - **Before:** Protocol → Name → Key Created
+  - **After:** Protocol → **Server Selection** → Name → Key Created
+  - Optional server_id parameter sent to backend (backward compatible)
+  - Auto-selection fallback when user doesn't select server
+
+### Technical Details
+- **Files Created:** 2 files
+  - `src/bot/keyboards/servers.py` - ServerKeyboards factory (106 lines)
+  - `tests/bot/keyboards/test_servers.py` - Keyboard tests (552 lines)
+  - `tests/bot/handlers/test_keys_server_selection.py` - Conversation tests (19 tests)
+- **Files Modified:** 2 files
+  - `src/bot/handlers/keys.py` - Added SELECT_SERVER state, protocol_selected(), server_selected()
+  - `src/bot/keyboards/servers.py` - Updated to support dict and object formats
+- **Tests:** 46 server-related tests (100% passing)
+- **Total Tests:** 421 tests (375 existing + 46 new)
+
+### Backend Integration
+- **GET /api/v1/vpn/servers?protocol=outline|wireguard** - Fetch available servers
+  - Authentication: JWT token (user)
+  - Response: servers list + recommended (top 5)
+  - Load levels: low (0-50%), medium (51-80%), high (81-100%)
+- **POST /api/v1/vpn/keys** - Optional server_id parameter
+  - Backward compatible: server_id is optional
+  - Auto-selection when server_id not provided
+
+### Quality Gates
+- ✅ All tests passing (421 passed)
+- ✅ Ruff linting clean
+- ✅ Mypy type checking clean
+- ✅ Bandit security scan clean
+- ✅ Pre-commit hooks all passing
+- ✅ TDD followed (tests written before implementation)
+- ✅ Clean Architecture patterns maintained
+
+### UX Improvements
+- **Server List Message:** Formatted with visual boxes and emoji indicators
+- **Load Indicators:** 🟢 Low (0-50%), 🟡 Medium (51-80%), 🔴 High (81-100%)
+- **Button Format:** `{FLAG} {COUNTRY_CODE} - {CITY} {LOAD_EMOJI}`
+- **Error Handling:** Graceful handling of API failures with retry option
+- **Navigation:** "🔙 Volver" and "🔍 Ver todos los servidores" buttons
+
+### Impact
+- ✅ User-facing feature: server transparency and control
+- ✅ Load balancing: users can select servers with lowest load
+- ✅ Backward compatible: existing behavior preserved
+- ✅ No breaking changes
+
+---
+
 ## [0.3.0] - 2026-03-31
 
 ### Added

@@ -135,11 +135,7 @@ class PaymentsMessages:
             "📋 *Pagos recientes:*\n\n"
         )
 
-        PAYMENT_ITEM = (
-            "{status} *{type}* - {amount}\n"
-            "   📅 {date}\n"
-            "   Estado: {status_text}\n\n"
-        )
+        PAYMENT_ITEM = "{status} *{type}* - {amount}\n   📅 {date}\n   Estado: {status_text}\n\n"
 
         NO_PAYMENTS = (
             "📭 *Sin Pagos*\n\n"

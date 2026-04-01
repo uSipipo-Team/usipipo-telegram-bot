@@ -1,7 +1,7 @@
 """Integration tests for Referrals feature."""
 
 import pytest
-from unittest.mock import AsyncMock, MagicMock, PropertyMock
+from unittest.mock import AsyncMock
 
 from src.bot.handlers.referrals import ReferralsHandler
 from src.infrastructure.api_client import APIClient
@@ -16,33 +16,39 @@ class TestReferralsIntegration:
         """Test complete referrals flow."""
         # Mock API client
         api_client = AsyncMock(spec=APIClient)
-        api_client.get = AsyncMock(return_value={
-            "referral_code": "TEST123",
-            "total_referrals": 3,
-            "referral_credits": 15,
-        })
-        api_client.post = AsyncMock(return_value={
-            "success": True,
-            "credits_spent": 10,
-            "gb_added": 1,
-            "data": {
-                "remaining_credits": 5,
-            },
-        })
+        api_client.get = AsyncMock(
+            return_value={
+                "referral_code": "TEST123",
+                "total_referrals": 3,
+                "referral_credits": 15,
+            }
+        )
+        api_client.post = AsyncMock(
+            return_value={
+                "success": True,
+                "credits_spent": 10,
+                "gb_added": 1,
+                "data": {
+                    "remaining_credits": 5,
+                },
+            }
+        )
 
         # Mock token storage
         token_storage = AsyncMock(spec=TokenStorage)
         token_storage.is_authenticated = AsyncMock(return_value=True)
-        token_storage.get = AsyncMock(return_value={
-            "access_token": "test_token",
-            "refresh_token": "test_refresh",
-            "user_id": 123,
-            "expires_at": 9999999999,
-            "created_at": 1234567890,
-        })
+        token_storage.get = AsyncMock(
+            return_value={
+                "access_token": "test_token",
+                "refresh_token": "test_refresh",
+                "user_id": 123,
+                "expires_at": 9999999999,
+                "created_at": 1234567890,
+            }
+        )
 
         # Create handler
-        handler = ReferralsHandler(api_client, token_storage)
+        ReferralsHandler(api_client, token_storage)
 
         # Test 1: Get stats via API client directly
         stats = await api_client.get(
@@ -73,7 +79,7 @@ class TestReferralsIntegration:
             "POST /referrals/redeem",
         ]
         assert len(endpoints) == 3
-        
+
         # Verify endpoint structure
         for endpoint in endpoints:
             method, path = endpoint.split(" ", 1)

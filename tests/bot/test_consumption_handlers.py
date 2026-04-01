@@ -10,8 +10,10 @@ class TestConsumptionHandler:
     @pytest.mark.asyncio
     async def test_consumption_handler_initialization(self):
         """ConsumptionHandler se inicializa correctamente."""
-        with patch('src.bot.handlers.consumption.APIClient'), \
-             patch('src.bot.handlers.consumption.TokenStorage'):
+        with (
+            patch("src.bot.handlers.consumption.APIClient"),
+            patch("src.bot.handlers.consumption.TokenStorage"),
+        ):
             from src.bot.handlers.consumption import ConsumptionHandler
 
             mock_api = AsyncMock()
@@ -27,93 +29,93 @@ class TestConsumptionHandler:
         """ConsumptionMessages constants están definidas."""
         from src.bot.keyboards.messages_consumption import ConsumptionMessages
 
-        assert hasattr(ConsumptionMessages, 'Menu')
-        assert hasattr(ConsumptionMessages, 'Activation')
-        assert hasattr(ConsumptionMessages, 'Cancellation')
-        assert hasattr(ConsumptionMessages, 'Status')
-        assert hasattr(ConsumptionMessages, 'Invoices')
-        assert hasattr(ConsumptionMessages, 'Error')
-        assert hasattr(ConsumptionMessages, 'Invoice')
+        assert hasattr(ConsumptionMessages, "Menu")
+        assert hasattr(ConsumptionMessages, "Activation")
+        assert hasattr(ConsumptionMessages, "Cancellation")
+        assert hasattr(ConsumptionMessages, "Status")
+        assert hasattr(ConsumptionMessages, "Invoices")
+        assert hasattr(ConsumptionMessages, "Error")
+        assert hasattr(ConsumptionMessages, "Invoice")
 
     @pytest.mark.asyncio
     async def test_consumption_messages_has_menu_messages(self):
         """ConsumptionMessages tiene mensajes de menú."""
         from src.bot.keyboards.messages_consumption import ConsumptionMessages
 
-        assert hasattr(ConsumptionMessages.Menu, 'MAIN_MENU')
-        assert hasattr(ConsumptionMessages.Menu, 'INACTIVE_STATE')
-        assert hasattr(ConsumptionMessages.Menu, 'ACTIVE_STATE')
-        assert hasattr(ConsumptionMessages.Menu, 'DEBT_STATE')
-        assert hasattr(ConsumptionMessages.Menu, 'STATUS_INACTIVE')
-        assert hasattr(ConsumptionMessages.Menu, 'STATUS_ACTIVE')
-        assert hasattr(ConsumptionMessages.Menu, 'STATUS_DEBT')
+        assert hasattr(ConsumptionMessages.Menu, "MAIN_MENU")
+        assert hasattr(ConsumptionMessages.Menu, "INACTIVE_STATE")
+        assert hasattr(ConsumptionMessages.Menu, "ACTIVE_STATE")
+        assert hasattr(ConsumptionMessages.Menu, "DEBT_STATE")
+        assert hasattr(ConsumptionMessages.Menu, "STATUS_INACTIVE")
+        assert hasattr(ConsumptionMessages.Menu, "STATUS_ACTIVE")
+        assert hasattr(ConsumptionMessages.Menu, "STATUS_DEBT")
 
     @pytest.mark.asyncio
     async def test_consumption_messages_has_activation_messages(self):
         """ConsumptionMessages tiene mensajes de activación."""
         from src.bot.keyboards.messages_consumption import ConsumptionMessages
 
-        assert hasattr(ConsumptionMessages.Activation, 'TERMS')
-        assert hasattr(ConsumptionMessages.Activation, 'CONFIRMATION_PROMPT')
-        assert hasattr(ConsumptionMessages.Activation, 'SUCCESS')
-        assert hasattr(ConsumptionMessages.Activation, 'FAILED')
-        assert hasattr(ConsumptionMessages.Activation, 'ALREADY_ACTIVE')
-        assert hasattr(ConsumptionMessages.Activation, 'CANNOT_ACTIVATE')
+        assert hasattr(ConsumptionMessages.Activation, "TERMS")
+        assert hasattr(ConsumptionMessages.Activation, "CONFIRMATION_PROMPT")
+        assert hasattr(ConsumptionMessages.Activation, "SUCCESS")
+        assert hasattr(ConsumptionMessages.Activation, "FAILED")
+        assert hasattr(ConsumptionMessages.Activation, "ALREADY_ACTIVE")
+        assert hasattr(ConsumptionMessages.Activation, "CANNOT_ACTIVATE")
 
     @pytest.mark.asyncio
     async def test_consumption_messages_has_cancellation_messages(self):
         """ConsumptionMessages tiene mensajes de cancelación."""
         from src.bot.keyboards.messages_consumption import ConsumptionMessages
 
-        assert hasattr(ConsumptionMessages.Cancellation, 'CONFIRMATION_HEADER')
-        assert hasattr(ConsumptionMessages.Cancellation, 'SUMMARY_WITH_DEBT')
-        assert hasattr(ConsumptionMessages.Cancellation, 'SUMMARY_NO_DEBT')
-        assert hasattr(ConsumptionMessages.Cancellation, 'SUCCESS_WITH_DEBT')
-        assert hasattr(ConsumptionMessages.Cancellation, 'SUCCESS_NO_DEBT')
-        assert hasattr(ConsumptionMessages.Cancellation, 'FAILED')
-        assert hasattr(ConsumptionMessages.Cancellation, 'CANNOT_CANCEL')
+        assert hasattr(ConsumptionMessages.Cancellation, "CONFIRMATION_HEADER")
+        assert hasattr(ConsumptionMessages.Cancellation, "SUMMARY_WITH_DEBT")
+        assert hasattr(ConsumptionMessages.Cancellation, "SUMMARY_NO_DEBT")
+        assert hasattr(ConsumptionMessages.Cancellation, "SUCCESS_WITH_DEBT")
+        assert hasattr(ConsumptionMessages.Cancellation, "SUCCESS_NO_DEBT")
+        assert hasattr(ConsumptionMessages.Cancellation, "FAILED")
+        assert hasattr(ConsumptionMessages.Cancellation, "CANNOT_CANCEL")
 
     @pytest.mark.asyncio
     async def test_consumption_messages_has_status_messages(self):
         """ConsumptionMessages tiene mensajes de estado."""
         from src.bot.keyboards.messages_consumption import ConsumptionMessages
 
-        assert hasattr(ConsumptionMessages.Status, 'ACTIVE')
-        assert hasattr(ConsumptionMessages.Status, 'INACTIVE')
-        assert hasattr(ConsumptionMessages.Status, 'CLOSED_CYCLE')
+        assert hasattr(ConsumptionMessages.Status, "ACTIVE")
+        assert hasattr(ConsumptionMessages.Status, "INACTIVE")
+        assert hasattr(ConsumptionMessages.Status, "CLOSED_CYCLE")
 
     @pytest.mark.asyncio
     async def test_consumption_messages_has_invoices_messages(self):
         """ConsumptionMessages tiene mensajes de facturas."""
         from src.bot.keyboards.messages_consumption import ConsumptionMessages
 
-        assert hasattr(ConsumptionMessages.Invoices, 'HEADER')
-        assert hasattr(ConsumptionMessages.Invoices, 'INVOICE_ITEM')
-        assert hasattr(ConsumptionMessages.Invoices, 'NO_INVOICES')
+        assert hasattr(ConsumptionMessages.Invoices, "HEADER")
+        assert hasattr(ConsumptionMessages.Invoices, "INVOICE_ITEM")
+        assert hasattr(ConsumptionMessages.Invoices, "NO_INVOICES")
 
     @pytest.mark.asyncio
     async def test_consumption_messages_has_error_messages(self):
         """ConsumptionMessages tiene mensajes de error."""
         from src.bot.keyboards.messages_consumption import ConsumptionMessages
 
-        assert hasattr(ConsumptionMessages.Error, 'GENERIC')
-        assert hasattr(ConsumptionMessages.Error, 'SYSTEM_ERROR')
-        assert hasattr(ConsumptionMessages.Error, 'NOT_AUTHENTICATED')
-        assert hasattr(ConsumptionMessages.Error, 'UNAUTHORIZED')
-        assert hasattr(ConsumptionMessages.Error, 'INVOICE_GENERATION')
-        assert hasattr(ConsumptionMessages.Error, 'PAYMENT_PROCESSING')
+        assert hasattr(ConsumptionMessages.Error, "GENERIC")
+        assert hasattr(ConsumptionMessages.Error, "SYSTEM_ERROR")
+        assert hasattr(ConsumptionMessages.Error, "NOT_AUTHENTICATED")
+        assert hasattr(ConsumptionMessages.Error, "UNAUTHORIZED")
+        assert hasattr(ConsumptionMessages.Error, "INVOICE_GENERATION")
+        assert hasattr(ConsumptionMessages.Error, "PAYMENT_PROCESSING")
 
     @pytest.mark.asyncio
     async def test_consumption_messages_has_invoice_payment_messages(self):
         """ConsumptionMessages tiene mensajes de pago de facturas."""
         from src.bot.keyboards.messages_consumption import ConsumptionMessages
 
-        assert hasattr(ConsumptionMessages.Invoice, 'SELECT_PAYMENT_METHOD')
-        assert hasattr(ConsumptionMessages.Invoice, 'CRYPTO_PAYMENT')
-        assert hasattr(ConsumptionMessages.Invoice, 'STARS_PAYMENT')
-        assert hasattr(ConsumptionMessages.Invoice, 'PAYMENT_SUCCESS')
-        assert hasattr(ConsumptionMessages.Invoice, 'PAYMENT_EXPIRED')
-        assert hasattr(ConsumptionMessages.Invoice, 'NO_PENDING_DEBT')
+        assert hasattr(ConsumptionMessages.Invoice, "SELECT_PAYMENT_METHOD")
+        assert hasattr(ConsumptionMessages.Invoice, "CRYPTO_PAYMENT")
+        assert hasattr(ConsumptionMessages.Invoice, "STARS_PAYMENT")
+        assert hasattr(ConsumptionMessages.Invoice, "PAYMENT_SUCCESS")
+        assert hasattr(ConsumptionMessages.Invoice, "PAYMENT_EXPIRED")
+        assert hasattr(ConsumptionMessages.Invoice, "NO_PENDING_DEBT")
 
     @pytest.mark.asyncio
     async def test_consumption_messages_main_menu_has_placeholders(self):
@@ -143,8 +145,10 @@ class TestConsumptionHandler:
         """El mensaje de términos de activación tiene placeholders de precio."""
         from src.bot.keyboards.messages_consumption import ConsumptionMessages
 
-        assert "{_CONSUMPTION_PRICE_PER_GB:.2f}" in ConsumptionMessages.Activation.TERMS or \
-               "USD por GB" in ConsumptionMessages.Activation.TERMS
+        assert (
+            "{_CONSUMPTION_PRICE_PER_GB:.2f}" in ConsumptionMessages.Activation.TERMS
+            or "USD por GB" in ConsumptionMessages.Activation.TERMS
+        )
 
     @pytest.mark.asyncio
     async def test_consumption_messages_activation_failed_has_placeholder(self):
@@ -212,8 +216,8 @@ class TestConsumptionHandler:
         """ConsumptionKeyboard.consumption_main_menu existe."""
         from src.bot.keyboards.consumption import ConsumptionKeyboard
 
-        assert hasattr(ConsumptionKeyboard, 'consumption_main_menu')
-        assert callable(getattr(ConsumptionKeyboard, 'consumption_main_menu'))
+        assert hasattr(ConsumptionKeyboard, "consumption_main_menu")
+        assert callable(getattr(ConsumptionKeyboard, "consumption_main_menu"))
 
     @pytest.mark.asyncio
     async def test_consumption_keyboard_main_menu_returns_inline_keyboard(self):
@@ -237,8 +241,7 @@ class TestConsumptionHandler:
         )
 
         buttons = keyboard.inline_keyboard
-        assert any("Activar" in btn.text or "⚡" in btn.text
-                   for row in buttons for btn in row)
+        assert any("Activar" in btn.text or "⚡" in btn.text for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_consumption_keyboard_main_menu_with_active_state(self):
@@ -250,10 +253,8 @@ class TestConsumptionHandler:
         )
 
         buttons = keyboard.inline_keyboard
-        assert any("Consumo" in btn.text or "📊" in btn.text
-                   for row in buttons for btn in row)
-        assert any("Cancelar" in btn.text or "🚫" in btn.text
-                   for row in buttons for btn in row)
+        assert any("Consumo" in btn.text or "📊" in btn.text for row in buttons for btn in row)
+        assert any("Cancelar" in btn.text or "🚫" in btn.text for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_consumption_keyboard_main_menu_with_debt_state(self):
@@ -265,8 +266,7 @@ class TestConsumptionHandler:
         )
 
         buttons = keyboard.inline_keyboard
-        assert any("Factura" in btn.text or "💳" in btn.text
-                   for row in buttons for btn in row)
+        assert any("Factura" in btn.text or "💳" in btn.text for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_consumption_keyboard_activation_confirmation_exists(self):
@@ -276,13 +276,12 @@ class TestConsumptionHandler:
         keyboard = ConsumptionKeyboard.activation_confirmation()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("Acepto" in btn.text or "✅" in btn.text
-                   for row in buttons for btn in row)
-        assert any("Cancelar" in btn.text or "❌" in btn.text
-                   for row in buttons for btn in row)
+        assert any("Acepto" in btn.text or "✅" in btn.text for row in buttons for btn in row)
+        assert any("Cancelar" in btn.text or "❌" in btn.text for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_consumption_keyboard_activation_success_exists(self):
@@ -292,6 +291,7 @@ class TestConsumptionHandler:
         keyboard = ConsumptionKeyboard.activation_success()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
     @pytest.mark.asyncio
@@ -302,13 +302,12 @@ class TestConsumptionHandler:
         keyboard = ConsumptionKeyboard.cancellation_confirmation(has_debt=False)
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
-        assert any("Cancelar" in btn.text or "✅" in btn.text
-                   for row in buttons for btn in row)
-        assert any("Volver" in btn.text or "❌" in btn.text
-                   for row in buttons for btn in row)
+        assert any("Cancelar" in btn.text or "✅" in btn.text for row in buttons for btn in row)
+        assert any("Volver" in btn.text or "❌" in btn.text for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_consumption_keyboard_cancellation_success_exists(self):
@@ -318,6 +317,7 @@ class TestConsumptionHandler:
         keyboard = ConsumptionKeyboard.cancellation_success()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
     @pytest.mark.asyncio
@@ -328,6 +328,7 @@ class TestConsumptionHandler:
         keyboard = ConsumptionKeyboard.consumption_status()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
     @pytest.mark.asyncio
@@ -338,6 +339,7 @@ class TestConsumptionHandler:
         keyboard = ConsumptionKeyboard.invoices_list(has_next=False, page=0)
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
     @pytest.mark.asyncio
@@ -348,10 +350,8 @@ class TestConsumptionHandler:
         keyboard = ConsumptionKeyboard.invoices_list(has_next=True, page=1)
 
         buttons = keyboard.inline_keyboard
-        assert any("Anterior" in btn.text or "◀️" in btn.text
-                   for row in buttons for btn in row)
-        assert any("Siguiente" in btn.text or "▶️" in btn.text
-                   for row in buttons for btn in row)
+        assert any("Anterior" in btn.text or "◀️" in btn.text for row in buttons for btn in row)
+        assert any("Siguiente" in btn.text or "▶️" in btn.text for row in buttons for btn in row)
 
     @pytest.mark.asyncio
     async def test_consumption_keyboard_back_to_consumption_menu_exists(self):
@@ -361,6 +361,7 @@ class TestConsumptionHandler:
         keyboard = ConsumptionKeyboard.back_to_consumption_menu()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
     @pytest.mark.asyncio
@@ -371,6 +372,7 @@ class TestConsumptionHandler:
         keyboard = ConsumptionKeyboard.back_to_menu()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
     @pytest.mark.asyncio
@@ -381,6 +383,7 @@ class TestConsumptionHandler:
         keyboard = ConsumptionKeyboard.inactive_state_menu()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
     @pytest.mark.asyncio
@@ -391,6 +394,7 @@ class TestConsumptionHandler:
         keyboard = ConsumptionKeyboard.active_state_menu()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
     @pytest.mark.asyncio
@@ -401,20 +405,21 @@ class TestConsumptionHandler:
         keyboard = ConsumptionKeyboard.debt_state_menu()
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
     @pytest.mark.asyncio
     async def test_consumption_handler_get_auth_headers(self):
         """_get_auth_headers retorna headers con token."""
-        with patch('src.bot.handlers.consumption.APIClient'), \
-             patch('src.bot.handlers.consumption.TokenStorage') as MockTokenStorage:
+        with (
+            patch("src.bot.handlers.consumption.APIClient"),
+            patch("src.bot.handlers.consumption.TokenStorage"),
+        ):
             from src.bot.handlers.consumption import ConsumptionHandler
 
             mock_api = AsyncMock()
             mock_storage = AsyncMock()
-            mock_storage.get.return_value = {
-                "access_token": "test-token-123"
-            }
+            mock_storage.get.return_value = {"access_token": "test-token-123"}
 
             handler = ConsumptionHandler(mock_api, mock_storage)
 
@@ -426,8 +431,10 @@ class TestConsumptionHandler:
     @pytest.mark.asyncio
     async def test_consumption_handler_get_auth_headers_unauthenticated(self):
         """_get_auth_headers lanza error si no está autenticado."""
-        with patch('src.bot.handlers.consumption.APIClient'), \
-             patch('src.bot.handlers.consumption.TokenStorage') as MockTokenStorage:
+        with (
+            patch("src.bot.handlers.consumption.APIClient"),
+            patch("src.bot.handlers.consumption.TokenStorage"),
+        ):
             from src.bot.handlers.consumption import ConsumptionHandler
 
             mock_api = AsyncMock()
@@ -442,8 +449,10 @@ class TestConsumptionHandler:
     @pytest.mark.asyncio
     async def test_get_consumption_handlers_returns_list(self):
         """get_consumption_handlers retorna una lista."""
-        with patch('src.bot.handlers.consumption.APIClient'), \
-             patch('src.bot.handlers.consumption.TokenStorage'):
+        with (
+            patch("src.bot.handlers.consumption.APIClient"),
+            patch("src.bot.handlers.consumption.TokenStorage"),
+        ):
             from src.bot.handlers.consumption import get_consumption_handlers
 
             mock_api = AsyncMock()
@@ -457,8 +466,10 @@ class TestConsumptionHandler:
     @pytest.mark.asyncio
     async def test_get_consumption_callback_handlers_returns_list(self):
         """get_consumption_callback_handlers retorna una lista."""
-        with patch('src.bot.handlers.consumption.APIClient'), \
-             patch('src.bot.handlers.consumption.TokenStorage'):
+        with (
+            patch("src.bot.handlers.consumption.APIClient"),
+            patch("src.bot.handlers.consumption.TokenStorage"),
+        ):
             from src.bot.handlers.consumption import get_consumption_callback_handlers
 
             mock_api = AsyncMock()
@@ -474,7 +485,7 @@ class TestConsumptionHandler:
         """ConsumptionMessages tiene constante PRICE_PER_GB."""
         from src.bot.keyboards.messages_consumption import ConsumptionMessages
 
-        assert hasattr(ConsumptionMessages, 'PRICE_PER_GB')
+        assert hasattr(ConsumptionMessages, "PRICE_PER_GB")
         assert isinstance(ConsumptionMessages.PRICE_PER_GB, (int, float))
         assert ConsumptionMessages.PRICE_PER_GB > 0
 
@@ -486,6 +497,7 @@ class TestConsumptionHandler:
         keyboard = ConsumptionKeyboard.cancellation_confirmation(has_debt=True)
 
         from telegram import InlineKeyboardMarkup
+
         assert isinstance(keyboard, InlineKeyboardMarkup)
 
         buttons = keyboard.inline_keyboard
@@ -496,7 +508,7 @@ class TestConsumptionHandler:
         """El mensaje de ya estar activo tiene placeholders."""
         from src.bot.keyboards.messages_consumption import ConsumptionMessages
 
-        assert hasattr(ConsumptionMessages.Activation, 'ALREADY_ACTIVE')
+        assert hasattr(ConsumptionMessages.Activation, "ALREADY_ACTIVE")
         assert "{days_remaining}" in ConsumptionMessages.Activation.ALREADY_ACTIVE
 
     @pytest.mark.asyncio

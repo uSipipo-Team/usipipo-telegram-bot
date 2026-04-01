@@ -17,11 +17,7 @@ class KeysMessages:
         "⚡ *Elige una opción:*"
     )
 
-    NO_KEYS = (
-        "📭 *Sin claves*\n\n"
-        "🔒 No tienes claves activas\n\n"
-        "💡 Crea tu primera clave segura 🚀"
-    )
+    NO_KEYS = "📭 *Sin claves*\n\n🔒 No tienes claves activas\n\n💡 Crea tu primera clave segura 🚀"
 
     # ============================================
     # KEYS LIST
@@ -29,7 +25,7 @@ class KeysMessages:
 
     KEYS_LIST_HEADER = "🔑 *Tus claves {type}*\n\n"
 
-    NO_KEYS_TYPE = "📭 Sin claves {type}\n\n" "💡 Crea una nueva clave para comenzar."
+    NO_KEYS_TYPE = "📭 Sin claves {type}\n\n💡 Crea una nueva clave para comenzar."
 
     # ============================================
     # KEY DETAILS
@@ -45,7 +41,7 @@ class KeysMessages:
         "⚡ *Acciones:*"
     )
 
-    KEY_NOT_FOUND = "❌ *Clave no encontrada*\n\n" "No existe o no te pertenece a tu cuenta."
+    KEY_NOT_FOUND = "❌ *Clave no encontrada*\n\nNo existe o no te pertenece a tu cuenta."
 
     # ============================================
     # STATISTICS
@@ -76,9 +72,7 @@ class KeysMessages:
             "🔄 Puedes reactivarla cuando quieras ⚡"
         )
 
-        KEY_REACTIVATED = (
-            "✅ *Clave activada*\n\n" "🚀 Conexión lista\n\n" "🌐 ¡A navegar seguro! 🔥"
-        )
+        KEY_REACTIVATED = "✅ *Clave activada*\n\n🚀 Conexión lista\n\n🌐 ¡A navegar seguro! 🔥"
 
         KEY_DELETED = (
             "🗑️ *Clave eliminada*\n\n"
@@ -86,7 +80,7 @@ class KeysMessages:
             "🔌 Dispositivos desconectados ⚡"
         )
 
-        KEY_RENAMED = "✏️ *Renombrada*\n\n" "✨ {new_name}\n\n" "✅ Cambio guardado 🎯"
+        KEY_RENAMED = "✏️ *Renombrada*\n\n✨ {new_name}\n\n✅ Cambio guardado 🎯"
 
         KEY_CREATED = (
             "✅ *Clave creada*\n\n"
@@ -104,16 +98,14 @@ class KeysMessages:
         """Mensajes de error."""
 
         SYSTEM_ERROR = (
-            "🚨 *Error del sistema*\n\n"
-            "💥 Fallo temporal\n\n"
-            "🔄 Intenta de nuevo en un momento 📡"
+            "🚨 *Error del sistema*\n\n💥 Fallo temporal\n\n🔄 Intenta de nuevo en un momento 📡"
         )
 
-        KEY_NOT_ACCESSIBLE = "🚫 *Acceso denegado*\n\n" "🔒 No tienes permisos para esta clave 🔐"
+        KEY_NOT_ACCESSIBLE = "🚫 *Acceso denegado*\n\n🔒 No tienes permisos para esta clave 🔐"
 
-        OPERATION_FAILED = "❌ *Operación fallida*\n\n" "💥 No se pudo completar\n\n" "📟 {error}"
+        OPERATION_FAILED = "❌ *Operación fallida*\n\n💥 No se pudo completar\n\n📟 {error}"
 
-        INVALID_ACTION = "⛔ *Acción inválida*\n\n" "🚫 No disponible en este momento"
+        INVALID_ACTION = "⛔ *Acción inválida*\n\n🚫 No disponible en este momento"
 
         QUOTA_EXCEEDED = (
             "⚠️ *Cuota excedida*\n\n"
@@ -134,9 +126,9 @@ class KeysMessages:
     class Success:
         """Mensajes de éxito."""
 
-        OPERATION_COMPLETED = "✅ *Listo*\n\n" "⚡ Operación completada 🎯"
+        OPERATION_COMPLETED = "✅ *Listo*\n\n⚡ Operación completada 🎯"
 
-        CHANGES_SAVED = "💾 *Guardado*\n\n" "✨ Cambios actualizados"
+        CHANGES_SAVED = "💾 *Guardado*\n\n✨ Cambios actualizados"
 
     # ============================================
     # CREATE KEY
@@ -155,7 +147,4 @@ class KeysMessages:
         "Escribe un nombre para identificar esta clave (ej: 'Casa', 'Móvil'):"
     )
 
-    SELECT_DATA_LIMIT = (
-        "📊 *Límite de datos*\n\n"
-        "Elige el límite de datos para esta clave:"
-    )
+    SELECT_DATA_LIMIT = "📊 *Límite de datos*\n\nElige el límite de datos para esta clave:"

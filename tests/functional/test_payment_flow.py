@@ -5,7 +5,6 @@ con el backend real de producción.
 """
 
 import pytest
-import asyncio
 from src.infrastructure.secondary_adapters.backend_api.backend_api_adapter import (
     BackendApiAdapter,
 )

@@ -1,6 +1,5 @@
 """Tests for UserProfileMessages."""
 
-import pytest
 from datetime import datetime
 from src.bot.keyboards.messages_user_profile import UserProfileMessages
 

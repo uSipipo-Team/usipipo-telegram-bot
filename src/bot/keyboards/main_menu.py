@@ -60,7 +60,9 @@ class MainMenuKeyboard:
                 ],
                 # Fila 3: Soporte Técnico
                 [
-                    InlineKeyboardButton("💬 Soporte Técnico", url="https://t.me/uSipipoSupport_Bot"),
+                    InlineKeyboardButton(
+                        "💬 Soporte Técnico", url="https://t.me/uSipipoSupport_Bot"
+                    ),
                 ],
             ]
             return InlineKeyboardMarkup(keyboard)

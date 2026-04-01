@@ -112,9 +112,7 @@ class ConsumptionHandler:
                 keyboard = ConsumptionKeyboard.inactive_state_menu()
 
             if update.callback_query:
-                await self._safe_edit_message(
-                    update.callback_query, context, message, keyboard
-                )
+                await self._safe_edit_message(update.callback_query, context, message, keyboard)
             elif update.message:
                 await update.message.reply_text(
                     message,
@@ -153,10 +151,7 @@ class ConsumptionHandler:
             # Check if can activate
             headers = await self._get_auth_headers(telegram_id)
             try:
-                response = await self.api.get(
-                    "/consumption/status/can_activate",
-                    headers=headers
-                )
+                response = await self.api.get("/consumption/status/can_activate", headers=headers)
                 can_activate = response.get("can_activate", False)
                 error_message = response.get("error_message")
             except Exception:
@@ -250,7 +245,7 @@ class ConsumptionHandler:
             headers = await self._get_auth_headers(telegram_id)
             try:
                 response = await self.api.get("/consumption/status", headers=headers)
-                
+
                 is_active = response.get("is_active", False)
                 mb_consumed = response.get("mb_consumed", 0)
                 gb_consumed = response.get("gb_consumed", 0)
@@ -305,10 +300,7 @@ class ConsumptionHandler:
             # Check if can cancel and get summary
             headers = await self._get_auth_headers(telegram_id)
             try:
-                response = await self.api.get(
-                    "/consumption/status/can_cancel",
-                    headers=headers
-                )
+                response = await self.api.get("/consumption/status/can_cancel", headers=headers)
                 can_cancel = response.get("can_cancel", False)
                 error_message = response.get("error_message")
 
@@ -426,7 +418,7 @@ class ConsumptionHandler:
 
         try:
             headers = await self._get_auth_headers(telegram_id)
-            
+
             # Extract page from callback data if present
             page = 0
             if query.data and "_" in query.data:
@@ -438,8 +430,7 @@ class ConsumptionHandler:
             # Get invoices from backend
             try:
                 response = await self.api.get(
-                    f"/consumption/invoices/user/me?page={page}&limit=10",
-                    headers=headers
+                    f"/consumption/invoices/user/me?page={page}&limit=10", headers=headers
                 )
                 invoices = response.get("invoices", [])
                 total = response.get("total", 0)
@@ -466,11 +457,16 @@ class ConsumptionHandler:
                     paid=paid_count,
                     expired=expired_count,
                 )
-                
+
                 for invoice in invoices:
-                    status_icon = "⏳" if invoice.get("status") == "pending" else \
-                                  "✅" if invoice.get("status") == "paid" else "❌"
-                    
+                    status_icon = (
+                        "⏳"
+                        if invoice.get("status") == "pending"
+                        else "✅"
+                        if invoice.get("status") == "paid"
+                        else "❌"
+                    )
+
                     message += ConsumptionMessages.Invoices.INVOICE_ITEM.format(
                         date=invoice.get("created_at", "N/A")[:10],
                         amount=f"{invoice.get('amount_usd', 0):.2f}",
@@ -478,10 +474,7 @@ class ConsumptionHandler:
                         status_text=invoice.get("status", "unknown").upper(),
                     )
 
-                keyboard = ConsumptionKeyboard.invoices_list(
-                    has_next=has_more,
-                    page=page
-                )
+                keyboard = ConsumptionKeyboard.invoices_list(has_next=has_more, page=page)
 
             await self._safe_edit_message(query, context, message, keyboard)
 

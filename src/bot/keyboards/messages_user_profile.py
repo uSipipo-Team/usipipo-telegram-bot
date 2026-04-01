@@ -47,7 +47,15 @@ class UserProfileMessages:
 
         TIP = "💡 *Consejo: Invita más amigos para aumentar tu bonus de lealtad*"
 
-        FULL_PROFILE = HEADER + PERSONAL_INFO + BALANCE_INFO + REFERRAL_INFO + LOYALTY_INFO + ACCOUNT_INFO + TIP
+        FULL_PROFILE = (
+            HEADER
+            + PERSONAL_INFO
+            + BALANCE_INFO
+            + REFERRAL_INFO
+            + LOYALTY_INFO
+            + ACCOUNT_INFO
+            + TIP
+        )
 
     class Error:
         """Mensajes de error."""
@@ -71,8 +79,9 @@ class UserProfileMessages:
         )
 
     @staticmethod
-    def format_personal_info(username: str | None, first_name: str | None,
-                             last_name: str | None, telegram_id: int) -> str:
+    def format_personal_info(
+        username: str | None, first_name: str | None, last_name: str | None, telegram_id: int
+    ) -> str:
         """Formatea información personal manejando valores nulos."""
         username_str = username if username else "No disponible"
         full_name = " ".join(filter(None, [first_name or "", last_name or ""])) or "No disponible"
@@ -84,8 +93,9 @@ class UserProfileMessages:
         )
 
     @staticmethod
-    def format_balance_info(balance_gb: float, total_purchased_gb: float,
-                           vpn_keys_count: int) -> str:
+    def format_balance_info(
+        balance_gb: float, total_purchased_gb: float, vpn_keys_count: int
+    ) -> str:
         """Formatea información de balance."""
         return UserProfileMessages.Profile.BALANCE_INFO.format(
             balance_gb=f"{balance_gb:.2f}",
@@ -94,8 +104,9 @@ class UserProfileMessages:
         )
 
     @staticmethod
-    def format_referral_info(referral_code: str, referrals_count: int,
-                            referral_credits: float) -> str:
+    def format_referral_info(
+        referral_code: str, referrals_count: int, referral_credits: float
+    ) -> str:
         """Formatea información de referidos."""
         return UserProfileMessages.Profile.REFERRAL_INFO.format(
             referral_code=referral_code,
@@ -104,8 +115,9 @@ class UserProfileMessages:
         )
 
     @staticmethod
-    def format_loyalty_info(loyalty_bonus_percent: int, purchase_count: int,
-                           welcome_bonus_used: bool) -> str:
+    def format_loyalty_info(
+        loyalty_bonus_percent: int, purchase_count: int, welcome_bonus_used: bool
+    ) -> str:
         """Formatea información de lealtad."""
         # Determine loyalty level based on bonus percent
         if loyalty_bonus_percent >= 10:

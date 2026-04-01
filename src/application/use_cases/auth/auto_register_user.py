@@ -8,6 +8,7 @@ from ...ports.token_storage_port import TokenStoragePort
 
 class AutoRegisterUserResult(NamedTuple):
     """Resultado del caso de uso."""
+
     success: bool
     message: str
     user_id: str
