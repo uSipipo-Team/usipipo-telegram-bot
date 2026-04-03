@@ -2,12 +2,12 @@
 name = "usipipo-telegram-bot"
 version = "0.5.0"
 description = "Bot de Telegram para interacción con usuarios del ecosistema uSipipo"
-requires-python = ">=3.13"
+requires-python = ">=3.13,<3.14"
 license = {text = "MIT"}
 authors = [{name = "uSipipo Team", email = "usipipo@gmail.com"}]
 
 dependencies = [
-    "usipipo-commons>=0.15.0",
+    "usipipo-commons>=0.17.0",
     "python-telegram-bot>=21.0",
     "pydantic-settings>=2.0.0",
     "redis>=7.3.0",

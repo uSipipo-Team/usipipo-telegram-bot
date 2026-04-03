@@ -534,14 +534,6 @@ class KeysHandler:
         logger.info(f"User {telegram_id} naming {protocol} key: '{key_name}'")
 
         try:
-            # Validate name (minimum 3 characters)
-            if len(key_name) < 3:
-                await update.message.reply_text(
-                    text="❌ El nombre debe tener al menos 3 caracteres.\n\nPor favor, escribe un nombre válido:",
-                    parse_mode="Markdown",
-                )
-                return INPUT_NAME  # Stay in INPUT_NAME state
-
             # Get auth headers
             tokens = await self.tokens.get(telegram_id)
             if not tokens:
@@ -558,7 +550,7 @@ class KeysHandler:
             # Get server_id from user_data (may be None if not set)
             server_id = context.user_data.get("server_id")
 
-            # Create key via API
+            # Create key via API (backend validates the name)
             payload = {
                 "name": key_name,
                 "vpn_type": vpn_type,
@@ -631,8 +623,24 @@ class KeysHandler:
         except Exception as e:
             logger.error(f"Error creating key: {e}")
             if update.message:
+                # Check if it's a validation error from API
+                error_str = str(e)
+                error_message = error_str
+                
+                # Try to extract user-friendly message from API error response
+                if "400" in error_str or "409" in error_str or "422" in error_str:
+                    # Look for message in error response
+                    if "INVALID_VPN_KEY_NAME" in error_str:
+                        # Extract message from detail
+                        import re
+                        match = re.search(r"'message':\s*'([^']+)'", error_str)
+                        if match:
+                            error_message = match.group(1)
+                    elif "VPN_KEY_NAME_EXISTS" in error_str:
+                        error_message = "El nombre de clave ya existe. Por favor usa un nombre diferente"
+                
                 await update.message.reply_text(
-                    text=f"❌ Error al crear la clave: {str(e)}",
+                    text=f"❌ Error al crear la clave: {error_message}",
                     reply_markup=KeysKeyboard.back_to_menu(),
                 )
 
