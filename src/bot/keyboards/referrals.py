@@ -14,7 +14,7 @@ class ReferralsKeyboard:
         # Add share button as first row if referral link is provided
         if referral_link:
             keyboard.append([
-                InlineKeyboardButton("📤 Compartir Enlace", url=referral_link),
+                InlineKeyboardButton("📤 Compartir Enlace", switch_inline_query=referral_link),
             ])
 
         # Add existing buttons

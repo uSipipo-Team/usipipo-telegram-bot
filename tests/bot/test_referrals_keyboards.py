@@ -36,11 +36,11 @@ class TestReferralsKeyboards:
         
         # Should have 3 rows: share, redeem, apply
         assert len(keyboard.inline_keyboard) == 3
-        
-        # First row should be share button with URL
+
+        # First row should be share button with switch_inline_query
         share_button = keyboard.inline_keyboard[0][0]
         assert share_button.text == "📤 Compartir Enlace"
-        assert share_button.url == referral_link
+        assert share_button.switch_inline_query == referral_link
         assert share_button.callback_data is None
 
     @pytest.mark.asyncio
