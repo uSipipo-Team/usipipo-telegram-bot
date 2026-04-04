@@ -250,13 +250,16 @@ class OperationsHandler:
             # Get referral stats from backend
             invited = 0
             credits = 0
-            link = f"https://t.me/usipipobot?start={telegram_id}"
+            referral_code = str(telegram_id)  # Fallback to telegram_id
+            link = f"https://t.me/usipipobot?start={referral_code}"
 
             try:
                 headers = await self._get_auth_headers(telegram_id)
                 response = await self.api.get("/referrals/me", headers=headers)
                 invited = response.get("total_referrals", 0)
                 credits = response.get("referral_credits", 0)
+                referral_code = response.get("referral_code", referral_code)
+                link = f"https://t.me/usipipobot?start={referral_code}"
             except Exception:
                 # Referrals endpoint may not be implemented yet
                 pass
