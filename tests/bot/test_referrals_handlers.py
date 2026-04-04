@@ -240,9 +240,9 @@ class TestShowReferralsCommand:
         assert call_args[1]["parse_mode"] == "Markdown"
         # Verify keyboard was included with referral link
         assert call_args[1]["reply_markup"] is not None
-        # Verify keyboard has share button with URL (unescaped in keyboard)
+        # Verify keyboard has share button with switch_inline_query
         keyboard = call_args[1]["reply_markup"]
-        assert keyboard.inline_keyboard[0][0].url == "https://t.me/usipipobot?start=ABC123"
+        assert keyboard.inline_keyboard[0][0].switch_inline_query == "https://t.me/usipipobot?start=ABC123"
 
 
 class TestGetReferralLinkCommand:

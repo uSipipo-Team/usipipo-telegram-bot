@@ -7,18 +7,13 @@ from telegram import Update
 from telegram.ext import CallbackQueryHandler, CommandHandler, ContextTypes
 
 from src.bot.keyboards.messages_operations import OperationsMessages
+from src.bot.keyboards.messages_referrals import ReferralsMessages
 from src.bot.keyboards.operations import OperationsKeyboard
+from src.bot.keyboards.referrals import ReferralsKeyboard
 from src.infrastructure.api_client import APIClient
 from src.infrastructure.token_storage import TokenStorage
 
 logger = logging.getLogger(__name__)
-
-
-def _escape_md(text: str) -> str:
-    """Escape special Markdown characters in text."""
-    for char in ["_", "*", "[", "]", "(", ")", "~", "`", ">", "#", "+", "-", "=", "|", "{", "}", ".", "!"]:
-        text = text.replace(char, f"\\{char}")
-    return text
 
 
 class OperationsHandler:
@@ -257,8 +252,7 @@ class OperationsHandler:
             # Get referral stats from backend
             invited = 0
             credits = 0
-            referral_code = str(telegram_id)  # Fallback to telegram_id
-            link = f"https://t.me/usipipobot?start={referral_code}"
+            referral_code = str(telegram_id)
 
             try:
                 headers = await self._get_auth_headers(telegram_id)
@@ -266,20 +260,23 @@ class OperationsHandler:
                 invited = response.get("total_referrals", 0)
                 credits = response.get("referral_credits", 0)
                 referral_code = response.get("referral_code", referral_code)
-                link = f"https://t.me/usipipobot?start={referral_code}"
             except Exception:
                 # Referrals endpoint may not be implemented yet
                 pass
 
-            # Escape link for Markdown
-            link_escaped = _escape_md(link)
+            # Build referral link
+            link = f"https://t.me/usipipobot?start={referral_code}"
 
-            message = OperationsMessages.Referrals.MENU.format(
-                link=link_escaped, invited=invited, credits=credits
+            # Use unified template and keyboard (same as /referidos command)
+            message = ReferralsMessages.Menu.REFERRAL_STATS.format(
+                referral_code=referral_code,
+                total_referrals=invited,
+                referral_credits=credits,
+                referral_link=link,
             )
-            keyboard = OperationsKeyboard.back_to_operations()
+            keyboard = ReferralsKeyboard.menu(link)
 
-            await self._safe_edit_message(query, context, message, keyboard)
+            await self._safe_edit_message(query, context, message, keyboard, parse_mode="Markdown")
 
         except Exception as e:
             logger.error(f"Error en show_referrals: {e}")
