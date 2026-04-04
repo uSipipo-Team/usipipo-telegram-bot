@@ -85,18 +85,23 @@ class ReferralsHandler:
                 headers=headers,
             )
 
+            # Build referral link
+            referral_code = response["referral_code"]
+            referral_link = f"https://t.me/usipipobot?start={referral_code}"
+
             # Format message
             message = ReferralsMessages.Menu.REFERRAL_STATS.format(
-                referral_code=response["referral_code"],
+                referral_code=referral_code,
                 total_referrals=response["total_referrals"],
                 referral_credits=response["referral_credits"],
+                referral_link=referral_link,
             )
 
             # Send with keyboard
             if update.message:
                 await update.message.reply_text(
                     text=message,
-                    reply_markup=ReferralsKeyboard.menu(),
+                    reply_markup=ReferralsKeyboard.menu(referral_link),
                     parse_mode="Markdown",
                 )
 
