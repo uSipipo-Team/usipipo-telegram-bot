@@ -5,6 +5,9 @@ from typing import Optional, Dict, Any
 
 from src.infrastructure.redis import RedisPool
 from src.infrastructure.config import settings
+from src.infrastructure.logger import get_logger
+
+logger = get_logger("token_storage")
 
 
 class TokenStorage:
@@ -130,3 +133,33 @@ class TokenStorage:
 
         threshold = settings.TOKEN_REFRESH_THRESHOLD_SECONDS
         return time.time() > (tokens["expires_at"] - threshold)
+
+    async def refresh_token(
+        self,
+        telegram_id: int,
+        api_client: Any,  # APIClient (avoid circular import)
+    ) -> Optional[str]:
+        """
+        Re-registra usuario para obtener token fresco.
+
+        Usado como fallback cuando los retries agotan y el token sigue inválido.
+
+        Args:
+            telegram_id: ID de Telegram del usuario
+            api_client: Instancia de APIClient
+
+        Returns:
+            Optional[str]: Nuevo access_token o None si falló
+        """
+        try:
+            response = await api_client.post(
+                "/auth/telegram/auto-register",
+                {"telegram_id": telegram_id},
+            )
+            if "access_token" in response:
+                await self.store(telegram_id, response)
+                logger.info(f"Token refreshed for user {telegram_id}")
+                return response["access_token"]
+        except Exception as e:
+            logger.error(f"Failed to refresh token for user {telegram_id}: {e}")
+        return None
