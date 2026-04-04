@@ -235,9 +235,13 @@ class TestShowReferralsCommand:
         call_args = mock_update.message.reply_text.call_args
         assert "🎯 *Tu Programa de Referidos*" in call_args[1]["text"]
         assert "ABC123" in call_args[1]["text"]
+        assert "https://t.me/usipipobot?start=ABC123" in call_args[1]["text"]
         assert call_args[1]["parse_mode"] == "Markdown"
-        # Verify keyboard was included
+        # Verify keyboard was included with referral link
         assert call_args[1]["reply_markup"] is not None
+        # Verify keyboard has share button with URL
+        keyboard = call_args[1]["reply_markup"]
+        assert keyboard.inline_keyboard[0][0].url == "https://t.me/usipipobot?start=ABC123"
 
 
 class TestGetReferralLinkCommand:
