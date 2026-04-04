@@ -13,11 +13,12 @@ class ReferralsMessages:
             "• Código: `{referral_code}`\n"
             "• Total referidos: `{total_referrals}`\n"
             "• Créditos disponibles: `{referral_credits}`\n\n"
+            "🔗 *Tu enlace:*\n"
+            "{referral_link}\n\n"
             "💡 *Beneficios:*\n"
-            "• Gana 1 crédito por cada amigo referido\n"
-            "• 10 créditos = 1 GB de datos\n"
-            "• Canjea tus créditos cuando quieras\n\n"
-            "Usa /invitar para obtener tu link de invitación"
+            "• 1 crédito por cada amigo invitado\n"
+            "• 5 créditos si tu amigo compra un paquete\n\n"
+            "Comparte tu enlace y gana créditos!"
         )
 
         INVITE_LINK = (
