@@ -14,6 +14,13 @@ from src.infrastructure.token_storage import TokenStorage
 logger = logging.getLogger(__name__)
 
 
+def _escape_md(text: str) -> str:
+    """Escape special Markdown characters in text."""
+    for char in ["_", "*", "[", "]", "(", ")", "~", "`", ">", "#", "+", "-", "=", "|", "{", "}", ".", "!"]:
+        text = text.replace(char, f"\\{char}")
+    return text
+
+
 class OperationsHandler:
     """Handler para operaciones del usuario."""
 
@@ -264,8 +271,11 @@ class OperationsHandler:
                 # Referrals endpoint may not be implemented yet
                 pass
 
+            # Escape link for Markdown
+            link_escaped = _escape_md(link)
+
             message = OperationsMessages.Referrals.MENU.format(
-                link=link, invited=invited, credits=credits
+                link=link_escaped, invited=invited, credits=credits
             )
             keyboard = OperationsKeyboard.back_to_operations()
 

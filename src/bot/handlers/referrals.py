@@ -14,6 +14,13 @@ from src.infrastructure.token_storage import TokenStorage
 logger = logging.getLogger(__name__)
 
 
+def _escape_md(text: str) -> str:
+    """Escape special Markdown characters in text."""
+    for char in ["_", "*", "[", "]", "(", ")", "~", "`", ">", "#", "+", "-", "=", "|", "{", "}", ".", "!"]:
+        text = text.replace(char, f"\\{char}")
+    return text
+
+
 class ReferralsHandler:
     """Handler for referral system."""
 
@@ -88,13 +95,15 @@ class ReferralsHandler:
             # Build referral link
             referral_code = response["referral_code"]
             referral_link = f"https://t.me/usipipobot?start={referral_code}"
+            # Escape for Markdown (URLs may contain underscores)
+            referral_link_escaped = _escape_md(referral_link)
 
             # Format message
             message = ReferralsMessages.Menu.REFERRAL_STATS.format(
                 referral_code=referral_code,
                 total_referrals=response["total_referrals"],
                 referral_credits=response["referral_credits"],
-                referral_link=referral_link,
+                referral_link=referral_link_escaped,
             )
 
             # Send with keyboard
@@ -141,10 +150,12 @@ class ReferralsHandler:
             # Build referral link
             referral_code = response["referral_code"]
             referral_link = f"https://t.me/usipipobot?start={referral_code}"
+            # Escape for Markdown (URLs may contain underscores)
+            referral_link_escaped = _escape_md(referral_link)
 
             # Format message
             message = ReferralsMessages.Menu.INVITE_LINK.format(
-                referral_link=referral_link,
+                referral_link=referral_link_escaped,
             )
 
             # Send message
@@ -161,6 +172,65 @@ class ReferralsHandler:
                     ReferralsMessages.Error.SYSTEM_ERROR,
                     parse_mode="Markdown",
                 )
+
+    async def redeem_credits(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Show redeem credits confirmation keyboard."""
+        if update.effective_user is None or update.callback_query is None:
+            return
+
+        telegram_id = update.effective_user.id
+        query = update.callback_query
+        logger.info(f"🎯 User {telegram_id} opening redeem credits")
+
+        try:
+            # Check authentication
+            if not await self.tokens.is_authenticated(telegram_id):
+                await self._safe_answer_query(query)
+                await query.edit_message_text(
+                    text=ReferralsMessages.Error.NOT_AUTHENTICATED,
+                    parse_mode="Markdown",
+                )
+                return
+
+            # Get current credits
+            headers = await self._get_auth_headers(telegram_id)
+            response = await self.api.get("/referrals/me", headers=headers)
+            credits = response.get("referral_credits", 0)
+
+            if credits <= 0:
+                await self._safe_answer_query(query)
+                await query.edit_message_text(
+                    text=ReferralsMessages.Error.INSUFFICIENT_CREDITS,
+                    parse_mode="Markdown",
+                )
+                return
+
+            message = f"💰 *Canjear Créditos*\n\nTienes `{credits}` créditos disponibles.\n\n10 créditos = 1 GB de datos\n\n¿Cuántos créditos deseas canjear?"
+
+            await self._safe_answer_query(query)
+            await self._safe_edit_message(
+                query=query,
+                context=context,
+                text=message,
+                reply_markup=ReferralsKeyboard.redeem_confirmation(credits),
+            )
+
+        except Exception as e:
+            logger.error(f"Error opening redeem credits: {e}")
+            await self._safe_answer_query(query)
+            await query.edit_message_text(
+                text=ReferralsMessages.Error.SYSTEM_ERROR,
+                parse_mode="Markdown",
+            )
+
+    async def cancel_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle cancel callback."""
+        if update.effective_user is None or update.callback_query is None:
+            return
+
+        query = update.callback_query
+        await self._safe_answer_query(query)
+        await self.show_referrals(update, context)
 
     async def redeem_credits_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle redeem credits callback."""
@@ -281,8 +351,16 @@ def get_referrals_callback_handlers(api_client: APIClient, token_storage: TokenS
 
     return [
         CallbackQueryHandler(
+            handler.redeem_credits,
+            pattern=r"^referral_redeem$",
+        ),
+        CallbackQueryHandler(
             handler.redeem_credits_callback,
             pattern=r"^referral_redeem_confirm:\d+$",
+        ),
+        CallbackQueryHandler(
+            handler.cancel_callback,
+            pattern=r"^referral_cancel$",
         ),
         CallbackQueryHandler(
             handler.apply_code_callback,

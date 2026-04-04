@@ -235,11 +235,12 @@ class TestShowReferralsCommand:
         call_args = mock_update.message.reply_text.call_args
         assert "🎯 *Tu Programa de Referidos*" in call_args[1]["text"]
         assert "ABC123" in call_args[1]["text"]
-        assert "https://t.me/usipipobot?start=ABC123" in call_args[1]["text"]
+        # URL is escaped for Markdown (dots and = escaped)
+        assert "https://t\\.me/usipipobot?start\\=ABC123" in call_args[1]["text"]
         assert call_args[1]["parse_mode"] == "Markdown"
         # Verify keyboard was included with referral link
         assert call_args[1]["reply_markup"] is not None
-        # Verify keyboard has share button with URL
+        # Verify keyboard has share button with URL (unescaped in keyboard)
         keyboard = call_args[1]["reply_markup"]
         assert keyboard.inline_keyboard[0][0].url == "https://t.me/usipipobot?start=ABC123"
 
@@ -291,7 +292,8 @@ class TestGetReferralLinkCommand:
         mock_update.message.reply_text.assert_called_once()
         call_args = mock_update.message.reply_text.call_args
         assert "🔗 *Tu Link de Invitación*" in call_args[1]["text"]
-        assert "https://t.me/usipipobot?start=ABC123" in call_args[1]["text"]
+        # URL is escaped for Markdown
+        assert "https://t\\.me/usipipobot?start\\=ABC123" in call_args[1]["text"]
         assert call_args[1]["parse_mode"] == "Markdown"
         # No reply_markup for this command
         assert "reply_markup" not in call_args[1]
