@@ -25,6 +25,40 @@ class TestReferralsKeyboards:
         assert any("referral_apply" in btn.callback_data for row in buttons for btn in row)
 
     @pytest.mark.asyncio
+    async def test_menu_keyboard_with_referral_link_has_share_button(self):
+        """menu() with referral_link includes share button as first row."""
+        from src.bot.keyboards.referrals import ReferralsKeyboard
+
+        referral_link = "https://t.me/usipipobot?start=abc123"
+        keyboard = ReferralsKeyboard.menu(referral_link=referral_link)
+
+        assert isinstance(keyboard, InlineKeyboardMarkup)
+        
+        # Should have 3 rows: share, redeem, apply
+        assert len(keyboard.inline_keyboard) == 3
+        
+        # First row should be share button with URL
+        share_button = keyboard.inline_keyboard[0][0]
+        assert share_button.text == "📤 Compartir Enlace"
+        assert share_button.url == referral_link
+        assert share_button.callback_data is None
+
+    @pytest.mark.asyncio
+    async def test_menu_keyboard_without_referral_link_has_no_share_button(self):
+        """menu() without referral_link has no share button."""
+        from src.bot.keyboards.referrals import ReferralsKeyboard
+
+        keyboard = ReferralsKeyboard.menu()
+
+        # Should have 2 rows: redeem, apply (no share)
+        assert len(keyboard.inline_keyboard) == 2
+        
+        # No button with URL should exist
+        for row in keyboard.inline_keyboard:
+            for btn in row:
+                assert btn.url is None
+
+    @pytest.mark.asyncio
     async def test_redeem_confirmation_keyboard_exists(self):
         """redeem_confirmation() keyboard exists."""
         from src.bot.keyboards.referrals import ReferralsKeyboard

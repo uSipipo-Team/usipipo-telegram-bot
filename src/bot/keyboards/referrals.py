@@ -7,16 +7,26 @@ class ReferralsKeyboard:
     """Inline keyboards for referral system."""
 
     @staticmethod
-    def menu() -> InlineKeyboardMarkup:
-        """Main referrals menu keyboard."""
-        keyboard = [
+    def menu(referral_link: str | None = None) -> InlineKeyboardMarkup:
+        """Main referrals menu keyboard with optional share button."""
+        keyboard = []
+
+        # Add share button as first row if referral link is provided
+        if referral_link:
+            keyboard.append([
+                InlineKeyboardButton("📤 Compartir Enlace", url=referral_link),
+            ])
+
+        # Add existing buttons
+        keyboard.extend([
             [
                 InlineKeyboardButton("💰 Canjear Créditos", callback_data="referral_redeem"),
             ],
             [
                 InlineKeyboardButton("📝 Aplicar Código", callback_data="referral_apply"),
             ],
-        ]
+        ])
+
         return InlineKeyboardMarkup(keyboard)
 
     @staticmethod
