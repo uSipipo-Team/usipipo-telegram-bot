@@ -34,6 +34,7 @@ class AuthHandler:
 
         Si el usuario ya está autenticado, muestra mensaje de bienvenida.
         Si no, registra y autentica automáticamente.
+        Extrae código de referido del deep link si existe.
         """
         if update.effective_user is None:
             logger.warning("start_handler called without effective_user")
@@ -51,19 +52,26 @@ class AuthHandler:
                 )
             return
 
+        # Extract referral code from deep link (context.args)
+        referral_code = context.args[0] if context.args else None
+        if referral_code:
+            logger.info(f"Referral code detected in /start: {referral_code}")
+
         # Register and auto-authenticate new user
-        await self._register_and_auth(telegram_id, update, context)
+        await self._register_and_auth(telegram_id, update, context, referral_code)
 
     async def _register_and_auth(
         self,
         telegram_id: int,
         update: Update,
         context: ContextTypes.DEFAULT_TYPE,
+        referral_code: str | None = None,
     ) -> None:
         """
         Registra y autentica usuario automáticamente.
 
         Llama al backend para crear usuario y obtener tokens.
+        Si se proporciona referral_code, aplica el referido después del registro.
         """
         try:
             # Backend genera código y lo envía por Telegram Bot API
@@ -75,6 +83,11 @@ class AuthHandler:
 
             if "access_token" in response:
                 await self.tokens.store(telegram_id, response)
+
+                # Apply referral code if provided
+                if referral_code:
+                    await self._apply_referral_code(telegram_id, referral_code)
+
                 if update.message:
                     await update.message.reply_text(
                         text=AuthMessages.WELCOME_NEW_USER,
@@ -89,6 +102,32 @@ class AuthHandler:
             logger.error(f"Error en registro/auto-auth: {e}")
             if update.message:
                 await update.message.reply_text(AuthMessages.AUTH_ERROR)
+
+    async def _apply_referral_code(self, telegram_id: int, referral_code: str) -> None:
+        """
+        Aplica código de referido después del registro automático.
+
+        Llama al endpoint /referrals/apply-on-register de forma no bloqueante.
+        Los errores se loguean pero no bloquean la experiencia del usuario.
+        """
+        try:
+            result = await self.api.post(
+                "/referrals/apply-on-register",
+                {"telegram_id": telegram_id, "referral_code": referral_code},
+            )
+
+            if result.get("success"):
+                logger.info(
+                    f"Referral applied: telegram_id={telegram_id}, "
+                    f"code={referral_code}, credits={result.get('credits_earned', 0)}"
+                )
+            else:
+                error = result.get("message", "unknown")
+                logger.warning(f"Referral application failed: telegram_id={telegram_id}, error={error}")
+
+        except Exception as e:
+            # Non-blocking: log error but don't fail the registration
+            logger.error(f"Error applying referral code: {e}")
 
     async def me_handler(
         self,
