@@ -14,7 +14,7 @@ class ReferralsMessages:
             "• Total referidos: `{total_referrals}`\n"
             "• Créditos disponibles: `{referral_credits}`\n\n"
             "🔗 *Tu enlace:*\n"
-            "{referral_link}\n\n"
+            "[{referral_link}]({referral_link})\n\n"
             "💡 *Beneficios:*\n"
             "• 1 crédito por cada amigo invitado\n"
             "• 5 créditos si tu amigo compra un paquete\n\n"
@@ -23,7 +23,7 @@ class ReferralsMessages:
 
         INVITE_LINK = (
             "🔗 *Tu Link de Invitación*\n\n"
-            "{referral_link}\n\n"
+            "[{referral_link}]({referral_link})\n\n"
             "Comparte este link con tus amigos y gana créditos cuando se unan.\n\n"
             "💰 *Recompensas:*\n"
             "• 1 crédito por cada referido\n"
