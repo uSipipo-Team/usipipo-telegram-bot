@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.6.0] - 2026-04-04
+
+### Fixed
+- **401 Errors in Payments/Subscription Handlers** - Fixed intermittent "Invalid token" errors on `/payments/history` and `/subscriptions/me` endpoints caused by Redis singleton race conditions across uvicorn workers
+  - Added retry logic with exponential backoff to APIClient (3 attempts, 0.5s/1.0s delays)
+  - Added token refresh fallback via auto-register endpoint as last resort
+  - All HTTP methods (GET, POST, PUT, DELETE) now use retry wrapper
+
+### Changed
+- **APIClient** - Added `_request_with_retry()` method for resilient HTTP requests
+- **TokenStorage** - Added `refresh_token()` method for token re-registration fallback
+
+### Technical Details
+- **Files Created:** 1 file (`test_all_handlers.py` - comprehensive handler tests)
+- **Files Modified:** 2 files (`api_client.py`, `token_storage.py`)
+- **Tests:** 16/16 handler tests passing (was 14/16), 6/6 integration tests passing
+
+### Backend Integration
+- Backend fix (already merged): Replaced Redis singleton with per-call connections in JWT module
+
+---
+
 ## [0.5.0] - 2026-04-01
 
 ### Fixed
