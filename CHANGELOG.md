@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Added
+- Referral code extraction from `/start` deep link (`context.args`)
+- Automatic referral application after auto-registration
+- `_apply_referral_code()` method in AuthHandler for non-blocking referral application
+
+### Fixed
+- Referral system now works correctly when users join via referral links
+- Users who click referral links are now properly linked to their referrer
+- Credits are awarded to both referrer and new user on successful referral
+
 ## [0.6.0] - 2026-04-04
 
 ### Fixed
