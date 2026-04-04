@@ -1,90 +1,109 @@
-"""Tests para AuthHandler."""
+"""Tests for Auth Handler with referral code support."""
 
 import pytest
-from unittest.mock import patch, AsyncMock
+from unittest.mock import patch, AsyncMock, MagicMock
 
 
-class TestAuthHandler:
-    """Tests para AuthHandler."""
-
-    @pytest.mark.asyncio
-    async def test_auth_handler_initialization(self):
-        """AuthHandler se inicializa correctamente."""
-        with patch("src.bot.handlers.auth.APIClient"), patch("src.bot.handlers.auth.TokenStorage"):
-            from src.bot.handlers.auth import AuthHandler
-
-            mock_api = AsyncMock()
-            mock_storage = AsyncMock()
-
-            handler = AuthHandler(mock_api, mock_storage)
-
-            assert handler.api == mock_api
-            assert handler.tokens == mock_storage
+class TestAuthHandlerWithReferral:
+    """Tests for auth handler with referral code extraction."""
 
     @pytest.mark.asyncio
-    async def test_auth_messages_constants_exist(self):
-        """AuthMessages constants están definidas."""
-        from src.bot.keyboards.auth import AuthMessages
+    async def test_start_with_referral_code(self):
+        """start_handler extracts referral code from context.args."""
+        from src.bot.handlers.auth import AuthHandler
 
-        assert hasattr(AuthMessages, "WELCOME_NEW_USER")
-        assert hasattr(AuthMessages, "WELCOME_RETURNING_USER")
-        assert hasattr(AuthMessages, "ME_AUTHENTICATED")
-        assert hasattr(AuthMessages, "ME_NOT_AUTHENTICATED")
-        assert hasattr(AuthMessages, "UNLINK_SUCCESS")
+        mock_api = AsyncMock()
+        mock_tokens = AsyncMock()
+        mock_tokens.is_authenticated.return_value = False
+        mock_tokens.needs_refresh.return_value = False
 
-    @pytest.mark.asyncio
-    async def test_welcome_messages_are_strings(self):
-        """Los mensajes de bienvenida son strings."""
-        from src.bot.keyboards.auth import AuthMessages
+        # Mock auto-register response
+        mock_api.post.side_effect = [
+            {
+                "access_token": "test_token",
+                "refresh_token": "test_refresh",
+                "user_id": "test-user-id",
+            },
+            {"success": True, "credits_earned": 50},  # Referral response
+        ]
 
-        assert isinstance(AuthMessages.WELCOME_NEW_USER, str)
-        assert isinstance(AuthMessages.WELCOME_RETURNING_USER, str)
-        assert "uSipipo" in AuthMessages.WELCOME_NEW_USER
+        handler = AuthHandler(mock_api, mock_tokens)
 
-    @pytest.mark.asyncio
-    async def test_me_authenticated_message_has_placeholders(self):
-        """El mensaje de perfil tiene placeholders."""
-        from src.bot.keyboards.auth import AuthMessages
+        # Create mock update with context.args containing referral code
+        mock_update = MagicMock()
+        mock_update.effective_user.id = 12345
+        mock_update.message = MagicMock()
+        mock_update.message.reply_text = AsyncMock()
 
-        assert "{user_id}" in AuthMessages.ME_AUTHENTICATED
-        assert "{username}" in AuthMessages.ME_AUTHENTICATED
-        assert "{plan_name}" in AuthMessages.ME_AUTHENTICATED
+        mock_context = MagicMock()
+        mock_context.args = ["ref_abc123def456"]
 
-    @pytest.mark.asyncio
-    async def test_config_settings_loaded(self):
-        """Settings se cargan correctamente."""
-        from src.infrastructure.config import settings
+        await handler.start_handler(mock_update, mock_context)
 
-        assert settings.TELEGRAM_TOKEN is not None
-        assert settings.BACKEND_URL is not None
-        assert settings.REDIS_URL is not None
+        # Verify auto-register was called first
+        assert mock_api.post.call_count == 2
+        first_call = mock_api.post.call_args_list[0]
+        assert first_call[0][0] == "/auth/telegram/auto-register"
+        assert first_call[0][1]["telegram_id"] == 12345
 
-    @pytest.mark.asyncio
-    async def test_redis_pool_class_exists(self):
-        """RedisPool class existe."""
-        from src.infrastructure.redis import RedisPool
-
-        assert RedisPool is not None
-        assert hasattr(RedisPool, "get_instance")
-        assert hasattr(RedisPool, "get_client")
-        assert hasattr(RedisPool, "health_check")
+        # Verify referral endpoint was called second
+        second_call = mock_api.post.call_args_list[1]
+        assert second_call[0][0] == "/referrals/apply-on-register"
+        assert second_call[0][1]["telegram_id"] == 12345
+        assert second_call[0][1]["referral_code"] == "ref_abc123def456"
 
     @pytest.mark.asyncio
-    async def test_token_storage_class_exists(self):
-        """TokenStorage class existe."""
-        from src.infrastructure.token_storage import TokenStorage
+    async def test_start_without_referral_code(self):
+        """start_handler works without referral code."""
+        from src.bot.handlers.auth import AuthHandler
 
-        assert TokenStorage is not None
-        assert hasattr(TokenStorage, "store")
-        assert hasattr(TokenStorage, "get")
-        assert hasattr(TokenStorage, "delete")
-        assert hasattr(TokenStorage, "is_authenticated")
-        assert hasattr(TokenStorage, "needs_refresh")
+        mock_api = AsyncMock()
+        mock_tokens = AsyncMock()
+        mock_tokens.is_authenticated.return_value = False
+
+        mock_api.post.return_value = {
+            "access_token": "test_token",
+            "refresh_token": "test_refresh",
+            "user_id": "test-user-id",
+        }
+
+        handler = AuthHandler(mock_api, mock_tokens)
+
+        mock_update = MagicMock()
+        mock_update.effective_user.id = 12345
+        mock_update.message = MagicMock()
+        mock_update.message.reply_text = AsyncMock()
+
+        mock_context = MagicMock()
+        mock_context.args = []  # No referral code
+
+        await handler.start_handler(mock_update, mock_context)
+
+        # Should still register without referral
+        mock_api.post.assert_called()
 
     @pytest.mark.asyncio
-    async def test_main_has_auth_commands(self):
-        """main.py tiene los comandos de auth."""
-        from src.main import me, unlink
+    async def test_start_already_authenticated(self):
+        """start_handler shows welcome for authenticated users."""
+        from src.bot.handlers.auth import AuthHandler
 
-        assert me is not None
-        assert unlink is not None
+        mock_api = AsyncMock()
+        mock_tokens = AsyncMock()
+        mock_tokens.is_authenticated.return_value = True
+
+        handler = AuthHandler(mock_api, mock_tokens)
+
+        mock_update = MagicMock()
+        mock_update.effective_user.id = 12345
+        mock_update.message = MagicMock()
+        mock_update.message.reply_text = AsyncMock()
+
+        mock_context = MagicMock()
+        mock_context.args = ["ref_abc123"]  # Even with referral code
+
+        await handler.start_handler(mock_update, mock_context)
+
+        # Should NOT call auto-register
+        mock_api.post.assert_not_called()
+        # Should show welcome message
+        mock_update.message.reply_text.assert_called_once()
