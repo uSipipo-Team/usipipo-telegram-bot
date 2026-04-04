@@ -28,6 +28,7 @@ class TestReferralsMessages:
         assert "{referral_code}" in ReferralsMessages.Menu.REFERRAL_STATS
         assert "{total_referrals}" in ReferralsMessages.Menu.REFERRAL_STATS
         assert "{referral_credits}" in ReferralsMessages.Menu.REFERRAL_STATS
+        assert "{referral_link}" in ReferralsMessages.Menu.REFERRAL_STATS
 
     @pytest.mark.asyncio
     async def test_invite_link_has_correct_placeholders(self):
