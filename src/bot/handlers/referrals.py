@@ -14,13 +14,6 @@ from src.infrastructure.token_storage import TokenStorage
 logger = logging.getLogger(__name__)
 
 
-def _escape_md(text: str) -> str:
-    """Escape special Markdown characters in text."""
-    for char in ["_", "*", "[", "]", "(", ")", "~", "`", ">", "#", "+", "-", "=", "|", "{", "}", ".", "!"]:
-        text = text.replace(char, f"\\{char}")
-    return text
-
-
 class ReferralsHandler:
     """Handler for referral system."""
 
@@ -95,15 +88,13 @@ class ReferralsHandler:
             # Build referral link
             referral_code = response["referral_code"]
             referral_link = f"https://t.me/usipipobot?start={referral_code}"
-            # Escape for Markdown (URLs may contain underscores)
-            referral_link_escaped = _escape_md(referral_link)
 
-            # Format message
+            # Format message (template uses inline link syntax for safe URL handling)
             message = ReferralsMessages.Menu.REFERRAL_STATS.format(
                 referral_code=referral_code,
                 total_referrals=response["total_referrals"],
                 referral_credits=response["referral_credits"],
-                referral_link=referral_link_escaped,
+                referral_link=referral_link,
             )
 
             # Send with keyboard
@@ -150,12 +141,10 @@ class ReferralsHandler:
             # Build referral link
             referral_code = response["referral_code"]
             referral_link = f"https://t.me/usipipobot?start={referral_code}"
-            # Escape for Markdown (URLs may contain underscores)
-            referral_link_escaped = _escape_md(referral_link)
 
-            # Format message
+            # Format message (template uses inline link syntax for safe URL handling)
             message = ReferralsMessages.Menu.INVITE_LINK.format(
-                referral_link=referral_link_escaped,
+                referral_link=referral_link,
             )
 
             # Send message
