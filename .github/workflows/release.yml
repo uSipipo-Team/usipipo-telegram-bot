@@ -6,11 +6,73 @@ on:
       - 'v*'
 
 jobs:
-  ci:
-    uses: ./.github/workflows/ci.yml
+  lint:
+    name: Lint (Ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: |
+          uv sync
+          uv pip install ruff
+      - run: uv run ruff check src/ tests/
+      - run: uv run ruff format src/ tests/ --check
+
+  type-check:
+    name: Type Check (Mypy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: |
+          uv sync
+          uv pip install mypy
+      - run: uv run mypy src/
+
+  test:
+    name: Test (Pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: |
+          uv sync
+          uv pip install pytest pytest-asyncio
+      - run: uv run pytest -v
+
+  security:
+    name: Security (Bandit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: |
+          uv sync
+          uv pip install bandit
+      - run: uv run bandit -r src/ -ll -ii
 
   docker:
-    needs: ci
+    needs: [lint, type-check, test, security]
     runs-on: ubuntu-latest
     permissions:
       contents: read
