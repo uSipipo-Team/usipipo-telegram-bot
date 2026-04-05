@@ -33,13 +33,28 @@ class KeysMessages:
 
     KEY_DETAILS = (
         "💎 *{name}*\n\n"
-        "📡 {type} · 🖥️ {server}\n\n"
-        "📊 Consumo: {usage}/{limit}GB ({percentage}%)\n"
+        "📡 {type} • 🖥️ {server}\n"
+        "━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        "📊 Tu Consumo: {usage}/{limit}GB ({percentage}%)\n"
         "{usage_bar}\n\n"
         "{status_icon} Estado: *{status}*\n"
-        "📅 Expira: {expires}\n\n"
+        "📅 Expira: {expires}\n"
+        "🕐 Última vez: {last_seen}\n\n"
+        "━━━━━━━━━━━━━━━━━━━━━━\n"
+        "🌐 Estado del Servidor\n"
+        "{server_status_line}\n"
+        "📈 {server_bandwidth} transferidos (total)\n"
+        "⏱️ {server_uptime}\n"
+        "━━━━━━━━━━━━━━━━━━━━━━\n\n"
         "⚡ *Acciones:*"
     )
+
+    # Server metrics constants
+    SERVER_METRICS_ONLINE = "🟢 Online • {active_keys} claves activas"
+    SERVER_METRICS_OFFLINE = "🔴 Offline • Sin conexión"
+    SERVER_METRICS_UNAVAILABLE = "📡 Métricas no disponibles"
+    SERVER_UPTIME_GOOD = "99%+ uptime (30 días)"
+    SERVER_UPTIME_UNKNOWN = "Uptime desconocido"
 
     KEY_NOT_FOUND = "❌ *Clave no encontrada*\n\nNo existe o no te pertenece a tu cuenta."
 
