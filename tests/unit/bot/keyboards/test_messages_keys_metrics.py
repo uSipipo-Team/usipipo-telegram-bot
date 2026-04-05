@@ -37,7 +37,7 @@ class TestKeyDetailsTemplate:
 
     def test_key_details_template_has_separator_lines(self):
         """Test KEY_DETAILS has visual separator lines."""
-        assert "━━" in KeysMessages.KEY_DETAILS
+        assert "━" * 13 in KeysMessages.KEY_DETAILS
 
     def test_key_details_template_formatting(self):
         """Test KEY_DETAILS can be formatted with valid data."""
