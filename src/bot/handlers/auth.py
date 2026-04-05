@@ -85,8 +85,9 @@ class AuthHandler:
                 await self.tokens.store(telegram_id, response)
 
                 # Apply referral code if provided
-                if referral_code:
-                    await self._apply_referral_code(telegram_id, referral_code)
+                user_id = response.get("user_id")
+                if referral_code and user_id:
+                    await self._apply_referral_code(user_id, referral_code)
 
                 if update.message:
                     await update.message.reply_text(
@@ -103,7 +104,7 @@ class AuthHandler:
             if update.message:
                 await update.message.reply_text(AuthMessages.AUTH_ERROR)
 
-    async def _apply_referral_code(self, telegram_id: int, referral_code: str) -> None:
+    async def _apply_referral_code(self, user_id: str, referral_code: str) -> None:
         """
         Aplica código de referido después del registro automático.
 
@@ -113,18 +114,18 @@ class AuthHandler:
         try:
             result = await self.api.post(
                 "/referrals/apply-on-register",
-                {"telegram_id": telegram_id, "referral_code": referral_code},
+                {"user_id": user_id, "referral_code": referral_code},
             )
 
             if result.get("success"):
                 logger.info(
-                    f"Referral applied: telegram_id={telegram_id}, "
+                    f"Referral applied: user_id={user_id}, "
                     f"code={referral_code}, credits={result.get('credits_earned', 0)}"
                 )
             else:
                 error = result.get("message", "unknown")
                 logger.warning(
-                    f"Referral application failed: telegram_id={telegram_id}, error={error}"
+                    f"Referral application failed: user_id={user_id}, error={error}"
                 )
 
         except Exception as e:
