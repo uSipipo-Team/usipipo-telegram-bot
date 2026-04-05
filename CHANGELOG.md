@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Use server_name from API** - Bot now displays `server_name` from VPN key response instead of `server` field
+  - Fixes display showing "N/A" when backend provides `server_name`
+
 ### Added
 - Helper methods for VPN key metrics integration
   - `_format_last_seen()` - Human-readable Spanish timestamps ("Hace 5 minutos", "Hace 2 horas")
