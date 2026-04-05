@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.13.0] - 2026-04-05
+
+### Changed
+- **Auth handler** - `_apply_referral_code` now sends `user_id` (UUID) instead of `telegram_id` to backend
+- Referral apply endpoint compatibility with backend's `register_referral_by_user_id`
+
+### Technical Details
+- **Files Modified:** 1 file (`src/bot/handlers/auth.py`)
+- **Lines Changed:** ~10 lines
+- **Tests:** Existing tests passing
+
 ## [0.10.0] - 2026-04-05
 
 ### Added
