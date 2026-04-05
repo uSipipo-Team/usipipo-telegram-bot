@@ -46,10 +46,10 @@ class TestAuthHandlerWithReferral:
         assert first_call[0][0] == "/auth/telegram/auto-register"
         assert first_call[0][1]["telegram_id"] == 12345
 
-        # Verify referral endpoint was called second
+        # Verify referral endpoint was called second with user_id (UUID)
         second_call = mock_api.post.call_args_list[1]
         assert second_call[0][0] == "/referrals/apply-on-register"
-        assert second_call[0][1]["telegram_id"] == 12345
+        assert second_call[0][1]["user_id"] == "test-user-id"
         assert second_call[0][1]["referral_code"] == "ref_abc123def456"
 
     @pytest.mark.asyncio
