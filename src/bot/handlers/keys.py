@@ -659,11 +659,11 @@ class KeysHandler:
             load_emoji = load_emojis.get(server.get("load_level", "low"), "🟢")
             city_text = f" - {server.get('city', '')}" if server.get("city") else ""
 
-            message += "┌─────────────────────────────\n"
+            message += "┌─────────────\n"
             message += f"│ {i}. {server.get('country_name', 'Unknown')} {city_text}\n"
             message += f"│ Servidor: {server.get('name', 'N/A')}\n"
             message += f"│ {load_emoji} Carga: {server.get('load_percentage', 0)}% • 📶 Online\n"
-            message += "└─────────────────────────────\n\n"
+            message += "└─────────────\n\n"
 
         message += "━━━━━━━━━━━━━\n"
         message += "ℹ️ Los servidores se actualizan en tiempo real\n"
