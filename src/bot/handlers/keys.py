@@ -419,7 +419,7 @@ class KeysHandler:
             message = KeysMessages.KEY_DETAILS.format(
                 name=key.get("name", "Unknown"),
                 type=key.get("key_type", "UNKNOWN").upper(),
-                server=key.get("server", "N/A"),
+                server=key.get("server_name", "N/A"),
                 usage_bar=usage_bar,
                 usage=f"{key.get('data_used_gb', 0):.1f}",
                 limit=f"{key.get('data_limit_gb', 0):.1f}",
