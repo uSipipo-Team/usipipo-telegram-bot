@@ -184,6 +184,32 @@ class KeysHandler:
             logger.error(f"Error fetching server metrics for {server_id}: {e}")
             return None
 
+    async def _fetch_wireguard_metrics(self, server_id: str, telegram_id: int) -> dict | None:
+        """Fetch WireGuard metrics for a server.
+
+        Args:
+            server_id: UUID of the server
+            telegram_id: User's Telegram ID for auth
+
+        Returns:
+            Dict with metrics or None if fetch fails
+        """
+        try:
+            tokens = await self.tokens.get(telegram_id)
+            if not tokens:
+                logger.warning(f"No tokens for user {telegram_id} when fetching WireGuard metrics")
+                return None
+
+            headers = {"Authorization": f"Bearer {tokens['access_token']}"}
+            response = await self.api.get(
+                f"/vpn/servers/{server_id}/wireguard/metrics",
+                headers=headers,
+            )
+            return response
+        except Exception as e:
+            logger.error(f"Error fetching WireGuard metrics for {server_id}: {e}")
+            return None
+
     async def _safe_answer_query(self, query: Any) -> None:
         """Responde a callback query de forma segura."""
         try:
@@ -394,8 +420,10 @@ class KeysHandler:
             server_status_line = KeysMessages.SERVER_METRICS_UNAVAILABLE
             server_bandwidth = "N/A"
             server_uptime = KeysMessages.SERVER_UPTIME_UNKNOWN
+            key_type = key.get("key_type", "wireguard")
 
             if server_id:
+                # Fetch Outline metrics (for all key types)
                 server_metrics = await self._fetch_server_metrics(
                     server_id=server_id,
                     telegram_id=telegram_id,
@@ -415,6 +443,41 @@ class KeysHandler:
                         server_status_line = KeysMessages.SERVER_METRICS_OFFLINE
 
                     server_bandwidth = self._format_bytes(total_bytes)
+
+                # Fetch WireGuard metrics if key type is WireGuard
+                if key_type.lower() == "wireguard":
+                    wg_metrics = await self._fetch_wireguard_metrics(
+                        server_id=server_id,
+                        telegram_id=telegram_id,
+                    )
+
+                    if wg_metrics:
+                        connected = wg_metrics.get("connected_peers", 0) > 0
+                        rx = self._format_bytes(wg_metrics.get("total_bytes_rx", 0))
+                        tx = self._format_bytes(wg_metrics.get("total_bytes_tx", 0))
+
+                        if connected:
+                            server_status_line = KeysMessages.WG_METRICS_CONNECTED.format(
+                                rx=rx, tx=tx
+                            )
+                        else:
+                            server_status_line = KeysMessages.WG_METRICS_DISCONNECTED.format(
+                                rx=rx, tx=tx
+                            )
+
+                        last_hs = wg_metrics.get("last_handshake")
+                        if last_hs:
+                            try:
+                                hs_time = datetime.fromisoformat(last_hs).replace(tzinfo=timezone.utc)
+                                server_uptime = KeysMessages.WG_LAST_HANDSHAKE.format(
+                                    time=self._format_last_seen(hs_time)
+                                )
+                            except (ValueError, TypeError):
+                                server_uptime = KeysMessages.WG_NO_HANDSHAKES
+                        else:
+                            server_uptime = KeysMessages.WG_NO_HANDSHAKES
+                    else:
+                        server_status_line = KeysMessages.WG_METRICS_UNAVAILABLE
 
             message = KeysMessages.KEY_DETAILS.format(
                 name=key.get("name", "Unknown"),
