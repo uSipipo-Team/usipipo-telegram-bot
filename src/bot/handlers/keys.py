@@ -357,8 +357,7 @@ class KeysHandler:
 
                         if is_online:
                             message += (
-                                f"\n━━━━━━━━━━━━━\n"
-                                f"🌐 Servidor: 🟢 Online • {active_keys} keys"
+                                f"\n━━━━━━━━━━━━━\n🌐 Servidor: 🟢 Online • {active_keys} keys"
                             )
                         else:
                             message += "\n━━━━━━━━━━━━━\n🌐 Servidor: 🔴 Offline"
@@ -468,7 +467,9 @@ class KeysHandler:
                         last_hs = wg_metrics.get("last_handshake")
                         if last_hs:
                             try:
-                                hs_time = datetime.fromisoformat(last_hs).replace(tzinfo=timezone.utc)
+                                hs_time = datetime.fromisoformat(last_hs).replace(
+                                    tzinfo=timezone.utc
+                                )
                                 server_uptime = KeysMessages.WG_LAST_HANDSHAKE.format(
                                     time=self._format_last_seen(hs_time)
                                 )
