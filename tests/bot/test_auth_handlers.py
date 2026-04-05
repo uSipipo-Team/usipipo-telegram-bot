@@ -1,7 +1,7 @@
 """Tests for Auth Handler with referral code support."""
 
 import pytest
-from unittest.mock import patch, AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
 
 class TestAuthHandlerWithReferral:

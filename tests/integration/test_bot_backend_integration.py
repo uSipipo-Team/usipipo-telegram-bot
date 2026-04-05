@@ -39,13 +39,13 @@ async def test_backend_connectivity():
     """Test 1: Check if backend is reachable."""
     print("\n[TEST 1] Backend Connectivity")
     print("-" * 70)
-    
+
     async with httpx.AsyncClient(timeout=30.0) as client:
         try:
             # Test root endpoint (Swagger docs)
             response = await client.get(f"{BACKEND_URL}{API_PREFIX}")
             print(f"Status Code: {response.status_code}")
-            
+
             if response.status_code == 200:
                 print("✅ Backend is reachable")
                 return True
@@ -65,7 +65,7 @@ async def test_auto_registration():
     """Test 2: Auto-registration endpoint."""
     print("\n[TEST 2] Auto-Registration Endpoint (/auth/telegram/auto-register)")
     print("-" * 70)
-    
+
     async with httpx.AsyncClient(timeout=30.0) as client:
         try:
             response = await client.post(
@@ -73,7 +73,7 @@ async def test_auto_registration():
                 json={"telegram_id": TELEGRAM_ID},
             )
             print(f"Status Code: {response.status_code}")
-            
+
             if response.status_code in [200, 201]:
                 data = response.json()
                 print(f"Response keys: {list(data.keys())}")
@@ -82,7 +82,7 @@ async def test_auto_registration():
                 print("✅ Auto-registration successful")
                 return data.get("access_token")
             elif response.status_code == 409:
-                print(f"ℹ️ User already exists (this is OK)")
+                print("ℹ️ User already exists (this is OK)")
                 # Try to login instead
                 return await test_login()
             else:
@@ -98,7 +98,7 @@ async def test_login():
     """Test login endpoint for existing user."""
     print("\n[TEST 2b] Login Endpoint")
     print("-" * 70)
-    
+
     async with httpx.AsyncClient(timeout=30.0) as client:
         try:
             response = await client.post(
@@ -106,7 +106,7 @@ async def test_login():
                 json={"telegram_id": TELEGRAM_ID},
             )
             print(f"Status Code: {response.status_code}")
-            
+
             if response.status_code == 200:
                 data = response.json()
                 print(f"Access Token (first 50 chars): {data.get('access_token', '')[:50]}...")
@@ -125,7 +125,7 @@ async def test_user_profile(access_token: str):
     """Test 3: Get user profile."""
     print("\n[TEST 3] User Profile Endpoint (/users/me)")
     print("-" * 70)
-    
+
     async with httpx.AsyncClient(timeout=30.0) as client:
         try:
             response = await client.get(
@@ -133,7 +133,7 @@ async def test_user_profile(access_token: str):
                 headers={"Authorization": f"Bearer {access_token}"},
             )
             print(f"Status Code: {response.status_code}")
-            
+
             if response.status_code == 200:
                 data = response.json()
                 print(f"User ID: {data.get('id')}")
@@ -155,7 +155,7 @@ async def test_vpn_keys_list(access_token: str):
     """Test 4: List VPN keys."""
     print("\n[TEST 4] VPN Keys List Endpoint (/vpn/keys)")
     print("-" * 70)
-    
+
     async with httpx.AsyncClient(timeout=30.0) as client:
         try:
             response = await client.get(
@@ -163,7 +163,7 @@ async def test_vpn_keys_list(access_token: str):
                 headers={"Authorization": f"Bearer {access_token}"},
             )
             print(f"Status Code: {response.status_code}")
-            
+
             if response.status_code == 200:
                 data = response.json()
                 print(f"Number of keys: {len(data)}")
@@ -184,7 +184,7 @@ async def test_create_vpn_key(access_token: str):
     """Test 5: Create VPN key."""
     print("\n[TEST 5] Create VPN Key Endpoint (/vpn/keys)")
     print("-" * 70)
-    
+
     async with httpx.AsyncClient(timeout=30.0) as client:
         try:
             response = await client.post(
@@ -197,7 +197,7 @@ async def test_create_vpn_key(access_token: str):
                 headers={"Authorization": f"Bearer {access_token}"},
             )
             print(f"Status Code: {response.status_code}")
-            
+
             if response.status_code in [200, 201]:
                 data = response.json()
                 print(f"Key ID: {data.get('id')}")
@@ -218,7 +218,7 @@ async def test_delete_vpn_key(access_token: str, key_id: str):
     """Test 6: Delete VPN key."""
     print("\n[TEST 6] Delete VPN Key Endpoint (/vpn/keys/{id})")
     print("-" * 70)
-    
+
     async with httpx.AsyncClient(timeout=30.0) as client:
         try:
             response = await client.delete(
@@ -226,7 +226,7 @@ async def test_delete_vpn_key(access_token: str, key_id: str):
                 headers={"Authorization": f"Bearer {access_token}"},
             )
             print(f"Status Code: {response.status_code}")
-            
+
             if response.status_code in [200, 204]:
                 print("✅ VPN key deleted")
                 return True
@@ -249,40 +249,40 @@ async def main():
         "create_key": False,
         "delete_key": False,
     }
-    
+
     # Test 1: Connectivity
     results["connectivity"] = await test_backend_connectivity()
-    
+
     if not results["connectivity"]:
         print("\n" + "=" * 70)
         print("❌ BACKEND NOT REACHABLE - Stopping tests")
         print("=" * 70)
         return results
-    
+
     # Test 2: Auth
     access_token = await test_auto_registration()
     results["auth"] = access_token is not None
-    
+
     if not results["auth"]:
         print("\n" + "=" * 70)
         print("❌ AUTH FAILED - Stopping tests")
         print("=" * 70)
         return results
-    
+
     # Test 3: Profile
     results["profile"] = await test_user_profile(access_token)
-    
+
     # Test 4: List Keys
     results["list_keys"] = await test_vpn_keys_list(access_token)
-    
+
     # Test 5: Create Key
     key_id = await test_create_vpn_key(access_token)
     results["create_key"] = key_id is not None
-    
+
     # Test 6: Delete Key (cleanup)
     if key_id:
         results["delete_key"] = await test_delete_vpn_key(access_token, key_id)
-    
+
     # Summary
     print("\n" + "=" * 70)
     print("TEST SUMMARY")
@@ -290,7 +290,7 @@ async def main():
     for test_name, passed in results.items():
         status = "✅ PASS" if passed else "❌ FAIL"
         print(f"{status} - {test_name.replace('_', ' ').title()}")
-    
+
     all_passed = all(results.values())
     print("=" * 70)
     if all_passed:
@@ -298,7 +298,7 @@ async def main():
     else:
         print(f"❌ {sum(not v for v in results.values())} TEST(S) FAILED")
     print("=" * 70)
-    
+
     return results
 
 

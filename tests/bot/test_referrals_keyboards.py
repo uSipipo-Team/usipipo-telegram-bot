@@ -33,7 +33,7 @@ class TestReferralsKeyboards:
         keyboard = ReferralsKeyboard.menu(referral_link=referral_link)
 
         assert isinstance(keyboard, InlineKeyboardMarkup)
-        
+
         # Should have 3 rows: share, redeem, apply
         assert len(keyboard.inline_keyboard) == 3
 
@@ -52,7 +52,7 @@ class TestReferralsKeyboards:
 
         # Should have 2 rows: redeem, apply (no share)
         assert len(keyboard.inline_keyboard) == 2
-        
+
         # No button with URL should exist
         for row in keyboard.inline_keyboard:
             for btn in row:
