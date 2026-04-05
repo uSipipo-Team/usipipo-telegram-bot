@@ -56,6 +56,13 @@ class KeysMessages:
     SERVER_UPTIME_GOOD = "99%+ uptime (30 días)"
     SERVER_UPTIME_UNKNOWN = "Uptime desconocido"
 
+    # WireGuard metrics constants
+    WG_METRICS_CONNECTED = "🟢 Conectado • 📥 {rx} 📤 {tx}"
+    WG_METRICS_DISCONNECTED = "🔴 Desconectado • 📥 {rx} 📤 {tx}"
+    WG_METRICS_UNAVAILABLE = "📡 Métricas no disponibles"
+    WG_LAST_HANDSHAKE = "🤝 Last handshake: {time}"
+    WG_NO_HANDSHAKES = "🤝 Sin handshakes"
+
     KEY_NOT_FOUND = "❌ *Clave no encontrada*\n\nNo existe o no te pertenece a tu cuenta."
 
     # ============================================
