@@ -10,14 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Referral code extraction from `/start` deep link (`context.args`)
-- Automatic referral application after auto-registration
-- `_apply_referral_code()` method in AuthHandler for non-blocking referral application
+- Helper methods for VPN key metrics integration
+  - `_format_last_seen()` - Human-readable Spanish timestamps ("Hace 5 minutos", "Hace 2 horas")
+  - `_format_bytes()` - Bytes to KB/MB/GB conversion
+  - `_fetch_server_metrics()` - Outline server metrics fetch from backend API
+- 15 unit tests for helper methods (100% passing)
 
-### Fixed
-- Referral system now works correctly when users join via referral links
-- Users who click referral links are now properly linked to their referrer
-- Credits are awarded to both referrer and new user on successful referral
+### Technical Details
+- **Files Created:** 1 file (`tests/unit/bot/handlers/test_keys_helpers.py`)
+- **Files Modified:** 1 file (`src/bot/handlers/keys.py`)
+- **Lines Added:** ~100 lines
+- **Tests:** 15 new tests (40 total bot tests passing)
 
 ## [0.6.0] - 2026-04-04
 

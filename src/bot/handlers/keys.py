@@ -2,6 +2,7 @@
 
 import io
 import logging
+from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
@@ -92,6 +93,96 @@ class KeysHandler:
         if not tokens:
             raise PermissionError("User not authenticated")
         return {"Authorization": f"Bearer {tokens['access_token']}"}
+
+    def _format_last_seen(self, last_seen_at, now: datetime | None = None) -> str:
+        """Format last seen timestamp to human-readable string.
+
+        Args:
+            last_seen_at: datetime or None
+            now: Current time (for testing), defaults to now
+
+        Returns:
+            Human-readable string like "Hace 2 horas"
+        """
+        from datetime import timezone
+
+        if not last_seen_at:
+            return "Nunca"
+
+        if now is None:
+            now = datetime.now(timezone.utc)
+
+        # Make last_seen timezone-aware if naive
+        if last_seen_at.tzinfo is None:
+            last_seen_at = last_seen_at.replace(tzinfo=timezone.utc)
+
+        diff = now - last_seen_at
+        total_seconds = int(diff.total_seconds())
+
+        if total_seconds < 0:
+            # Future date, show actual date
+            return last_seen_at.strftime("%Y-%m-%d %H:%M")
+
+        if total_seconds < 60:
+            return "Hace < 1 minuto"
+        elif total_seconds < 3600:
+            minutes = total_seconds // 60
+            return f"Hace {minutes} minuto{'s' if minutes > 1 else ''}"
+        elif total_seconds < 86400:
+            hours = total_seconds // 3600
+            return f"Hace {hours} hora{'s' if hours > 1 else ''}"
+        else:
+            days = total_seconds // 86400
+            return f"Hace {days} día{'s' if days > 1 else ''}"
+
+    def _format_bytes(self, bytes_value: int) -> str:
+        """Format bytes to human-readable string.
+
+        Args:
+            bytes_value: Number of bytes
+
+        Returns:
+            Formatted string like "1.0 GB" or "500.0 MB"
+        """
+        if bytes_value == 0:
+            return "0.0 B"
+
+        gb = bytes_value / (1024**3)
+        if gb >= 1.0:
+            return f"{gb:.1f} GB"
+
+        mb = bytes_value / (1024**2)
+        if mb >= 1.0:
+            return f"{mb:.1f} MB"
+
+        kb = bytes_value / 1024
+        return f"{kb:.1f} KB"
+
+    async def _fetch_server_metrics(self, server_id: str, telegram_id: int) -> dict | None:
+        """Fetch Outline metrics for a server.
+
+        Args:
+            server_id: UUID of the server
+            telegram_id: User's Telegram ID for auth
+
+        Returns:
+            Dict with metrics or None if fetch fails
+        """
+        try:
+            tokens = await self.tokens.get(telegram_id)
+            if not tokens:
+                logger.warning(f"No tokens for user {telegram_id} when fetching metrics")
+                return None
+
+            headers = {"Authorization": f"Bearer {tokens['access_token']}"}
+            response = await self.api.get(
+                f"/vpn/servers/{server_id}/outline",
+                headers=headers,
+            )
+            return response
+        except Exception as e:
+            logger.error(f"Error fetching server metrics for {server_id}: {e}")
+            return None
 
     async def _safe_answer_query(self, query: Any) -> None:
         """Responde a callback query de forma segura."""
