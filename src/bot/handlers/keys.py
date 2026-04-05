@@ -2,7 +2,7 @@
 
 import io
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
@@ -323,7 +323,7 @@ class KeysHandler:
             )
 
     async def show_key_details(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Muestra detalles de una clave específica."""
+        """Muestra detalles de una clave específica con métricas del servidor."""
         query = update.callback_query
         if query is None or query.data is None:
             return
@@ -353,6 +353,43 @@ class KeysHandler:
             # Generate progress bar
             usage_bar = self._generate_progress_bar(usage_percentage)
 
+            # Format last seen
+            last_seen_at = key.get("last_used_at")
+            if isinstance(last_seen_at, str):
+                try:
+                    last_seen_at = datetime.fromisoformat(last_seen_at).replace(tzinfo=timezone.utc)
+                except (ValueError, TypeError):
+                    last_seen_at = None
+            last_seen_text = self._format_last_seen(last_seen_at)
+
+            # Fetch server metrics
+            server_id = key.get("server_id")
+            server_metrics = None
+            server_status_line = KeysMessages.SERVER_METRICS_UNAVAILABLE
+            server_bandwidth = "N/A"
+            server_uptime = KeysMessages.SERVER_UPTIME_UNKNOWN
+
+            if server_id:
+                server_metrics = await self._fetch_server_metrics(
+                    server_id=server_id,
+                    telegram_id=telegram_id,
+                )
+
+                if server_metrics:
+                    is_online = server_metrics.get("outline_api_reachable", False)
+                    active_keys = server_metrics.get("active_keys_count", 0)
+                    total_bytes = server_metrics.get("total_bytes_transferred", 0)
+
+                    if is_online:
+                        server_status_line = KeysMessages.SERVER_METRICS_ONLINE.format(
+                            active_keys=active_keys
+                        )
+                        server_uptime = KeysMessages.SERVER_UPTIME_GOOD
+                    else:
+                        server_status_line = KeysMessages.SERVER_METRICS_OFFLINE
+
+                    server_bandwidth = self._format_bytes(total_bytes)
+
             message = KeysMessages.KEY_DETAILS.format(
                 name=key.get("name", "Unknown"),
                 type=key.get("key_type", "UNKNOWN").upper(),
@@ -364,6 +401,10 @@ class KeysHandler:
                 status=status,
                 status_icon=status_icon,
                 expires=key.get("expires_at", "N/A")[:10] if key.get("expires_at") else "N/A",
+                last_seen=last_seen_text,
+                server_status_line=server_status_line,
+                server_bandwidth=server_bandwidth,
+                server_uptime=server_uptime,
             )
 
             keyboard = KeysKeyboard.key_actions(
