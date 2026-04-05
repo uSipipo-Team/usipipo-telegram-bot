@@ -250,7 +250,8 @@ class TestKeysHandler:
 
             bar = handler._generate_progress_bar(50.0, width=10)
 
-            assert len(bar) == 10
+            # Format is "█████░░░░░ 50%" (bar + space + percentage)
+            assert "50%" in bar
             assert "█" in bar
             assert "░" in bar
 
@@ -267,7 +268,7 @@ class TestKeysHandler:
 
             bar = handler._generate_progress_bar(100.0, width=10)
 
-            assert bar == "██████████"
+            assert bar == "██████████ 100%"
 
     @pytest.mark.asyncio
     async def test_keys_handler_progress_bar_empty(self):
@@ -282,7 +283,7 @@ class TestKeysHandler:
 
             bar = handler._generate_progress_bar(0.0, width=10)
 
-            assert bar == "░░░░░░░░░░"
+            assert bar == "░░░░░░░░░░ 0%"
 
     @pytest.mark.asyncio
     async def test_get_keys_handlers_returns_list(self):
