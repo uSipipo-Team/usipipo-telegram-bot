@@ -1255,15 +1255,25 @@ class KeysHandler:
                 KeysKeyboard.back_to_menu(),
             )
 
-    def _generate_progress_bar(self, percentage: float, width: int = 10) -> str:
-        """Genera una barra de progreso."""
-        filled = int((percentage / 100) * width)
+    def _generate_progress_bar(self, percentage: float, width: int = 20) -> str:
+        """Genera una barra de progreso con porcentaje.
+
+        Args:
+            percentage: Usage percentage (0-100+)
+            width: Bar width in characters (default 20)
+
+        Returns:
+            Formatted progress bar string like "██████████░░░░░░░░░░ 50%"
+        """
+        # Cap at 100% for bar display
+        capped_pct = min(percentage, 100)
+        filled = int(width * capped_pct / 100)
         empty = width - filled
 
         filled_char = "█"
         empty_char = "░"
 
-        return filled_char * filled + empty_char * empty
+        return filled_char * filled + empty_char * empty + f" {percentage:.0f}%"
 
 
 def get_keys_handlers(api_client: APIClient, token_storage: TokenStorage):
