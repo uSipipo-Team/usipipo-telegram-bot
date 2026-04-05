@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.10.0] - 2026-04-05
+
+### Added
+
+**WireGuard Metrics Display:**
+- ✅ Conditional WireGuard metrics display in key details
+- ✅ WireGuard metrics constants (connected, disconnected, unavailable)
+- ✅ Last handshake time formatting
+- ✅ `_fetch_wireguard_metrics()` helper method
+- ✅ Byte transfer display (RX/TX) for WireGuard keys
+- ✅ Graceful fallback when metrics unavailable
+
+### Changed
+
+**Server Name Display:**
+- ✅ Bot now displays `server_name` from VPN key response instead of `server` field
+
+### Technical Details
+
+**Files Modified:**
+- `src/bot/handlers/keys.py` - Added WireGuard metrics fetch and conditional display
+- `src/bot/keyboards/messages_keys.py` - Added WireGuard metrics message constants
+
+**Lines Added:** ~70 lines
+
+---
+
 ## [Unreleased]
 
 ### Changed
