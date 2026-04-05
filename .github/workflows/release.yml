@@ -96,13 +96,18 @@ jobs:
         id: version
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
+      - name: Extract metadata
+        id: meta
+        run: |
+          echo "IMAGE=ghcr.io/usipipo-team/usipipo-telegram-bot" >> $GITHUB_OUTPUT
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:${{ steps.version.outputs.VERSION }}
-            ghcr.io/${{ github.repository }}:latest
+            ${{ steps.meta.outputs.IMAGE }}:${{ steps.version.outputs.VERSION }}
+            ${{ steps.meta.outputs.IMAGE }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
