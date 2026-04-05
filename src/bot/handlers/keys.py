@@ -273,7 +273,7 @@ class KeysHandler:
                 )
 
     async def show_keys_by_type(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Muestra claves filtradas por tipo."""
+        """Muestra claves filtradas por tipo con estado del servidor."""
         query = update.callback_query
         if query is None or query.data is None:
             return
@@ -300,16 +300,42 @@ class KeysHandler:
                 message = KeysMessages.KEYS_LIST_HEADER.format(type=key_type.upper())
                 keyboard = KeysKeyboard.keys_list(filtered_keys, key_type)
 
-                # Add key info
+                # Add key info with improved formatting
                 for key in filtered_keys:
                     status = (
                         "🟢 Activa" if key.get("status", "active") == "active" else "🔴 Inactiva"
                     )
+                    usage = key.get("data_used_gb", 0)
+                    limit = key.get("data_limit_gb", 0)
+                    name = key.get("name", "Unknown")
+
+                    # Add warning emoji for high usage (>80%)
+                    usage_pct = (usage / limit * 100) if limit > 0 else 0
+                    warning = " ⚠️" if usage_pct > 80 else ""
+
                     message += (
-                        f"\n🔑 {key.get('name', 'Unknown')}\n"
-                        f"   📊 {key.get('data_used_gb', 0):.2f}/{key.get('data_limit_gb', 0):.2f} GB\n"
-                        f"   {status}\n"
+                        f"\n🔑 *{name}*{warning}\n   📊 {usage:.2f}/{limit:.2f} GB • {status}\n"
                     )
+
+                # Add server status summary if keys exist
+                server_id = filtered_keys[0].get("server_id")
+                if server_id:
+                    server_metrics = await self._fetch_server_metrics(
+                        server_id=server_id,
+                        telegram_id=telegram_id,
+                    )
+
+                    if server_metrics:
+                        is_online = server_metrics.get("outline_api_reachable", False)
+                        active_keys = server_metrics.get("active_keys_count", 0)
+
+                        if is_online:
+                            message += (
+                                f"\n━━━━━━━━━━━━━━━━━━━━━━\n"
+                                f"🌐 Servidor: 🟢 Online • {active_keys} keys"
+                            )
+                        else:
+                            message += "\n━━━━━━━━━━━━━━━━━━━━━━\n🌐 Servidor: 🔴 Offline"
 
             await self._safe_edit_message(query, context, message, keyboard)
 
