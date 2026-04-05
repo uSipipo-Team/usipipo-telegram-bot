@@ -13,19 +13,23 @@ class ReferralsKeyboard:
 
         # Add share button as first row if referral link is provided
         if referral_link:
-            keyboard.append([
-                InlineKeyboardButton("📤 Compartir Enlace", switch_inline_query=referral_link),
-            ])
+            keyboard.append(
+                [
+                    InlineKeyboardButton("📤 Compartir Enlace", switch_inline_query=referral_link),
+                ]
+            )
 
         # Add existing buttons
-        keyboard.extend([
+        keyboard.extend(
             [
-                InlineKeyboardButton("💰 Canjear Créditos", callback_data="referral_redeem"),
-            ],
-            [
-                InlineKeyboardButton("📝 Aplicar Código", callback_data="referral_apply"),
-            ],
-        ])
+                [
+                    InlineKeyboardButton("💰 Canjear Créditos", callback_data="referral_redeem"),
+                ],
+                [
+                    InlineKeyboardButton("📝 Aplicar Código", callback_data="referral_apply"),
+                ],
+            ]
+        )
 
         return InlineKeyboardMarkup(keyboard)
 

@@ -123,7 +123,9 @@ class AuthHandler:
                 )
             else:
                 error = result.get("message", "unknown")
-                logger.warning(f"Referral application failed: telegram_id={telegram_id}, error={error}")
+                logger.warning(
+                    f"Referral application failed: telegram_id={telegram_id}, error={error}"
+                )
 
         except Exception as e:
             # Non-blocking: log error but don't fail the registration
