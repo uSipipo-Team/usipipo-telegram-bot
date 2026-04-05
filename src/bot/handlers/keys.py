@@ -331,11 +331,11 @@ class KeysHandler:
 
                         if is_online:
                             message += (
-                                f"\n━━━━━━━━━━━━━━━━━━━━━━\n"
+                                f"\n━━━━━━━━━━━━━\n"
                                 f"🌐 Servidor: 🟢 Online • {active_keys} keys"
                             )
                         else:
-                            message += "\n━━━━━━━━━━━━━━━━━━━━━━\n🌐 Servidor: 🔴 Offline"
+                            message += "\n━━━━━━━━━━━━━\n🌐 Servidor: 🔴 Offline"
 
             await self._safe_edit_message(query, context, message, keyboard)
 
@@ -665,7 +665,7 @@ class KeysHandler:
             message += f"│ {load_emoji} Carga: {server.get('load_percentage', 0)}% • 📶 Online\n"
             message += "└─────────────────────────────\n\n"
 
-        message += "━━━━━━━━━━━━━━━━━━━━\n"
+        message += "━━━━━━━━━━━━━\n"
         message += "ℹ️ Los servidores se actualizan en tiempo real\n"
         message += "💡 Tip: Los servidores con 🟢 tienen mejor rendimiento"
 

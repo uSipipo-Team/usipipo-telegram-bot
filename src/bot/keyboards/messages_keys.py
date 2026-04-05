@@ -34,18 +34,18 @@ class KeysMessages:
     KEY_DETAILS = (
         "💎 *{name}*\n\n"
         "📡 {type} • 🖥️ {server}\n"
-        "━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        "━━━━━━━━━━━━━\n\n"
         "📊 Tu Consumo: {usage}/{limit}GB ({percentage}%)\n"
         "{usage_bar}\n\n"
         "{status_icon} Estado: *{status}*\n"
         "📅 Expira: {expires}\n"
         "🕐 Última vez: {last_seen}\n\n"
-        "━━━━━━━━━━━━━━━━━━━━━━\n"
+        "━━━━━━━━━━━━━\n"
         "🌐 Estado del Servidor\n"
         "{server_status_line}\n"
         "📈 {server_bandwidth} transferidos (total)\n"
         "⏱️ {server_uptime}\n"
-        "━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        "━━━━━━━━━━━━━\n\n"
         "⚡ *Acciones:*"
     )
 
