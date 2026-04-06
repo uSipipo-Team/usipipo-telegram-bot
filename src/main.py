@@ -38,6 +38,9 @@ from src.bot.handlers.referrals import (
     get_referrals_handlers,
     get_referrals_callback_handlers,
 )
+from src.bot.handlers.trusttunnel import (
+    get_trusttunnel_callback_handlers,
+)
 from src.infrastructure.api_client import APIClient
 from src.infrastructure.config import settings
 from src.infrastructure.error_handler import error_handler
@@ -328,6 +331,10 @@ def create_application(token: str) -> Application:
 
     # Register callback handlers for referrals
     for handler in get_referrals_callback_handlers(_api_client, _token_storage):
+        app.add_handler(handler)
+
+    # Register callback handlers for TrustTunnel
+    for handler in get_trusttunnel_callback_handlers(_api_client, _token_storage):
         app.add_handler(handler)
 
     # Register callback handler for user profile

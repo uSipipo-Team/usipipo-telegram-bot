@@ -126,17 +126,17 @@ class TestTrustTunnelHandler:
             assert "1. g" in lines[0]  # Highest first
 
     def test_get_trusttunnel_handlers_returns_list(self):
-        """get_trusttunnel_handlers retorna una lista."""
-        with patch("src.bot.handlers.trusttunnel.APIClient"), \
-             patch("src.bot.handlers.trusttunnel.TokenStorage"):
-            from src.bot.handlers.trusttunnel import get_trusttunnel_handlers
+        """get_trusttunnel_handlers retorna una lista vacía."""
+        from src.bot.handlers.trusttunnel import get_trusttunnel_handlers
+        from unittest.mock import AsyncMock
 
-            mock_api = AsyncMock()
-            mock_storage = AsyncMock()
+        mock_api = AsyncMock()
+        mock_storage = AsyncMock()
 
-            handlers = get_trusttunnel_handlers(mock_api, mock_storage)
+        handlers = get_trusttunnel_handlers(mock_api, mock_storage)
 
-            assert isinstance(handlers, list)
+        assert isinstance(handlers, list)
+        assert len(handlers) == 0
 
     def test_get_trusttunnel_callback_handlers_returns_list(self):
         """get_trusttunnel_callback_handlers retorna una lista."""

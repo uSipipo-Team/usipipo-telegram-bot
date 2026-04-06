@@ -263,6 +263,7 @@ class KeysHandler:
             total_keys = len(keys)
             outline_count = len([k for k in keys if k.get("key_type", "").lower() == "outline"])
             wireguard_count = len([k for k in keys if k.get("key_type", "").lower() == "wireguard"])
+            trusttunnel_count = len([k for k in keys if k.get("key_type", "").lower() == "trusttunnel"])
 
             if total_keys == 0:
                 message = KeysMessages.NO_KEYS
@@ -271,9 +272,10 @@ class KeysHandler:
                     total_keys=total_keys,
                     outline_count=outline_count,
                     wireguard_count=wireguard_count,
+                    trusttunnel_count=trusttunnel_count,
                 )
 
-            keyboard = KeysKeyboard.main_menu(total_keys, outline_count, wireguard_count)
+            keyboard = KeysKeyboard.main_menu(total_keys, outline_count, wireguard_count, trusttunnel_count)
 
             if update.callback_query:
                 await self._safe_edit_message(update.callback_query, context, message, keyboard)
@@ -479,6 +481,27 @@ class KeysHandler:
                             server_uptime = KeysMessages.WG_NO_HANDSHAKES
                     else:
                         server_status_line = KeysMessages.WG_METRICS_UNAVAILABLE
+
+                # Fetch TrustTunnel metrics if key type is TrustTunnel
+                if key_type.lower() == "trusttunnel":
+                    from src.bot.handlers.trusttunnel import TrustTunnelHandler
+
+                    tt_handler = TrustTunnelHandler(self.api, self.tokens)
+                    tt_metrics = await tt_handler._fetch_trusttunnel_metrics(
+                        server_id=server_id,
+                        telegram_id=telegram_id,
+                    )
+
+                    if tt_metrics:
+                        active_clients = tt_metrics.get("active_clients", 0)
+                        total_bytes = tt_metrics.get("total_bytes_transferred", 0)
+                        total_bw = tt_handler._format_bytes(total_bytes)
+
+                        server_status_line = f"🟢 Online • {active_clients} clientes activos"
+                        server_bandwidth = f"{total_bw} transferidos (total)"
+                        server_uptime = f"👥 {active_clients} clientes"
+                    else:
+                        server_status_line = "📡 Métricas no disponibles"
 
             message = KeysMessages.KEY_DETAILS.format(
                 name=key.get("name", "Unknown"),

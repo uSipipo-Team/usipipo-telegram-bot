@@ -316,8 +316,6 @@ class TrustTunnelHandler:
 
 def get_trusttunnel_handlers(api_client: APIClient, token_storage: TokenStorage):
     """Retorna los handlers de TrustTunnel."""
-    handler = TrustTunnelHandler(api_client, token_storage)
-
     return []
 
 
