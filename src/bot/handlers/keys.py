@@ -798,7 +798,12 @@ class KeysHandler:
             headers = {"Authorization": f"Bearer {tokens['access_token']}"}
 
             # Map protocol to KeyType enum value (lowercase)
-            vpn_type = "outline" if protocol.lower() == "outline" else "wireguard"
+            if protocol.lower() == "outline":
+                vpn_type = "outline"
+            elif protocol.lower() == "trusttunnel":
+                vpn_type = "trusttunnel"
+            else:
+                vpn_type = "wireguard"
 
             # Get server_id from user_data (may be None if not set)
             server_id = context.user_data.get("server_id")
@@ -868,6 +873,46 @@ class KeysHandler:
                     document=io.BytesIO(conf_content.encode("utf-8")),
                     filename=conf_filename,
                     caption=caption,
+                    parse_mode="Markdown",
+                )
+
+            elif protocol.lower() == "trusttunnel":
+                # TrustTunnel: Send .toml config file
+                escaped_name = key_name.replace("_", r"\_").replace("*", r"\*")
+
+                caption = (
+                    f"✅ *Clave {vpn_type.title()} Creada*\n\n"
+                    f"🔑 Nombre: *{escaped_name}*\n"
+                    f"💾 Límite: *{data_limit}GB*\n\n"
+                    f"Descargá el archivo .toml adjunto e importalo en TrustTunnel."
+                )
+
+                # Create .toml file
+                toml_filename = f"{key_name}.toml"
+                toml_content = key_config  # Backend returns full TrustTunnel TOML config
+
+                await update.message.reply_document(
+                    document=io.BytesIO(toml_content.encode("utf-8")),
+                    filename=toml_filename,
+                    caption=caption,
+                    parse_mode="Markdown",
+                )
+
+                # Send setup instructions with download buttons
+                download_keyboard = InlineKeyboardMarkup([
+                    [
+                        InlineKeyboardButton("📱 Android", url="https://play.google.com/store/apps/details?id=com.adguard.trusttunnel"),
+                        InlineKeyboardButton("🍎 iOS", url="https://apps.apple.com/us/app/trusttunnel/id6755807890"),
+                    ],
+                    [
+                        InlineKeyboardButton("💻 GitHub Releases", url="https://github.com/TrustTunnel/TrustTunnelClient"),
+                    ],
+                ])
+
+                from src.bot.keyboards.messages_trusttunnel import TrustTunnelMessages
+                await update.message.reply_text(
+                    text=TrustTunnelMessages.SETUP_INSTRUCTIONS,
+                    reply_markup=download_keyboard,
                     parse_mode="Markdown",
                 )
 
