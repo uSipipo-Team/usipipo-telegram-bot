@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.15.0] - 2026-04-06
+
+### Added
+- **TrustTunnel Protocol Support** - Full TrustTunnel (AdGuard) integration as third VPN protocol alongside Outline and WireGuard
+- **Setup Instructions** - Step-by-step configuration guides with direct download buttons for all 3 protocols (TrustTunnel, WireGuard, Outline)
+
+### TrustTunnel Integration
+- New `TrustTunnelHandler` with key details, metrics display, config export (TOML), and deletion
+- TrustTunnel metrics display: active clients, total bandwidth, per-client breakdown (top 5)
+- TOML config file download with inline keyboard buttons for app store links
+- Protocol selection keyboard now includes TrustTunnel option
+- Main menu shows TrustTunnel key count
+
+### Setup Instructions (All Protocols)
+- **TrustTunnel**: Play Store, App Store, GitHub Releases buttons
+- **WireGuard**: Play Store, App Store, wireguard.com/install buttons
+- **Outline**: Play Store, App Store, outline-vpn.com buttons
+- Each guide includes: app download, config import steps, connection instructions, support link
+
+### Technical Details
+- **Files Created:** 3 files (`trusttunnel.py` handler, `trusttunnel.py` keyboards, `messages_trusttunnel.py`)
+- **Files Modified:** 4 files (`keys.py` handler, `keys.py` keyboards, `messages_keys.py`, `main.py`)
+- **Tests:** 477 tests passing (19 new TrustTunnel tests)
+- **Quality:** Ruff clean, mypy clean
+
+### Backend Integration
+- GET `/vpn/servers/{server_id}/trusttunnel/metrics` - TrustTunnel metrics fetch
+- GET `/vpn/keys/{key_id}/config` - TOML config export for TrustTunnel keys
+- `KeyType.TRUSTTUNNEL` support in key creation flow
+
+---
+
 ## [0.14.0] - 2026-04-06
 
 ### Fixed
