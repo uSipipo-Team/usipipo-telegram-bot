@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.14.0] - 2026-04-06
+
+### Fixed
+- **Profile data** - Send `username`, `first_name`, `last_name` from Telegram to auto-register endpoint
+- **Referral credits** - `_apply_referral_code` now blocks with 1 retry during registration
+- **Referral count** - Profile displays `total_referrals` instead of `referred_users_with_purchase`
+
+### Technical Details
+- **Files Modified:** 4 files (`auth.py`, `user_profile.py`, 2 test files)
+- **Lines Changed:** +139 / -23
+- **Tests:** 439 tests passing (+5 new)
+- **Quality:** Ruff clean, pre-commit hooks passing
+
+### Bug Fixes
+- Profile no longer shows "No disponible" for username/name
+- Referred users now receive their 50-credit new user bonus
+- Profile shows correct referral count (all referred users, not just purchasers)
+
 ## [0.13.0] - 2026-04-05
 
 ### Changed
