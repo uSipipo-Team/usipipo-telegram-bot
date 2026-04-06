@@ -1220,12 +1220,24 @@ class KeysHandler:
                     parse_mode="Markdown",
                 )
 
-                # Send setup instructions
+                # Send setup instructions with download buttons
+                from telegram import InlineKeyboardButton, InlineKeyboardMarkup
                 from src.bot.keyboards.messages_keys import KeysMessages
+
+                download_keyboard = InlineKeyboardMarkup([
+                    [
+                        InlineKeyboardButton("📱 Android", url="https://play.google.com/store/apps/details?id=com.wireguard.android"),
+                        InlineKeyboardButton("🍎 iOS", url="https://apps.apple.com/us/app/wireguard/id1441195209"),
+                    ],
+                    [
+                        InlineKeyboardButton("💻 Desktop", url="https://www.wireguard.com/install/"),
+                    ],
+                ])
 
                 await context.bot.send_message(
                     chat_id=update.effective_chat.id,
                     text=KeysMessages.WIREGUARD_SETUP_INSTRUCTIONS,
+                    reply_markup=download_keyboard,
                     parse_mode="Markdown",
                 )
 
@@ -1281,11 +1293,23 @@ class KeysHandler:
                 KeysKeyboard.back_to_menu(),
             )
 
-            # Send setup instructions
+            # Send setup instructions with download buttons
+            from telegram import InlineKeyboardButton, InlineKeyboardMarkup
             from src.bot.keyboards.messages_keys import KeysMessages
+
+            download_keyboard = InlineKeyboardMarkup([
+                [
+                    InlineKeyboardButton("📱 Android", url="https://play.google.com/store/apps/details?id=org.outline.android.client"),
+                    InlineKeyboardButton("🍎 iOS", url="https://itunes.apple.com/us/app/outline-app/id1356177741"),
+                ],
+                [
+                    InlineKeyboardButton("💻 Desktop", url="https://outline-vpn.com/"),
+                ],
+            ])
 
             await query.message.reply_text(
                 text=KeysMessages.OUTLINE_SETUP_INSTRUCTIONS,
+                reply_markup=download_keyboard,
                 parse_mode="Markdown",
             )
 

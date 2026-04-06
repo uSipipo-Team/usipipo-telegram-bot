@@ -250,9 +250,22 @@ class TrustTunnelHandler:
                 filename=f"{key_name}.toml",
             )
 
-            # Send setup instructions
+            # Send setup instructions with download buttons
+            from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+
+            download_keyboard = InlineKeyboardMarkup([
+                [
+                    InlineKeyboardButton("📱 Android", url="https://play.google.com/store/apps/details?id=com.adguard.trusttunnel"),
+                    InlineKeyboardButton("🍎 iOS", url="https://apps.apple.com/us/app/trusttunnel/id6755807890"),
+                ],
+                [
+                    InlineKeyboardButton("💻 GitHub Releases", url="https://github.com/TrustTunnel/TrustTunnelClient"),
+                ],
+            ])
+
             await query.message.reply_text(
                 text=TrustTunnelMessages.SETUP_INSTRUCTIONS,
+                reply_markup=download_keyboard,
                 parse_mode="Markdown",
             )
 
