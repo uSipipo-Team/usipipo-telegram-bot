@@ -13,7 +13,8 @@ class KeysMessages:
         "📊 Resumen:\n"
         "🔑 Total: {total_keys}\n"
         "🌐 Outline: {outline_count}\n"
-        "🔒 WireGuard: {wireguard_count}\n\n"
+        "🔒 WireGuard: {wireguard_count}\n"
+        "🛡️ TrustTunnel: {trusttunnel_count}\n\n"
         "⚡ *Elige una opción:*"
     )
 

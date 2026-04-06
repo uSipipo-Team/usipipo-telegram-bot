@@ -68,6 +68,7 @@ class TestKeysHandler:
         assert "{total_keys}" in KeysMessages.MAIN_MENU
         assert "{outline_count}" in KeysMessages.MAIN_MENU
         assert "{wireguard_count}" in KeysMessages.MAIN_MENU
+        assert "{trusttunnel_count}" in KeysMessages.MAIN_MENU
 
     @pytest.mark.asyncio
     async def test_keys_messages_key_details_has_placeholders(self):
