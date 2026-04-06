@@ -1,5 +1,6 @@
 """Handlers de autenticación invisible para el bot uSipipo."""
 
+import asyncio
 import logging
 from telegram import Update
 from telegram.ext import ContextTypes
@@ -78,7 +79,12 @@ class AuthHandler:
             # Luego auto-verificamos con endpoint especial
             response = await self.api.post(
                 "/auth/telegram/auto-register",
-                {"telegram_id": telegram_id},
+                {
+                    "telegram_id": telegram_id,
+                    "username": update.effective_user.username,
+                    "first_name": update.effective_user.first_name,
+                    "last_name": update.effective_user.last_name,
+                },
             )
 
             if "access_token" in response:
@@ -87,7 +93,13 @@ class AuthHandler:
                 # Apply referral code if provided
                 user_id = response.get("user_id")
                 if referral_code and user_id:
-                    await self._apply_referral_code(user_id, referral_code)
+                    applied = await self._apply_referral_code(user_id, referral_code)
+                    if not applied:
+                        logger.warning(
+                            f"Referral code '{referral_code}' could not be applied "
+                            f"for user_id={user_id}. Registration proceeded without "
+                            f"referral bonus."
+                        )
 
                 if update.message:
                     await update.message.reply_text(
@@ -104,31 +116,45 @@ class AuthHandler:
             if update.message:
                 await update.message.reply_text(AuthMessages.AUTH_ERROR)
 
-    async def _apply_referral_code(self, user_id: str, referral_code: str) -> None:
+    async def _apply_referral_code(self, user_id: str, referral_code: str) -> bool:
         """
-        Aplica código de referido después del registro automático.
+        Aplica código de referido durante el registro. Bloqueante con 1 retry.
 
-        Llama al endpoint /referrals/apply-on-register de forma no bloqueante.
-        Los errores se loguean pero no bloquean la experiencia del usuario.
+        Returns True si se aplicó exitosamente, False si falló.
         """
-        try:
-            result = await self.api.post(
-                "/referrals/apply-on-register",
-                {"user_id": user_id, "referral_code": referral_code},
-            )
-
-            if result.get("success"):
-                logger.info(
-                    f"Referral applied: user_id={user_id}, "
-                    f"code={referral_code}, credits={result.get('credits_earned', 0)}"
+        for attempt in range(2):
+            try:
+                result = await self.api.post(
+                    "/referrals/apply-on-register",
+                    {"user_id": user_id, "referral_code": referral_code},
                 )
-            else:
-                error = result.get("message", "unknown")
-                logger.warning(f"Referral application failed: user_id={user_id}, error={error}")
 
-        except Exception as e:
-            # Non-blocking: log error but don't fail the registration
-            logger.error(f"Error applying referral code: {e}")
+                if result.get("success"):
+                    logger.info(
+                        f"Referral applied: user_id={user_id}, "
+                        f"code={referral_code}, credits={result.get('credits_earned', 0)}"
+                    )
+                    return True
+                else:
+                    error = result.get("message", "unknown")
+                    logger.warning(
+                        f"Referral failed (attempt {attempt + 1}): "
+                        f"user_id={user_id}, error={error}"
+                    )
+                    if attempt == 0:
+                        await asyncio.sleep(1)
+                        continue
+                    return False
+
+            except Exception as e:
+                logger.error(
+                    f"Error applying referral code (attempt {attempt + 1}): {e}"
+                )
+                if attempt == 0:
+                    await asyncio.sleep(1)
+                    continue
+                return False
+        return False
 
     async def me_handler(
         self,
