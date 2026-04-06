@@ -171,3 +171,45 @@ class KeysMessages:
     )
 
     SELECT_DATA_LIMIT = "📊 *Límite de datos*\n\nElige el límite de datos para esta clave:"
+
+    # ============================================
+    # SETUP INSTRUCTIONS - OUTLINE
+    # ============================================
+
+    OUTLINE_SETUP_INSTRUCTIONS = (
+        "📖 *Cómo configurar Outline*\n\n"
+        "1️⃣ *Descargá la app:*\n"
+        "   📱 Android: Play Store → \"Outline VPN\"\n"
+        "   🍎 iOS: App Store → \"Outline VPN\"\n"
+        "   💻 Desktop: getoutline.org/get/#download\n\n"
+        "2️⃣ *Agregá tu clave de acceso:*\n"
+        "   📋 Copiá la clave ss:// que te enviamos\n"
+        "   📱 En la app, tocá \"+\" o \"Add key\"\n"
+        "   📌 Pegá la clave y dale a \"Add\"\n\n"
+        "3️⃣ *Conectate:*\n"
+        "   ▶️ Tocá el botón de conectar\n"
+        "   🟢 Cuando veas el ícono verde, estás protegido\n\n"
+        "💡 *¿Necesitás ayuda?*\n"
+        "   Usá /soporte para hablar con nuestro equipo"
+    )
+
+    # ============================================
+    # SETUP INSTRUCTIONS - WIREGUARD
+    # ============================================
+
+    WIREGUARD_SETUP_INSTRUCTIONS = (
+        "📖 *Cómo configurar WireGuard*\n\n"
+        "1️⃣ *Descargá la app:*\n"
+        "   📱 Android: Play Store → \"WireGuard\"\n"
+        "   🍎 iOS: App Store → \"WireGuard\"\n"
+        "   💻 Desktop: wireguard.com/install\n\n"
+        "2️⃣ *Importá la configuración:*\n"
+        "   📱 En la app, tocá \"+\" o \"Import\"\n"
+        "   📂 Seleccioná el archivo .conf que descargaste\n"
+        "   📝 O escaneá el código QR si está disponible\n\n"
+        "3️⃣ *Conectate:*\n"
+        "   ▶️ Activá el toggle de la conexión\n"
+        "   🟢 Cuando veas el ícono verde, estás protegido\n\n"
+        "💡 *¿Necesitás ayuda?*\n"
+        "   Usá /soporte para hablar con nuestro equipo"
+    )

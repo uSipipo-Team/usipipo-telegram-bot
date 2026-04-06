@@ -48,6 +48,26 @@ class TrustTunnelMessages:
     CONFIG_EXPORT_CAPTION = "🛡️ TrustTunnel config — {key_name}"
 
     # ============================================
+    # SETUP INSTRUCTIONS
+    # ============================================
+
+    SETUP_INSTRUCTIONS = (
+        "📖 *Cómo configurar TrustTunnel*\n\n"
+        "1️⃣ *Descargá la app:*\n"
+        "   📱 Android: Play Store → buscá \"TrustTunnel\"\n"
+        "   🍎 iOS: App Store → buscá \"TrustTunnel\"\n"
+        "   💻 Desktop: github.com/trusttunnel/trusttunnel\n\n"
+        "2️⃣ *Importá la configuración:*\n"
+        "   📱 En la app, tocá \"Importar configuración\"\n"
+        "   📂 Seleccioná el archivo .toml que descargaste\n\n"
+        "3️⃣ *Conectate:*\n"
+        "   ▶️ Tocá el botón de conectar\n"
+        "   🟢 Cuando veas el ícono verde, estás protegido\n\n"
+        "💡 *¿Necesitás ayuda?*\n"
+        "   Usá /soporte para hablar con nuestro equipo"
+    )
+
+    # ============================================
     # SERVER STATUS
     # ============================================
 

@@ -250,6 +250,12 @@ class TrustTunnelHandler:
                 filename=f"{key_name}.toml",
             )
 
+            # Send setup instructions
+            await query.message.reply_text(
+                text=TrustTunnelMessages.SETUP_INSTRUCTIONS,
+                parse_mode="Markdown",
+            )
+
             await query.edit_message_text(
                 text=TrustTunnelMessages.CONFIG_EXPORT_SUCCESS,
                 reply_markup=TrustTunnelKeyboard.back_to_list(),

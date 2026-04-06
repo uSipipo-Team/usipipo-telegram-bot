@@ -1220,6 +1220,15 @@ class KeysHandler:
                     parse_mode="Markdown",
                 )
 
+                # Send setup instructions
+                from src.bot.keyboards.messages_keys import KeysMessages
+
+                await context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=KeysMessages.WIREGUARD_SETUP_INSTRUCTIONS,
+                    parse_mode="Markdown",
+                )
+
             logger.info(f"User {telegram_id} downloaded WireGuard config for key {key_id}")
 
         except Exception as e:
@@ -1270,6 +1279,14 @@ class KeysHandler:
                 context,
                 message,
                 KeysKeyboard.back_to_menu(),
+            )
+
+            # Send setup instructions
+            from src.bot.keyboards.messages_keys import KeysMessages
+
+            await query.message.reply_text(
+                text=KeysMessages.OUTLINE_SETUP_INSTRUCTIONS,
+                parse_mode="Markdown",
             )
 
             logger.info(f"User {telegram_id} retrieved Outline link for key {key_id}")
