@@ -8,7 +8,7 @@ class KeysKeyboard:
 
     @staticmethod
     def main_menu(
-        total_keys: int, outline_count: int, wireguard_count: int
+        total_keys: int, outline_count: int, wireguard_count: int, trusttunnel_count: int = 0
     ) -> InlineKeyboardMarkup:
         """
         Teclado del menú principal de gestión de claves.
@@ -17,6 +17,7 @@ class KeysKeyboard:
             total_keys: Total de claves del usuario
             outline_count: Cantidad de claves Outline
             wireguard_count: Cantidad de claves WireGuard
+            trusttunnel_count: Cantidad de claves TrustTunnel
 
         Returns:
             InlineKeyboardMarkup: Teclado del menú principal
@@ -47,6 +48,14 @@ class KeysKeyboard:
                 InlineKeyboardButton(
                     f"🔒 WireGuard ({wireguard_count})",
                     callback_data="vpn_keys_wireguard",
+                )
+            )
+
+        if trusttunnel_count > 0:
+            keys_row.append(
+                InlineKeyboardButton(
+                    f"🛡️ TrustTunnel ({trusttunnel_count})",
+                    callback_data="vpn_keys_trusttunnel",
                 )
             )
 
@@ -213,12 +222,15 @@ class KeysKeyboard:
         Teclado para selección de protocolo VPN.
 
         Returns:
-            InlineKeyboardMarkup: Teclado con botones Outline y WireGuard
+            InlineKeyboardMarkup: Teclado con botones Outline, WireGuard y TrustTunnel
         """
         keyboard = [
             [
                 InlineKeyboardButton("🌐 Outline", callback_data="vpn_create_outline"),
                 InlineKeyboardButton("🔒 WireGuard", callback_data="vpn_create_wireguard"),
+            ],
+            [
+                InlineKeyboardButton("🛡️ TrustTunnel", callback_data="vpn_create_trusttunnel"),
             ],
             [InlineKeyboardButton("🔙 Cancelar", callback_data="vpn_keys_menu")],
         ]

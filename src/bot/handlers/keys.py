@@ -263,6 +263,7 @@ class KeysHandler:
             total_keys = len(keys)
             outline_count = len([k for k in keys if k.get("key_type", "").lower() == "outline"])
             wireguard_count = len([k for k in keys if k.get("key_type", "").lower() == "wireguard"])
+            trusttunnel_count = len([k for k in keys if k.get("key_type", "").lower() == "trusttunnel"])
 
             if total_keys == 0:
                 message = KeysMessages.NO_KEYS
@@ -271,9 +272,10 @@ class KeysHandler:
                     total_keys=total_keys,
                     outline_count=outline_count,
                     wireguard_count=wireguard_count,
+                    trusttunnel_count=trusttunnel_count,
                 )
 
-            keyboard = KeysKeyboard.main_menu(total_keys, outline_count, wireguard_count)
+            keyboard = KeysKeyboard.main_menu(total_keys, outline_count, wireguard_count, trusttunnel_count)
 
             if update.callback_query:
                 await self._safe_edit_message(update.callback_query, context, message, keyboard)
@@ -479,6 +481,27 @@ class KeysHandler:
                             server_uptime = KeysMessages.WG_NO_HANDSHAKES
                     else:
                         server_status_line = KeysMessages.WG_METRICS_UNAVAILABLE
+
+                # Fetch TrustTunnel metrics if key type is TrustTunnel
+                if key_type.lower() == "trusttunnel":
+                    from src.bot.handlers.trusttunnel import TrustTunnelHandler
+
+                    tt_handler = TrustTunnelHandler(self.api, self.tokens)
+                    tt_metrics = await tt_handler._fetch_trusttunnel_metrics(
+                        server_id=server_id,
+                        telegram_id=telegram_id,
+                    )
+
+                    if tt_metrics:
+                        active_clients = tt_metrics.get("active_clients", 0)
+                        total_bytes = tt_metrics.get("total_bytes_transferred", 0)
+                        total_bw = tt_handler._format_bytes(total_bytes)
+
+                        server_status_line = f"🟢 Online • {active_clients} clientes activos"
+                        server_bandwidth = f"{total_bw} transferidos (total)"
+                        server_uptime = f"👥 {active_clients} clientes"
+                    else:
+                        server_status_line = "📡 Métricas no disponibles"
 
             message = KeysMessages.KEY_DETAILS.format(
                 name=key.get("name", "Unknown"),
@@ -1197,6 +1220,27 @@ class KeysHandler:
                     parse_mode="Markdown",
                 )
 
+                # Send setup instructions with download buttons
+                from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+                from src.bot.keyboards.messages_keys import KeysMessages
+
+                download_keyboard = InlineKeyboardMarkup([
+                    [
+                        InlineKeyboardButton("📱 Android", url="https://play.google.com/store/apps/details?id=com.wireguard.android"),
+                        InlineKeyboardButton("🍎 iOS", url="https://apps.apple.com/us/app/wireguard/id1441195209"),
+                    ],
+                    [
+                        InlineKeyboardButton("💻 Desktop", url="https://www.wireguard.com/install/"),
+                    ],
+                ])
+
+                await context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=KeysMessages.WIREGUARD_SETUP_INSTRUCTIONS,
+                    reply_markup=download_keyboard,
+                    parse_mode="Markdown",
+                )
+
             logger.info(f"User {telegram_id} downloaded WireGuard config for key {key_id}")
 
         except Exception as e:
@@ -1247,6 +1291,26 @@ class KeysHandler:
                 context,
                 message,
                 KeysKeyboard.back_to_menu(),
+            )
+
+            # Send setup instructions with download buttons
+            from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+            from src.bot.keyboards.messages_keys import KeysMessages
+
+            download_keyboard = InlineKeyboardMarkup([
+                [
+                    InlineKeyboardButton("📱 Android", url="https://play.google.com/store/apps/details?id=org.outline.android.client"),
+                    InlineKeyboardButton("🍎 iOS", url="https://itunes.apple.com/us/app/outline-app/id1356177741"),
+                ],
+                [
+                    InlineKeyboardButton("💻 Desktop", url="https://outline-vpn.com/"),
+                ],
+            ])
+
+            await query.message.reply_text(
+                text=KeysMessages.OUTLINE_SETUP_INSTRUCTIONS,
+                reply_markup=download_keyboard,
+                parse_mode="Markdown",
             )
 
             logger.info(f"User {telegram_id} retrieved Outline link for key {key_id}")
