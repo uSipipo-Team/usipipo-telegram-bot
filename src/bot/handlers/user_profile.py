@@ -121,7 +121,7 @@ class UserProfileHandler:
             # Referral info
             message += UserProfileMessages.format_referral_info(
                 referral_code=user_response.get("referral_code", "N/A"),
-                referrals_count=user_response.get("referred_users_with_purchase", 0),
+                referrals_count=user_response.get("total_referrals", 0),
                 referral_credits=user_response.get("referral_credits", 0),
             )
 

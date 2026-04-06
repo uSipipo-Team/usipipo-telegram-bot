@@ -32,6 +32,9 @@ class TestAuthHandlerWithReferral:
         # Create mock update with context.args containing referral code
         mock_update = MagicMock()
         mock_update.effective_user.id = 12345
+        mock_update.effective_user.username = "testuser"
+        mock_update.effective_user.first_name = "Test"
+        mock_update.effective_user.last_name = "User"
         mock_update.message = MagicMock()
         mock_update.message.reply_text = AsyncMock()
 
@@ -45,6 +48,9 @@ class TestAuthHandlerWithReferral:
         first_call = mock_api.post.call_args_list[0]
         assert first_call[0][0] == "/auth/telegram/auto-register"
         assert first_call[0][1]["telegram_id"] == 12345
+        assert first_call[0][1]["username"] == "testuser"
+        assert first_call[0][1]["first_name"] == "Test"
+        assert first_call[0][1]["last_name"] == "User"
 
         # Verify referral endpoint was called second with user_id (UUID)
         second_call = mock_api.post.call_args_list[1]
@@ -71,6 +77,9 @@ class TestAuthHandlerWithReferral:
 
         mock_update = MagicMock()
         mock_update.effective_user.id = 12345
+        mock_update.effective_user.username = None
+        mock_update.effective_user.first_name = "Test"
+        mock_update.effective_user.last_name = None
         mock_update.message = MagicMock()
         mock_update.message.reply_text = AsyncMock()
 
@@ -107,3 +116,40 @@ class TestAuthHandlerWithReferral:
         mock_api.post.assert_not_called()
         # Should show welcome message
         mock_update.message.reply_text.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_apply_referral_code_retries_on_failure(self):
+        """Test that _apply_referral_code retries once on failure."""
+        from src.bot.handlers.auth import AuthHandler
+
+        mock_api = AsyncMock()
+        mock_tokens = AsyncMock()
+        handler = AuthHandler(mock_api, mock_tokens)
+
+        # First call fails, second succeeds
+        mock_api.post.side_effect = [
+            Exception("Connection timeout"),
+            {"success": True, "credits_earned": 50},
+        ]
+
+        result = await handler._apply_referral_code("user-123", "ref_abc")
+
+        assert result is True
+        assert mock_api.post.call_count == 2
+        assert mock_api.post.call_args_list[0][0][0] == "/referrals/apply-on-register"
+
+    @pytest.mark.asyncio
+    async def test_apply_referral_code_returns_false_after_retry_exhausted(self):
+        """Test that _apply_referral_code returns False after all retries fail."""
+        from src.bot.handlers.auth import AuthHandler
+
+        mock_api = AsyncMock()
+        mock_tokens = AsyncMock()
+        handler = AuthHandler(mock_api, mock_tokens)
+
+        mock_api.post.side_effect = Exception("Connection timeout")
+
+        result = await handler._apply_referral_code("user-123", "ref_abc")
+
+        assert result is False
+        assert mock_api.post.call_count == 2
