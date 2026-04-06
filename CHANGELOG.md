@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.15.1] - 2026-04-06
+
+### Fixed
+- **TrustTunnel Key Creation Flow** - Fixed broken flow where bot stopped responding after user entered key name
+  - `vpn_type` mapping now correctly handles `trusttunnel` (was incorrectly mapped to `wireguard`)
+  - Added response handler to send `.toml` config file + setup instructions after key creation
+  - QA reported flow broke at name input step — now delivers config file and setup guide
+
+### Technical Details
+- **Files Modified:** 1 (`src/bot/handlers/keys.py`)
+- **Lines Added:** 46
+- **Tests:** 458 tests passing (100%)
+- **Quality:** Ruff clean
+
+---
+
 ## [0.15.0] - 2026-04-06
 
 ### Added
