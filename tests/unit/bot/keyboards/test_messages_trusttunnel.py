@@ -1,5 +1,4 @@
 """Tests para TrustTunnel messages."""
-import pytest
 
 
 class TestTrustTunnelMessages:

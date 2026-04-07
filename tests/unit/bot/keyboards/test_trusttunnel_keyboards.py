@@ -1,5 +1,4 @@
 """Tests para TrustTunnel keyboards."""
-import pytest
 from telegram import InlineKeyboardMarkup
 
 
