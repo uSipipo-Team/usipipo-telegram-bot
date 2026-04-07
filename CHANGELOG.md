@@ -14,10 +14,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Deep link sent as primary UX before `.toml` file backup
   - Graceful fallback to TOML-only flow if deeplink unavailable
   - `KEY_CREATED_WITH_DEEPLINK` message template with setup instructions
+- **TrustTunnel Key Actions** — New buttons in key details view:
+  - `📋 Copiar Deeplink` — Sends deeplink as copyable text message
+  - `📥 Descargar .toml` — Compact layout (side-by-side with copy deeplink)
+  - `DEEPLINK_COPY_SUCCESS` and `DEEPLINK_NOT_AVAILABLE` message templates
 
 ### Technical Details
-- **Files Modified:** 2 (`src/bot/handlers/keys.py`, `src/bot/keyboards/messages_trusttunnel.py`)
-- **Lines Added:** ~35
+- **Files Modified:** 4 (`src/bot/handlers/keys.py`, `src/bot/handlers/trusttunnel.py`, `src/bot/keyboards/messages_trusttunnel.py`, `src/bot/keyboards/trusttunnel.py`)
+- **Lines Added:** ~60
 
 ---
 

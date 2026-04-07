@@ -20,13 +20,17 @@ class TrustTunnelKeyboard:
         """
         keyboard = []
 
-        # Download config
+        # Download config and copy deeplink row
         keyboard.append(
             [
                 InlineKeyboardButton(
-                    "📥 Descargar Configuración .toml",
+                    "📥 Descargar .toml",
                     callback_data=f"vpn_download_tt_{key_id}",
-                )
+                ),
+                InlineKeyboardButton(
+                    "📋 Copiar Deeplink",
+                    callback_data=f"vpn_copy_deeplink_{key_id}",
+                ),
             ]
         )
 
