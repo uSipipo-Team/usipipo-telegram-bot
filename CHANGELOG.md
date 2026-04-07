@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.16.0] - 2026-04-07
+
+### Added
+- **TrustTunnel Deep Link Delivery** — Users receive clickable `tt://` deeplink for instant mobile configuration
+  - Deep link sent as primary UX before `.toml` file backup
+  - Graceful fallback to TOML-only flow if deeplink unavailable
+  - `KEY_CREATED_WITH_DEEPLINK` message template with setup instructions
+
+### Technical Details
+- **Files Modified:** 2 (`src/bot/handlers/keys.py`, `src/bot/keyboards/messages_trusttunnel.py`)
+- **Lines Added:** ~35
+
+---
+
 ## [0.15.1] - 2026-04-06
 
 ### Fixed
