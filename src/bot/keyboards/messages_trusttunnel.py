@@ -63,6 +63,23 @@ class TrustTunnelMessages:
     CONFIG_EXPORT_CAPTION = "🛡️ TrustTunnel config — {key_name}"
 
     # ============================================
+    # DEEPLINK COPY
+    # ============================================
+
+    DEEPLINK_COPY_SUCCESS = (
+        "📋 *Deeplink copiado*\n\n"
+        "Tocá el enlace para configurar tu dispositivo:\n\n"
+        "{deeplink}\n\n"
+        "💡 _Enviado como texto para que puedas copiarlo y pegarlo en la app._"
+    )
+
+    DEEPLINK_NOT_AVAILABLE = (
+        "⚠️ *Deeplink no disponible*\n\n"
+        "No se pudo generar el deeplink para esta clave.\n\n"
+        "💡 Usá el archivo .toml para configurar manualmente."
+    )
+
+    # ============================================
     # SETUP INSTRUCTIONS
     # ============================================
 

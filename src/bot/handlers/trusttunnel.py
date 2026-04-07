@@ -283,6 +283,68 @@ class TrustTunnelHandler:
                 parse_mode="Markdown",
             )
 
+    async def copy_deeplink(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Envía el deeplink TrustTunnel como texto para copiar."""
+        query = update.callback_query
+        if query is None or query.data is None:
+            return
+
+        await query.answer()
+
+        key_id = query.data.replace("vpn_copy_deeplink_", "")
+        telegram_id = update.effective_user.id if update.effective_user else 0
+
+        logger.info(f"User {telegram_id} copying TrustTunnel deeplink for key {key_id}")
+
+        try:
+            headers = await self._get_auth_headers(telegram_id)
+            response = await self.api.get(f"/vpn/keys/{key_id}", headers=headers)
+
+            deeplink = response.get("deeplink", "")
+
+            if deeplink:
+                await query.message.reply_text(
+                    text=TrustTunnelMessages.DEEPLINK_COPY_SUCCESS.format(deeplink=deeplink),
+                    parse_mode="Markdown",
+                    disable_web_page_preview=True,
+                )
+            else:
+                await query.message.reply_text(
+                    text=TrustTunnelMessages.DEEPLINK_NOT_AVAILABLE,
+                    parse_mode="Markdown",
+                )
+
+            await query.edit_message_text(
+                text=TrustTunnelMessages.KEY_DETAILS.format(
+                    name=response.get("name", "Unknown"),
+                    server=response.get("server_name", "N/A"),
+                    usage=f"{response.get('data_used_gb', 0):.1f}",
+                    limit=f"{response.get('data_limit_gb', 0):.1f}",
+                    percentage="0",
+                    usage_bar="░░░░░░░░░░ 0%",
+                    status="Activa" if response.get("status", "active") == "active" else "Inactiva",
+                    status_icon="🟢" if response.get("status", "active") == "active" else "🔴",
+                    expires=response.get("expires_at", "N/A")[:10] if response.get("expires_at") else "N/A",
+                    last_seen="Nunca",
+                    server_status_line=TrustTunnelMessages.SERVER_METRICS_UNAVAILABLE,
+                    total_bandwidth="N/A",
+                    active_clients="N/A",
+                ),
+                reply_markup=TrustTunnelKeyboard.key_actions(
+                    key_id,
+                    response.get("status", "active") == "active",
+                ),
+                parse_mode="Markdown",
+            )
+
+        except Exception as e:
+            logger.error(f"Error copying TrustTunnel deeplink: {e}")
+            await query.edit_message_text(
+                text=TrustTunnelMessages.DEEPLINK_NOT_AVAILABLE,
+                reply_markup=TrustTunnelKeyboard.back_to_list(),
+                parse_mode="Markdown",
+            )
+
     async def delete_key(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Muestra confirmación de eliminación."""
         query = update.callback_query
@@ -345,6 +407,7 @@ def get_trusttunnel_callback_handlers(api_client: APIClient, token_storage: Toke
     return [
         CallbackQueryHandler(handler.show_key_details, pattern="^vpn_key_details_"),
         CallbackQueryHandler(handler.export_config, pattern="^vpn_download_tt_"),
+        CallbackQueryHandler(handler.copy_deeplink, pattern="^vpn_copy_deeplink_"),
         CallbackQueryHandler(handler.delete_key, pattern="^vpn_delete_"),
         CallbackQueryHandler(handler.confirm_delete, pattern="^vpn_confirm_delete_"),
     ]
