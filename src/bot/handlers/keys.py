@@ -520,11 +520,19 @@ class KeysHandler:
                 server_uptime=server_uptime,
             )
 
-            keyboard = KeysKeyboard.key_actions(
-                key_id,
-                key.get("status", "active") == "active",
-                key.get("key_type", "wireguard"),
-            )
+            # Use TrustTunnel keyboard for trusttunnel keys
+            if key_type.lower() == "trusttunnel":
+                from src.bot.keyboards.trusttunnel import TrustTunnelKeyboard
+                keyboard = TrustTunnelKeyboard.key_actions(
+                    key_id,
+                    key.get("status", "active") == "active",
+                )
+            else:
+                keyboard = KeysKeyboard.key_actions(
+                    key_id,
+                    key.get("status", "active") == "active",
+                    key_type,
+                )
 
             await self._safe_edit_message(query, context, message, keyboard)
 
@@ -1176,6 +1184,25 @@ class KeysHandler:
         logger.warning(f"User {telegram_id} deleting key {key_id}")
 
         try:
+            # Check key type — delegate to TrustTunnel keyboard for trusttunnel keys
+            headers = await self._get_auth_headers(telegram_id)
+            key_response = await self.api.get(f"/vpn/keys/{key_id}", headers=headers)
+            key_type = key_response.get("key_type", "wireguard")
+
+            if key_type.lower() == "trusttunnel":
+                from src.bot.keyboards.trusttunnel import TrustTunnelKeyboard
+                message = (
+                    "⚠️ ¿Estás seguro de que querés eliminar esta clave TrustTunnel?\n\n"
+                    "🔌 Todos los dispositivos conectados serán desconectados."
+                )
+                await self._safe_edit_message(
+                    query,
+                    context,
+                    message,
+                    TrustTunnelKeyboard.confirm_delete(key_id),
+                )
+                return
+
             message = "⚠️ *¿Eliminar clave?*\n\nEsta acción no se puede deshacer."
 
             await self._safe_edit_message(
@@ -1208,11 +1235,22 @@ class KeysHandler:
         logger.warning(f"User {telegram_id} confirming delete key {key_id}")
 
         try:
-            # Delete key
+            # Check key type for appropriate message
             headers = await self._get_auth_headers(telegram_id)
+            key_response = await self.api.get(f"/vpn/keys/{key_id}", headers=headers)
+            key_type = key_response.get("key_type", "wireguard")
+
+            # Delete key
             await self.api.delete(f"/vpn/keys/{key_id}", headers=headers)
 
-            message = KeysMessages.Actions.KEY_DELETED
+            if key_type.lower() == "trusttunnel":
+                message = (
+                    "🗑️ *Clave TrustTunnel eliminada*\n\n"
+                    "💥 Destruida permanentemente\n\n"
+                    "🔌 Dispositivos desconectados ⚡"
+                )
+            else:
+                message = KeysMessages.Actions.KEY_DELETED
 
             await self._safe_edit_message(
                 query,
