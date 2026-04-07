@@ -5,6 +5,21 @@ class TrustTunnelMessages:
     """Mensajes para gestión de TrustTunnel VPN."""
 
     # ============================================
+    # KEY CREATED WITH DEEPLINK
+    # ============================================
+
+    KEY_CREATED_WITH_DEEPLINK = (
+        "✅ *Clave {vpn_type} Creada*\n\n"
+        "🔑 Nombre: *{name}*\n"
+        "💾 Límite: *{limit}GB*\n\n"
+        "📱 *Configuración rápida:*\n"
+        "Tocá el enlace para configurar automáticamente en tu dispositivo:\n\n"
+        "{deeplink}\n\n"
+        "💾 *¿Preferís manual?*\n"
+        "Descargá el archivo .toml abajo e importalo en la app."
+    )
+
+    # ============================================
     # KEY DETAILS
     # ============================================
 

@@ -877,24 +877,44 @@ class KeysHandler:
                 )
 
             elif protocol.lower() == "trusttunnel":
-                # TrustTunnel: Send .toml config file
+                # TrustTunnel: Send deeplink first, then .toml file as backup
                 escaped_name = key_name.replace("_", r"\_").replace("*", r"\*")
 
-                caption = (
-                    f"✅ *Clave {vpn_type.title()} Creada*\n\n"
-                    f"🔑 Nombre: *{escaped_name}*\n"
-                    f"💾 Límite: *{data_limit}GB*\n\n"
-                    f"Descargá el archivo .toml adjunto e importalo en TrustTunnel."
-                )
+                # Extract deeplink from response
+                deeplink = response.get("deeplink", "")
 
-                # Create .toml file
+                if deeplink:
+                    # Send deeplink message first
+                    from src.bot.keyboards.messages_trusttunnel import TrustTunnelMessages
+                    caption = TrustTunnelMessages.KEY_CREATED_WITH_DEEPLINK.format(
+                        vpn_type=vpn_type.title(),
+                        name=escaped_name,
+                        limit=data_limit,
+                        deeplink=deeplink,
+                    )
+
+                    await update.message.reply_text(
+                        text=caption,
+                        parse_mode="Markdown",
+                        disable_web_page_preview=True,
+                    )
+                else:
+                    # Fallback: no deeplink available, use original flow
+                    caption = (
+                        f"✅ *Clave {vpn_type.title()} Creada*\n\n"
+                        f"🔑 Nombre: *{escaped_name}*\n"
+                        f"💾 Límite: *{data_limit}GB*\n\n"
+                        f"Descargá el archivo .toml adjunto e importalo en TrustTunnel."
+                    )
+
+                # Always send .toml file
                 toml_filename = f"{key_name}.toml"
-                toml_content = key_config  # Backend returns full TrustTunnel TOML config
+                toml_content = key_config
 
                 await update.message.reply_document(
                     document=io.BytesIO(toml_content.encode("utf-8")),
                     filename=toml_filename,
-                    caption=caption,
+                    caption=f"📄 *{escaped_name}.toml*" if deeplink else caption,
                     parse_mode="Markdown",
                 )
 
